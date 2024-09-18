@@ -1,7 +1,8 @@
 package mapper;
 
+import dto.RegisterCustomerDto;
 import dto.RegisterExpertDto;
-import entity.Profile;
+import entity.Customer;
 import entity.Expert;
 
 public class Mapper {
@@ -10,11 +11,10 @@ public class Mapper {
                 .firstName(dto.firstName())
                 .lastName(dto.lastName())
                 .emailAddress(dto.emailAddress())
-                .profile(Profile.builder()
-                        .userName(dto.userName())
-                        .password(dto.password())
-                        .build()).score(dto.score()).
-                build();
+                .userName(dto.userName())
+                .password(dto.password())
+                //.score(dto.score())
+                .build();
         //.picture(dto.picture())
 
     }
@@ -26,12 +26,19 @@ public class Mapper {
                 , expert.getScore());*/
 
         return RegisterExpertDto.builder().firstName(expert.getFirstName()).lastName(expert.getLastName())
-                .emailAddress(expert.getEmailAddress()).userName(expert.getProfile().getUserName())
-                .password(expert.getProfile().getPassword()).score(expert.getScore()).build();
+                .emailAddress(expert.getEmailAddress()).userName(expert.getUserName())
+                .password(expert.getPassword())
+                // .score(expert.getScore())
+                .build();
         //.picture(expert.picture())
 
 
     }
 
 
+    public static Customer convertCustomerDtoToEntity(RegisterCustomerDto customerDto) {
+        return Customer.builder().firstName(customerDto.firstName()).lastName(customerDto.lastName())
+                .emailAddress(customerDto.emailAddress()).userName(customerDto.userName())
+                .password(customerDto.password()).build();
+    }
 }

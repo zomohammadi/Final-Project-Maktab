@@ -20,14 +20,11 @@ import java.time.ZonedDateTime;
 public class BaseEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    /*@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq")
-    @SequenceGenerator(name = "seq", sequenceName = "sequence_Id", allocationSize = 1)*/
     private Long id;
 
     private ZonedDateTime createDate;
 
     private ZonedDateTime lastUpdateDate;
-
 
     @PrePersist
     public void perPersist() {

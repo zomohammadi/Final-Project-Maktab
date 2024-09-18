@@ -1,37 +1,47 @@
 package service.Impl;
 
+import customeException.NotFoundException;
 import dto.RegisterExpertDto;
+import entity.Credit;
 import entity.Expert;
 import enumaration.Role;
+import jakarta.persistence.Tuple;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 import mapper.Mapper;
 import repository.BaseEntityRepository;
+import repository.ExpertRepository;
 import service.ExpertService;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
+import java.util.List;
 import java.util.Set;
 
 public class ExpertServiceImp implements ExpertService {
     private final BaseEntityRepository<Expert> expertBaseEntityRepository;
+    private final ExpertRepository expertRepository;
     private final Validator validator;
 
-    public ExpertServiceImp(BaseEntityRepository<Expert> expertBaseEntityRepository, Validator validator) {
+    public ExpertServiceImp(BaseEntityRepository<Expert> expertBaseEntityRepository, ExpertRepository expertRepository, Validator validator) {
         this.expertBaseEntityRepository = expertBaseEntityRepository;
+        this.expertRepository = expertRepository;
         this.validator = validator;
     }
 
 
     // Method to check if the file is a JPG based on file extension
-    public boolean isJpgFile(String filePath) {
-        return filePath.toLowerCase().endsWith(".jpg") || filePath.toLowerCase().endsWith(".jpeg");
+    private boolean isJpgFile(String filePath) {
+        if (filePath.toLowerCase().endsWith(".jpg") || filePath.toLowerCase().endsWith(".jpeg")) {
+            System.out.println("correct picture path");
+            return true;
+        } else {
+            System.out.println("not valid picture path");
+            return false;
+        }
     }
 
     // Method to check if the file is a JPG by checking its content (magic number check)
-    public boolean isJpgFileByContent(String filePath) {
+    private boolean isJpgFileByContent(String filePath) {
         try (FileInputStream fis = new FileInputStream(new File(filePath))) {
             byte[] header = new byte[3];
             if (fis.read(header) != 3) {
@@ -47,13 +57,13 @@ public class ExpertServiceImp implements ExpertService {
     }
 
     // Method to check if the file size is less than or equal to 300 KB
-    public boolean isFileSizeValid(String filePath) {
+    private boolean isFileSizeValid(String filePath) {
         File file = new File(filePath);
-        return file.length() <= 300 * 1024; // 300 KB = 300 * 1024 bytes
+        return file.length() <= 800 * 1024; // 300 KB = 300 * 1024 bytes
     }
 
     // Method to convert the JPG file to a byte array
-    public byte[] convertFileToBytes(String filePath) {
+    private byte[] convertFileToBytes(String filePath) {
         File file = new File(filePath);
         try (FileInputStream fis = new FileInputStream(file)) {
             byte[] fileContent = new byte[(int) file.length()];
@@ -67,10 +77,14 @@ public class ExpertServiceImp implements ExpertService {
     }
 
     // Method to validate the file and convert it to bytes
-    public byte[] processImageFile(String filePath) {
-        if (!isJpgFile(filePath) || !isJpgFileByContent(filePath)) {
-            throw new IllegalArgumentException("File is not a valid JPG format.");
+    private byte[] processImageFile(String filePath) {
+        if (!isJpgFile(filePath)) {
+            if (!isJpgFileByContent(filePath)) {
+                throw new IllegalArgumentException("File is not a valid JPG format.");
+            }
+            //throw new IllegalArgumentException("File is not a valid JPG format.");
         }
+
 
         if (!isFileSizeValid(filePath)) {
             throw new IllegalArgumentException("File size exceeds 300 KB.");
@@ -78,9 +92,20 @@ public class ExpertServiceImp implements ExpertService {
         return convertFileToBytes(filePath);
     }
 
+    private static void convertBytesToFile(byte[] imageBytes, String userName) {
+        String outputFilePath = "D:\\Java\\java_inteligent_idea_excercise" +
+                                "\\FinalProjectMaktab\\src\\main\\resources\\ExpertPictures\\" + userName + ".jpg";
+        File outputFile = new File(outputFilePath);
+        try (FileOutputStream out = new FileOutputStream(outputFile)) {
+            out.write(imageBytes);
+            System.out.println("Image saved successfully at " + outputFilePath);
+        } catch (IOException e) {
+            throw new RuntimeException("Error saving image file", e);
+        }
+    }
 
     @Override
-    public void save(RegisterExpertDto expertDto) {
+    public void register(RegisterExpertDto expertDto) {
         Set<ConstraintViolation<RegisterExpertDto>> violations = validator.validate(expertDto);
         if (!violations.isEmpty()) {
             for (ConstraintViolation<RegisterExpertDto> violation : violations) {
@@ -88,12 +113,26 @@ public class ExpertServiceImp implements ExpertService {
             }
             return;
         }
+
         Expert expert = Mapper.convertExpertDtoToEntity(expertDto);
         expert.setRole(Role.Expert);
-        try {
-            expertBaseEntityRepository.save(expert);
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
+        expert.setCredit(Credit.builder().build());
+        expert.setPicture(processImageFile(expertDto.picturePath()));
+        expertBaseEntityRepository.save(expert);
+
+    }
+
+    private List<byte[]> getPictureByUserName(String userName) {
+        return expertRepository.getPictureByUserName(userName);
+    }
+
+    @Override
+    public void getPicture(String userName) {
+        List<byte[]> tuples = getPictureByUserName(userName);
+        if (tuples.isEmpty()) {
+            throw new NotFoundException("Expert with this User Name not found!");
         }
+        byte[] bytes = tuples.get(0);
+        convertBytesToFile(bytes, userName);
     }
 }

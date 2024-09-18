@@ -14,6 +14,6 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 //@NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Customer extends Users {
+public class Customer extends User {
 
 }

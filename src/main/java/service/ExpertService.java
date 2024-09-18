@@ -2,6 +2,8 @@ package service;
 
 import dto.RegisterExpertDto;
 
+
 public interface ExpertService {
-    void save(RegisterExpertDto expertDto);
+    void register(RegisterExpertDto expertDto);
+    void getPicture(String userName);
 }

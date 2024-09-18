@@ -1,12 +1,13 @@
 package dto;
 
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.Builder;
 
-import java.time.ZonedDateTime;
-
 @Builder
-public record RegisterExpertDto(
+public record RegisterCustomerDto(
         @NotBlank(message = "FirstName cannot be Blank")
         @Size(max = 30, message = "FirstName must be less than {max} characters")
         @Pattern(regexp = "^[a-zA-Z\\s]+$", message = "FirstName can only contain letters")
@@ -24,12 +25,7 @@ public record RegisterExpertDto(
         @NotBlank(message = "Password cannot be Blank")
         @Size(min = 8, max = 8, message = "Password must be exactly {max} characters long")
         @Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*\\d).+$", message = "Password must contain both letters and numbers")
-        String password,
-        /*@Min(value = 0, message = "the score not be less than {value}")
-        @Max(value = 5, message = "the score not be greater than {value}")
-        int score,*/
-
-        @NotBlank(message = "Picture Path cannot be Blank")
-        String picturePath
+        String password
 ) {
+
 }

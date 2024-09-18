@@ -1,5 +1,6 @@
 package util;
 
+import entity.Customer;
 import entity.Expert;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
@@ -8,7 +9,11 @@ import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
 import repository.BaseEntityRepository;
+import repository.ExpertRepository;
+import repository.Impl.CustomerRepositoryImpl;
 import repository.Impl.ExpertRepositoryImpl;
+import service.CustomerService;
+import service.Impl.CustomerServiceImpl;
 import service.Impl.ExpertServiceImp;
 import service.ExpertService;
 
@@ -16,19 +21,24 @@ public class ApplicationContext {
 
     private EntityManagerFactory enf;
     private EntityManager em;
-     ValidatorFactory validatorFactory;
+    ValidatorFactory validatorFactory;
     private Validator validator;
-//service
-private final ExpertService expertService;
+    //service
+    private final ExpertService expertService;
+    private final CustomerService customerService;
+
     public ApplicationContext() {
         this.em = getEntityManager();
         if (validatorFactory == null) {
             validatorFactory = Validation.buildDefaultValidatorFactory();
         }
+        //repository
         BaseEntityRepository<Expert> expertBaseEntityRepository = new ExpertRepositoryImpl(em);
-
+        ExpertRepository expertRepository = new ExpertRepositoryImpl(em);
+        BaseEntityRepository<Customer> customerBaseEntityRepository = new CustomerRepositoryImpl(em);
         //service
-         expertService = new ExpertServiceImp(expertBaseEntityRepository, getValidator());
+        expertService = new ExpertServiceImp(expertBaseEntityRepository, expertRepository, getValidator());
+        customerService = new CustomerServiceImpl(customerBaseEntityRepository, getValidator());
 
     }
 
@@ -73,5 +83,9 @@ private final ExpertService expertService;
 
     public ExpertService getExpertService() {
         return expertService;
+    }
+
+    public CustomerService getCustomerService() {
+        return customerService;
     }
 }
