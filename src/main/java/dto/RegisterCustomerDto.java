@@ -16,6 +16,14 @@ public record RegisterCustomerDto(
         @Size(max = 40, message = "LastName must be less than {max} characters")
         @Pattern(regexp = "^[a-zA-Z\\s]+$", message = "LastName can only contain letters")
         String lastName,
+        @NotBlank(message = "LastName cannot be Blank")
+        @Pattern(regexp="\\d{11}",message = "national code must be 11 number")
+        String mobileNumber,
+
+        @NotBlank(message = "National Code cannot be Blank")
+        @Pattern(regexp="\\d{10}",message = "national code must be 10 number")
+        String nationalCode,
+
         @NotBlank(message = "EmailAddress cannot be Blank")
         @Email(message = "EmailAddress must be a valid email address")
         String emailAddress,

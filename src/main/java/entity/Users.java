@@ -8,8 +8,10 @@ import lombok.experimental.SuperBuilder;
 
 import java.time.ZonedDateTime;
 
-@MappedSuperclass
-//@Inheritance(strategy = InheritanceType.JOINED)
+//@MappedSuperclass
+
+@Entity
+@Inheritance(strategy = InheritanceType.JOINED)
 
 @SuperBuilder
 
@@ -18,23 +20,30 @@ import java.time.ZonedDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class User extends BaseEntity {
+public class Users extends BaseEntity {
+
 
     private String firstName;
     private String lastName;
 
+    @Column(unique = true)
+    private String nationalCode;
+
+    @Column(unique = true)
+    private String mobileNumber;
+
     @Builder.Default
     private ZonedDateTime registerDateAndTime = ZonedDateTime.now();
 
+    @Column(unique = true)
     private String emailAddress;
+
+    @Column(unique = true)
     String userName;
     String password;
 
     @Enumerated(EnumType.ORDINAL)
     private Role role;
-
-   /* @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
-    Profile profile;*/
 
     @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     Credit credit;

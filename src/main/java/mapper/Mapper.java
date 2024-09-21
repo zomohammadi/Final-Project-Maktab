@@ -11,6 +11,8 @@ public class Mapper {
                 .firstName(dto.firstName())
                 .lastName(dto.lastName())
                 .emailAddress(dto.emailAddress())
+                .mobileNumber(dto.mobileNumber())
+                .nationalCode(dto.nationalCode())
                 .userName(dto.userName())
                 .password(dto.password())
                 //.score(dto.score())
@@ -39,6 +41,8 @@ public class Mapper {
     public static Customer convertCustomerDtoToEntity(RegisterCustomerDto customerDto) {
         return Customer.builder().firstName(customerDto.firstName()).lastName(customerDto.lastName())
                 .emailAddress(customerDto.emailAddress()).userName(customerDto.userName())
+                .mobileNumber(customerDto.mobileNumber())
+                .nationalCode(customerDto.nationalCode())
                 .password(customerDto.password()).build();
     }
 }

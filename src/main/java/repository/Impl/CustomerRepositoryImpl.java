@@ -4,7 +4,7 @@ import entity.Customer;
 import jakarta.persistence.EntityManager;
 import repository.CustomerRepository;
 
-public class CustomerRepositoryImpl extends BaseEntityRepositoryImpl<Customer > implements CustomerRepository {
+public class CustomerRepositoryImpl extends UserRepositoryImpl<Customer > implements CustomerRepository {
     public CustomerRepositoryImpl(EntityManager entityManager) {
         super(entityManager);
     }

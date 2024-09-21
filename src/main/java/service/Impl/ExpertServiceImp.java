@@ -1,15 +1,14 @@
 package service.Impl;
 
-import customeException.NotFoundException;
+import customeException.*;
 import dto.RegisterExpertDto;
 import entity.Credit;
 import entity.Expert;
 import enumaration.Role;
-import jakarta.persistence.Tuple;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
+import lombok.RequiredArgsConstructor;
 import mapper.Mapper;
-import repository.BaseEntityRepository;
 import repository.ExpertRepository;
 import service.ExpertService;
 
@@ -17,16 +16,13 @@ import java.io.*;
 import java.util.List;
 import java.util.Set;
 
+import static service.Impl.CheckInputInfoFromDB.checkInputInfoFromDB;
+
+@RequiredArgsConstructor
 public class ExpertServiceImp implements ExpertService {
-    private final BaseEntityRepository<Expert> expertBaseEntityRepository;
+    // private final BaseEntityRepository<Expert> expertBaseEntityRepository;
     private final ExpertRepository expertRepository;
     private final Validator validator;
-
-    public ExpertServiceImp(BaseEntityRepository<Expert> expertBaseEntityRepository, ExpertRepository expertRepository, Validator validator) {
-        this.expertBaseEntityRepository = expertBaseEntityRepository;
-        this.expertRepository = expertRepository;
-        this.validator = validator;
-    }
 
 
     // Method to check if the file is a JPG based on file extension
@@ -82,7 +78,6 @@ public class ExpertServiceImp implements ExpertService {
             if (!isJpgFileByContent(filePath)) {
                 throw new IllegalArgumentException("File is not a valid JPG format.");
             }
-            //throw new IllegalArgumentException("File is not a valid JPG format.");
         }
 
 
@@ -106,20 +101,29 @@ public class ExpertServiceImp implements ExpertService {
 
     @Override
     public void register(RegisterExpertDto expertDto) {
-        Set<ConstraintViolation<RegisterExpertDto>> violations = validator.validate(expertDto);
-        if (!violations.isEmpty()) {
-            for (ConstraintViolation<RegisterExpertDto> violation : violations) {
-                System.out.println("\u001B[31m" + violation.getMessage() + "\u001B[0m");
-            }
-            return;
-        }
+        if (isNotValid(expertDto)) return;
+        checkInputInfoFromDB("Expert", expertRepository.existUserByNationalCode(expertDto.nationalCode()),
+                expertRepository.existUserByMobileNumber(expertDto.mobileNumber()),
+                expertRepository.existUserByEmailAddress(expertDto.emailAddress()),
+                expertRepository.existUserByUserName(expertDto.userName()));
 
         Expert expert = Mapper.convertExpertDtoToEntity(expertDto);
         expert.setRole(Role.Expert);
         expert.setCredit(Credit.builder().build());
         expert.setPicture(processImageFile(expertDto.picturePath()));
-        expertBaseEntityRepository.save(expert);
+        expertRepository.save(expert);
 
+    }
+
+    private boolean isNotValid(RegisterExpertDto expertDto) {
+        Set<ConstraintViolation<RegisterExpertDto>> violations = validator.validate(expertDto);
+        if (!violations.isEmpty()) {
+            for (ConstraintViolation<RegisterExpertDto> violation : violations) {
+                System.out.println("\u001B[31m" + violation.getMessage() + "\u001B[0m");
+            }
+            return true;
+        }
+        return false;
     }
 
     private List<byte[]> getPictureByUserName(String userName) {

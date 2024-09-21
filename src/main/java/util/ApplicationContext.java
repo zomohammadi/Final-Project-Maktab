@@ -9,6 +9,7 @@ import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
 import repository.BaseEntityRepository;
+import repository.CustomerRepository;
 import repository.ExpertRepository;
 import repository.Impl.CustomerRepositoryImpl;
 import repository.Impl.ExpertRepositoryImpl;
@@ -33,12 +34,14 @@ public class ApplicationContext {
             validatorFactory = Validation.buildDefaultValidatorFactory();
         }
         //repository
-        BaseEntityRepository<Expert> expertBaseEntityRepository = new ExpertRepositoryImpl(em);
+        //BaseEntityRepository<Expert> expertBaseEntityRepository = new ExpertRepositoryImpl(em);
         ExpertRepository expertRepository = new ExpertRepositoryImpl(em);
-        BaseEntityRepository<Customer> customerBaseEntityRepository = new CustomerRepositoryImpl(em);
+        CustomerRepository customerRepository = new CustomerRepositoryImpl(em);
+        // BaseEntityRepository<Customer> customerBaseEntityRepository = new CustomerRepositoryImpl(em);
+
         //service
-        expertService = new ExpertServiceImp(expertBaseEntityRepository, expertRepository, getValidator());
-        customerService = new CustomerServiceImpl(customerBaseEntityRepository, getValidator());
+        expertService = new ExpertServiceImp(expertRepository, getValidator());
+        customerService = new CustomerServiceImpl(customerRepository, getValidator());
 
     }
 
