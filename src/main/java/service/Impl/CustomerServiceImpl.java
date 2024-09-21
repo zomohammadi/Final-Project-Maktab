@@ -13,7 +13,7 @@ import service.CustomerService;
 
 import java.util.Set;
 
-import static service.Impl.CheckInputInfoFromDB.checkInputInfoFromDB;
+import static service.Impl.CheckInputInfoFromDB.checkUserInfoFromDB;
 
 @RequiredArgsConstructor
 public class CustomerServiceImpl implements CustomerService {
@@ -24,7 +24,7 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public void register(RegisterCustomerDto customerDto) {
         if (isNotValid(customerDto)) return;
-        checkInputInfoFromDB("Customer", customerRepository.existUserByNationalCode(customerDto.nationalCode()),
+        checkUserInfoFromDB("Customer", customerRepository.existUserByNationalCode(customerDto.nationalCode()),
                 customerRepository.existUserByMobileNumber(customerDto.mobileNumber()),
                 customerRepository.existUserByEmailAddress(customerDto.emailAddress()),
                 customerRepository.existUserByUserName(customerDto.userName()));

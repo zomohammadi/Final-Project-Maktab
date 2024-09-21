@@ -13,10 +13,14 @@ import repository.CustomerRepository;
 import repository.ExpertRepository;
 import repository.Impl.CustomerRepositoryImpl;
 import repository.Impl.ExpertRepositoryImpl;
+import repository.Impl.WorkRepositoryImpl;
+import repository.WorkRepository;
 import service.CustomerService;
 import service.Impl.CustomerServiceImpl;
 import service.Impl.ExpertServiceImp;
 import service.ExpertService;
+import service.Impl.WorkServiceImpl;
+import service.WorkService;
 
 public class ApplicationContext {
 
@@ -27,6 +31,7 @@ public class ApplicationContext {
     //service
     private final ExpertService expertService;
     private final CustomerService customerService;
+    private final WorkService workService;
 
     public ApplicationContext() {
         this.em = getEntityManager();
@@ -38,11 +43,13 @@ public class ApplicationContext {
         ExpertRepository expertRepository = new ExpertRepositoryImpl(em);
         CustomerRepository customerRepository = new CustomerRepositoryImpl(em);
         // BaseEntityRepository<Customer> customerBaseEntityRepository = new CustomerRepositoryImpl(em);
+        WorkRepository workRepository = new WorkRepositoryImpl(em);
+
 
         //service
         expertService = new ExpertServiceImp(expertRepository, getValidator());
         customerService = new CustomerServiceImpl(customerRepository, getValidator());
-
+        workService = new WorkServiceImpl(workRepository, getValidator());
     }
 
     private static ApplicationContext applicationContext;
@@ -90,5 +97,9 @@ public class ApplicationContext {
 
     public CustomerService getCustomerService() {
         return customerService;
+    }
+
+    public WorkService getWorkService() {
+        return workService;
     }
 }

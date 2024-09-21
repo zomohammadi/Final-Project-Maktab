@@ -16,7 +16,7 @@ import java.io.*;
 import java.util.List;
 import java.util.Set;
 
-import static service.Impl.CheckInputInfoFromDB.checkInputInfoFromDB;
+import static service.Impl.CheckInputInfoFromDB.checkUserInfoFromDB;
 
 @RequiredArgsConstructor
 public class ExpertServiceImp implements ExpertService {
@@ -102,7 +102,7 @@ public class ExpertServiceImp implements ExpertService {
     @Override
     public void register(RegisterExpertDto expertDto) {
         if (isNotValid(expertDto)) return;
-        checkInputInfoFromDB("Expert", expertRepository.existUserByNationalCode(expertDto.nationalCode()),
+        checkUserInfoFromDB("Expert", expertRepository.existUserByNationalCode(expertDto.nationalCode()),
                 expertRepository.existUserByMobileNumber(expertDto.mobileNumber()),
                 expertRepository.existUserByEmailAddress(expertDto.emailAddress()),
                 expertRepository.existUserByUserName(expertDto.userName()));

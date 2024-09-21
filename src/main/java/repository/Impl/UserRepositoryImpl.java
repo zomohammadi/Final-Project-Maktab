@@ -17,7 +17,7 @@ public abstract class UserRepositoryImpl<T extends BaseEntity> extends BaseEntit
                                                                    "where u.nationalCode = ?1"
                 , Integer.class);
         query.setParameter(1, nationalCode);
-        return query.getResultList().isEmpty();
+        return !query.getResultList().isEmpty();
 
     }
 
@@ -28,7 +28,7 @@ public abstract class UserRepositoryImpl<T extends BaseEntity> extends BaseEntit
                                                                    "where u.mobileNumber = ?1"
                 , Integer.class);
         query.setParameter(1, mobileNumber);
-        return query.getResultList().isEmpty();
+        return !query.getResultList().isEmpty();
     }
 
     public boolean existUserByEmailAddress(String emailAddress) {
@@ -37,7 +37,7 @@ public abstract class UserRepositoryImpl<T extends BaseEntity> extends BaseEntit
                                                               """
                 , Integer.class);
         query.setParameter(1, emailAddress);
-        return query.getResultList().isEmpty();
+        return !query.getResultList().isEmpty();
     }
 
     public boolean existUserByUserName(String userName) {
@@ -46,6 +46,6 @@ public abstract class UserRepositoryImpl<T extends BaseEntity> extends BaseEntit
                                 """
                 , Integer.class);
         query.setParameter(1, userName);
-        return query.getResultList().isEmpty();
+        return !query.getResultList().isEmpty();
     }
 }

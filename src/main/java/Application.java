@@ -52,7 +52,7 @@ public class Application {
         }*/
 
         //----------------save customer
-        RegisterCustomerDto customerDto = RegisterCustomerDto.builder().firstName("ali")
+      /*  RegisterCustomerDto customerDto = RegisterCustomerDto.builder().firstName("ali")
                 .lastName("bayat").emailAddress("ali123@yahooo.com")
                 .mobileNumber("09197847753").nationalCode("0045265773")
                 .userName("ali123").password("aaaaaaa1").build();
@@ -61,9 +61,14 @@ public class Application {
             instance.getCustomerService().register(customerDto);
         } catch (FoundException e) {
             System.err.println(e.getMessage());
-        }
+        }*/
 
-        //----------------
+        //----------------save Work
+        try {
+            instance.getWorkService().register("Household appliances");
+        } catch (FoundException e) {
+            System.err.println(e.getMessage());
+        }
 
     }
 }

@@ -10,7 +10,7 @@ public class CustomerRepositoryImpl extends UserRepositoryImpl<Customer > implem
     }
 
     @Override
-    public Class<Customer > getEntityClass() {
+    public Class<Customer> getEntityClass() {
         return Customer.class;
     }
 
