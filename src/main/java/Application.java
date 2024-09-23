@@ -1,6 +1,6 @@
 import customeException.*;
 import dto.RegisterCustomerDto;
-import dto.RegisterExpertDto;
+import dto.RegisterSubWorkDto;
 import util.ApplicationContext;
 
 public class Application {
@@ -64,11 +64,32 @@ public class Application {
         }*/
 
         //----------------save Work
-        try {
-            instance.getWorkService().register("Household appliances");
+       /* try {
+            instance.getAdminService().workRegister("Household appliances");
         } catch (FoundException e) {
             System.err.println(e.getMessage());
-        }
+        }*/
 
+        //---------------save SubWork
+
+     /*   RegisterSubWorkDto subWorkDto = RegisterSubWorkDto.builder()
+                .name("Kitchen gas").description("123 ").BasePrice(1000000.0)
+                .workId(1l)
+                .build();
+
+        try {
+            instance.getAdminService().subWorkRegister(subWorkDto);
+        } catch (FoundException | NotFoundException e) {
+            System.err.println(e.getMessage());
+        }*/
+
+        //----------------find Work
+
+        /*instance.getAdminService().findAllWork().forEach(System.out::println);*/
+
+        //----------------find subWork
+
+        /*instance.getAdminService().findAllSubWork().forEach(System.out::println);*/
+        //----------------
     }
 }

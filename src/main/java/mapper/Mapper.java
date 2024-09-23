@@ -2,8 +2,12 @@ package mapper;
 
 import dto.RegisterCustomerDto;
 import dto.RegisterExpertDto;
+import dto.RegisterSubWorkDto;
+import dto.ResponceSubWorkDto;
 import entity.Customer;
 import entity.Expert;
+import entity.SubWork;
+import entity.Work;
 
 public class Mapper {
     public static Expert convertExpertDtoToEntity(RegisterExpertDto dto) {
@@ -44,5 +48,24 @@ public class Mapper {
                 .mobileNumber(customerDto.mobileNumber())
                 .nationalCode(customerDto.nationalCode())
                 .password(customerDto.password()).build();
+    }
+
+    public static SubWork convertSubWorkDtoToEntity(RegisterSubWorkDto subWorkDto, Work work) {
+        return SubWork.builder()
+                .name(subWorkDto.name())
+                .description(subWorkDto.description())
+                .BasePrice(subWorkDto.BasePrice())
+                .work(work)
+                .build();
+    }
+
+    public static ResponceSubWorkDto convertSubWorkToDto(SubWork subWork) {
+        return ResponceSubWorkDto.builder()
+                .name(subWork.getName())
+                .description(subWork.getDescription())
+                .BasePrice(subWork.getBasePrice())
+                .workName(subWork.getWork().getName())
+                .build();
+
     }
 }

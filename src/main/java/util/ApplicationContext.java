@@ -1,26 +1,25 @@
 package util;
 
-import entity.Customer;
-import entity.Expert;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
-import repository.BaseEntityRepository;
 import repository.CustomerRepository;
 import repository.ExpertRepository;
 import repository.Impl.CustomerRepositoryImpl;
 import repository.Impl.ExpertRepositoryImpl;
+import repository.Impl.SubWorkRepositoryImpl;
 import repository.Impl.WorkRepositoryImpl;
+import repository.SubWorkRepository;
 import repository.WorkRepository;
 import service.CustomerService;
 import service.Impl.CustomerServiceImpl;
 import service.Impl.ExpertServiceImp;
 import service.ExpertService;
-import service.Impl.WorkServiceImpl;
-import service.WorkService;
+import service.Impl.AdminServiceImpl;
+import service.AdminService;
 
 public class ApplicationContext {
 
@@ -31,7 +30,7 @@ public class ApplicationContext {
     //service
     private final ExpertService expertService;
     private final CustomerService customerService;
-    private final WorkService workService;
+    private final AdminService adminService;
 
     public ApplicationContext() {
         this.em = getEntityManager();
@@ -44,12 +43,13 @@ public class ApplicationContext {
         CustomerRepository customerRepository = new CustomerRepositoryImpl(em);
         // BaseEntityRepository<Customer> customerBaseEntityRepository = new CustomerRepositoryImpl(em);
         WorkRepository workRepository = new WorkRepositoryImpl(em);
+        SubWorkRepository subWorkRepository = new SubWorkRepositoryImpl(em);
 
 
         //service
         expertService = new ExpertServiceImp(expertRepository, getValidator());
         customerService = new CustomerServiceImpl(customerRepository, getValidator());
-        workService = new WorkServiceImpl(workRepository, getValidator());
+        adminService = new AdminServiceImpl(workRepository, subWorkRepository, getValidator());
     }
 
     private static ApplicationContext applicationContext;
@@ -99,7 +99,7 @@ public class ApplicationContext {
         return customerService;
     }
 
-    public WorkService getWorkService() {
-        return workService;
+    public AdminService getAdminService() {
+        return adminService;
     }
 }

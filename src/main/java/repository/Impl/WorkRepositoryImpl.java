@@ -13,7 +13,7 @@ public class WorkRepositoryImpl extends BaseEntityRepositoryImpl<Work> implement
 
     @Override
     public Class<Work> getEntityClass() {
-        return null;
+        return Work.class;
     }
 
     @Override

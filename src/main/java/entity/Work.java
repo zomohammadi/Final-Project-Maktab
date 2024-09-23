@@ -22,7 +22,8 @@ public class Work extends BaseEntity {
 
     @Column(unique = true)
     @NotBlank(message = "Work Name cannot be Blank")
-    @Size(min = 3,max = 30, message = "Work Name must be less than {max} characters")
+    @Size(min = 3,max = 30, message = "Work Name must be less than {max} characters"+
+                                      "and greater Than {min} characters")
     @Pattern(regexp = "^[a-zA-Z\\s]+$", message = "Work Name can only contain letters")
     private String name;
 }
