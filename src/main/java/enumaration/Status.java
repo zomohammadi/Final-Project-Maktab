@@ -1,7 +1,7 @@
 package enumaration;
 
 public enum Status {
-    New,
-    PendingConfirmation,
-    Confirmed
+    NEW,
+    PENDING_CONFIRMATION,
+    CONFIRMED
 }

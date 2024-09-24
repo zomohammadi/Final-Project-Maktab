@@ -10,4 +10,6 @@ public interface BaseEntityRepository<T extends BaseEntity> {
     T findById(Long id);
 
     List<T> findAll();
+
+    void update(T t);
 }

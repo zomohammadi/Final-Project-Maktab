@@ -1,6 +1,6 @@
 package service.Impl;
 
-import customeException.*;
+import customeException.NotFoundException;
 import dto.RegisterExpertDto;
 import entity.Credit;
 import entity.Expert;
@@ -38,7 +38,7 @@ public class ExpertServiceImp implements ExpertService {
 
     // Method to check if the file is a JPG by checking its content (magic number check)
     private boolean isJpgFileByContent(String filePath) {
-        try (FileInputStream fis = new FileInputStream(new File(filePath))) {
+        try (FileInputStream fis = new FileInputStream(filePath)) {
             byte[] header = new byte[3];
             if (fis.read(header) != 3) {
                 return false;
@@ -101,11 +101,8 @@ public class ExpertServiceImp implements ExpertService {
 
     @Override
     public void register(RegisterExpertDto expertDto) {
-        if (isNotValid(expertDto)) return;
-        checkUserInfoFromDB("Expert", expertRepository.existUserByNationalCode(expertDto.nationalCode()),
-                expertRepository.existUserByMobileNumber(expertDto.mobileNumber()),
-                expertRepository.existUserByEmailAddress(expertDto.emailAddress()),
-                expertRepository.existUserByUserName(expertDto.userName()));
+
+        if (checkInputIsNotValid(expertDto)) return;
 
         Expert expert = Mapper.convertExpertDtoToEntity(expertDto);
         expert.setRole(Role.Expert);
@@ -115,16 +112,26 @@ public class ExpertServiceImp implements ExpertService {
 
     }
 
-    private boolean isNotValid(RegisterExpertDto expertDto) {
+    private boolean checkInputIsNotValid(RegisterExpertDto expertDto) {
         Set<ConstraintViolation<RegisterExpertDto>> violations = validator.validate(expertDto);
-        if (!violations.isEmpty()) {
+        Set<String> experts = checkUserInfoFromDB("Expert",
+                expertRepository.existUserByNationalCode(expertDto.nationalCode()),
+                expertRepository.existUserByMobileNumber(expertDto.mobileNumber()),
+                expertRepository.existUserByEmailAddress(expertDto.emailAddress()),
+                expertRepository.existUserByUserName(expertDto.userName()));
+        if (!violations.isEmpty() || !experts.isEmpty()) {
             for (ConstraintViolation<RegisterExpertDto> violation : violations) {
                 System.out.println("\u001B[31m" + violation.getMessage() + "\u001B[0m");
+            }
+            if (!experts.isEmpty()) {
+                for (String s : experts)
+                    System.out.println("\u001B[31m" + s + "\u001B[0m");
             }
             return true;
         }
         return false;
     }
+
 
     private List<byte[]> getPictureByUserName(String userName) {
         return expertRepository.getPictureByUserName(userName);

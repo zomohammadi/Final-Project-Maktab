@@ -1,5 +1,4 @@
-import customeException.*;
-import dto.RegisterCustomerDto;
+import customeException.NotFoundException;
 import dto.RegisterSubWorkDto;
 import util.ApplicationContext;
 
@@ -8,22 +7,14 @@ public class Application {
         ApplicationContext instance = ApplicationContext.getInstance();
 
         //----------------save Expert
-      /*  RegisterExpertDto specialistDto = RegisterExpertDto.builder().firstName("zohreh")
+        /*RegisterExpertDto specialistDto = RegisterExpertDto.builder().firstName("zohreh")
                 .lastName("Mohammadi").emailAddress("zo.mohammadi@gmail.com")
                 .mobileNumber("09197847756").nationalCode("0045265772")
                 .userName("zo.mohammadi")
                 .password("zo123456").picturePath("D:\\Java\\picture\\pic.jpg").build();
 
-        try {
-            instance.getExpertService().register(specialistDto);
-        } catch (FoundException e) {
-            System.err.println(e.getMessage());
-        }*/
+            instance.getExpertService().register(specialistDto);*/
 
-//        } catch (FoundEmailAddressException | FoundMobileNumberException |
-//                 FoundNationalCodeException | FoundUserNameException e) {
-//            System.err.println(e.getMessage());
-//        }
         // ----save another user with duplicate national code
 
       /*  RegisterExpertDto specialistDto2 = RegisterExpertDto.builder().firstName("sara")
@@ -31,11 +22,9 @@ public class Application {
                 .mobileNumber("09197847756").nationalCode("0045265773")
                 .userName("zo.mohammadi")//.userName("s.bayat")
                 .password("zo123456").picturePath("D:\\Java\\picture\\pic.jpg").build();
-        try {
+
             instance.getExpertService().register(specialistDto2);
-        } catch (FoundException e) {
-            System.err.println(e.getMessage());
-        }*/
+
 
 
 //        } catch (FoundEmailAddressException | FoundMobileNumberException |
@@ -52,36 +41,40 @@ public class Application {
         }*/
 
         //----------------save customer
-      /*  RegisterCustomerDto customerDto = RegisterCustomerDto.builder().firstName("ali")
-                .lastName("bayat").emailAddress("ali123@yahooo.com")
-                .mobileNumber("09197847753").nationalCode("0045265773")
-                .userName("ali123").password("aaaaaaa1").build();
+        /*RegisterCustomerDto customerDto = RegisterCustomerDto.builder().firstName("ali")
+                .lastName("bayati").emailAddress("ali123@123.com")
+                .mobileNumber("09197847756").nationalCode("0045265770")
+                .userName("ali111").password("aaaaaaa1").build();
 
-        try {
-            instance.getCustomerService().register(customerDto);
-        } catch (FoundException e) {
-            System.err.println(e.getMessage());
-        }*/
+        instance.getCustomerService().register(customerDto);*/
+
 
         //----------------save Work
-       /* try {
-            instance.getAdminService().workRegister("Household appliances");
-        } catch (FoundException e) {
-            System.err.println(e.getMessage());
-        }*/
+        /*instance.getAdminService().workRegister("Household appliances");*/
 
         //---------------save SubWork
 
-     /*   RegisterSubWorkDto subWorkDto = RegisterSubWorkDto.builder()
-                .name("Kitchen gas").description("123 ").BasePrice(1000000.0)
+        RegisterSubWorkDto subWorkDto1 = RegisterSubWorkDto.builder()
+                .name("Kitchen gaz").description("123 ").BasePrice(2000000.0)
+                .workId(1l)
+                .build();
+
+        try {
+            instance.getAdminService().subWorkRegister(subWorkDto1);
+        } catch (NotFoundException e) {
+            System.err.println(e.getMessage());
+        }
+        //another sub service
+        RegisterSubWorkDto subWorkDto = RegisterSubWorkDto.builder()
+                .name("Kitchen Microwave").description("model 2024 ").BasePrice(2000000.0)
                 .workId(1l)
                 .build();
 
         try {
             instance.getAdminService().subWorkRegister(subWorkDto);
-        } catch (FoundException | NotFoundException e) {
+        } catch (NotFoundException e) {
             System.err.println(e.getMessage());
-        }*/
+        }
 
         //----------------find Work
 
@@ -90,6 +83,29 @@ public class Application {
         //----------------find subWork
 
         /*instance.getAdminService().findAllSubWork().forEach(System.out::println);*/
-        //----------------
+
+        //----------------admin --> تغییر وضعیت متخصص از وضعیت جدید به تایید شده
+
+/*
+        instance.getAdminService().changeExpertStatus(1l,"Confirmed");
+*/
+
+        //----------------admin --> اضافه کردن متخصص تایید شده به زیرخدمت
+        /* instance.getAdminService().addSubWorkToExpert(1l, 1l);*/
+
+        /*instance.getAdminService().addSubWorkToExpert(1l, 2l);*/
+
+        //---------------admin --> حذف  کردن متخصص از زیرخدمت
+
+        /*instance.getAdminService().deleteSubWorkFromExpert(1l, 1l);*/
+
+        //
+
+
     }
 }
+
+//        } catch (FoundEmailAddressException | FoundMobileNumberException |
+//                 FoundNationalCodeException | FoundUserNameException e) {
+//            System.err.println(e.getMessage());
+//        }

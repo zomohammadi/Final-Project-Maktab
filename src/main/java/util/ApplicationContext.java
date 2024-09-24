@@ -49,7 +49,7 @@ public class ApplicationContext {
         //service
         expertService = new ExpertServiceImp(expertRepository, getValidator());
         customerService = new CustomerServiceImpl(customerRepository, getValidator());
-        adminService = new AdminServiceImpl(workRepository, subWorkRepository, getValidator());
+        adminService = new AdminServiceImpl(workRepository, subWorkRepository,expertRepository ,getValidator());
     }
 
     private static ApplicationContext applicationContext;

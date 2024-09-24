@@ -12,4 +12,7 @@ public interface AdminService {
     void subWorkRegister(RegisterSubWorkDto subWorkDto);
     List<String> findAllWork();
     List<ResponceSubWorkDto> findAllSubWork();
+    void addSubWorkToExpert(Long expertId, Long subWorkId);
+    void deleteSubWorkFromExpert(Long expertId, Long subWorkId);
+    void changeExpertStatus(Long expertId, String status);
 }

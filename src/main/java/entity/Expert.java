@@ -28,7 +28,7 @@ public class Expert extends Users {
     private Set<SubWork> subWorks;
 
     @Builder.Default
-    private Status status = Status.New;
+    private Status status = Status.NEW;
 
     private int score;
 }
