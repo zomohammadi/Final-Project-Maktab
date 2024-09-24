@@ -1,6 +1,7 @@
 package entity;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.OneToOne;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
@@ -17,4 +18,7 @@ import lombok.experimental.SuperBuilder;
 public class Feedback extends BaseEntity {
 
     private String comment;
+
+    @OneToOne
+    Orders order;
 }

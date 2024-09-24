@@ -1,6 +1,7 @@
 package entity;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToOne;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
@@ -26,4 +27,9 @@ public class Suggestion extends BaseEntity {
     private ZonedDateTime suggestedTimeStartWork;
     String durationOfWork;
 
+    @ManyToOne
+    Expert expert;
+
+    @ManyToOne
+    Orders order;
 }

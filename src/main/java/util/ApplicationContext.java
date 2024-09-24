@@ -14,12 +14,8 @@ import repository.Impl.SubWorkRepositoryImpl;
 import repository.Impl.WorkRepositoryImpl;
 import repository.SubWorkRepository;
 import repository.WorkRepository;
-import service.CustomerService;
-import service.Impl.CustomerServiceImpl;
-import service.Impl.ExpertServiceImp;
-import service.ExpertService;
-import service.Impl.AdminServiceImpl;
-import service.AdminService;
+import service.*;
+import service.Impl.*;
 
 public class ApplicationContext {
 
@@ -31,6 +27,8 @@ public class ApplicationContext {
     private final ExpertService expertService;
     private final CustomerService customerService;
     private final AdminService adminService;
+    private final ServiceOperation serviceOperation;
+    private final SubServiceOperation subServiceOperation;
 
     public ApplicationContext() {
         this.em = getEntityManager();
@@ -49,7 +47,9 @@ public class ApplicationContext {
         //service
         expertService = new ExpertServiceImp(expertRepository, getValidator());
         customerService = new CustomerServiceImpl(customerRepository, getValidator());
-        adminService = new AdminServiceImpl(workRepository, subWorkRepository,expertRepository ,getValidator());
+        adminService = new AdminServiceImpl(subWorkRepository, expertRepository);
+        serviceOperation = new ServiceOperationImpl(workRepository, getValidator());
+        subServiceOperation = new SubServiceOperationImpl(workRepository, subWorkRepository, getValidator());
     }
 
     private static ApplicationContext applicationContext;
@@ -101,5 +101,13 @@ public class ApplicationContext {
 
     public AdminService getAdminService() {
         return adminService;
+    }
+
+    public ServiceOperation getServiceOperation() {
+        return serviceOperation;
+    }
+
+    public SubServiceOperation getSubServiceOperation() {
+        return subServiceOperation;
     }
 }

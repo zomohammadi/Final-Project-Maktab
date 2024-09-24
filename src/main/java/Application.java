@@ -50,17 +50,17 @@ public class Application {
 
 
         //----------------save Work
-        /*instance.getAdminService().workRegister("Household appliances");*/
+       /* instance.getServiceOperation().workRegister("Household appliances");*/
 
         //---------------save SubWork
 
-        RegisterSubWorkDto subWorkDto1 = RegisterSubWorkDto.builder()
-                .name("Kitchen gaz").description("123 ").BasePrice(2000000.0)
+       /* RegisterSubWorkDto subWorkDto1 = RegisterSubWorkDto.builder()
+                .name("Kitchen gaس").description("123 ").BasePrice(2000000.0)
                 .workId(1l)
                 .build();
 
         try {
-            instance.getAdminService().subWorkRegister(subWorkDto1);
+            instance.getSubServiceOperation().subWorkRegister(subWorkDto1);
         } catch (NotFoundException e) {
             System.err.println(e.getMessage());
         }
@@ -71,35 +71,33 @@ public class Application {
                 .build();
 
         try {
-            instance.getAdminService().subWorkRegister(subWorkDto);
+            instance.getSubServiceOperation().subWorkRegister(subWorkDto);
         } catch (NotFoundException e) {
             System.err.println(e.getMessage());
-        }
+        }*/
 
-        //----------------find Work
+        //----------------find service نمایش تمام خدمت ها
 
-        /*instance.getAdminService().findAllWork().forEach(System.out::println);*/
+       /* instance.getServiceOperation().findAllWork().forEach(System.out::println);*/
 
-        //----------------find subWork
+        //----------------find subWork  نمایش تمام زیرخدمت ها
 
-        /*instance.getAdminService().findAllSubWork().forEach(System.out::println);*/
+        /*instance.getSubServiceOperation().findAllSubWork().forEach(System.out::println);*/
 
         //----------------admin --> تغییر وضعیت متخصص از وضعیت جدید به تایید شده
 
-/*
-        instance.getAdminService().changeExpertStatus(1l,"Confirmed");
-*/
+        /*instance.getExpertService().changeExpertStatus(1l,"Confirmed");*/
 
         //----------------admin --> اضافه کردن متخصص تایید شده به زیرخدمت
-        /* instance.getAdminService().addSubWorkToExpert(1l, 1l);*/
+      /*   instance.getAdminService().addSubWorkToExpert(1l, 1l);
 
-        /*instance.getAdminService().addSubWorkToExpert(1l, 2l);*/
+        instance.getAdminService().addSubWorkToExpert(1l, 2l);*/
 
         //---------------admin --> حذف  کردن متخصص از زیرخدمت
 
-        /*instance.getAdminService().deleteSubWorkFromExpert(1l, 1l);*/
+      //  instance.getAdminService().deleteSubWorkFromExpert(1l, 1l);
 
-        //
+        //-----------order
 
 
     }

@@ -5,6 +5,7 @@ import dto.RegisterExpertDto;
 import entity.Credit;
 import entity.Expert;
 import enumaration.Role;
+import enumaration.Status;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +21,6 @@ import static service.Impl.CheckInputInfoFromDB.checkUserInfoFromDB;
 
 @RequiredArgsConstructor
 public class ExpertServiceImp implements ExpertService {
-    // private final BaseEntityRepository<Expert> expertBaseEntityRepository;
     private final ExpertRepository expertRepository;
     private final Validator validator;
 
@@ -145,5 +145,32 @@ public class ExpertServiceImp implements ExpertService {
         }
         byte[] bytes = tuples.get(0);
         convertBytesToFile(bytes, userName);
+    }
+
+    @Override
+    public void changeExpertStatus(Long expertId, String status) {
+
+        if (status.equalsIgnoreCase(String.valueOf(Status.NEW))
+            || status.equalsIgnoreCase(String.valueOf(Status.CONFIRMED)) ||
+            status.equalsIgnoreCase(String.valueOf(Status.PENDING_CONFIRMATION))) {
+            Expert expert = expertRepository.findById(expertId);
+            if (expert != null) {
+                status = status.toLowerCase();
+                String enumStatus = String.valueOf(expert.getStatus());
+                if (!status.equalsIgnoreCase(enumStatus)) {
+                    changeStatusOperation(status, expert);
+                }
+            } else {
+                System.err.println("no Expert Found");
+            }
+        } else {
+            System.err.println("enter the valid status");
+        }
+    }
+
+    private void changeStatusOperation(String status, Expert expert) {
+        expert.setStatus(Status.valueOf(status.toUpperCase()));
+        expertRepository.update(expert);
+        System.out.println("done");
     }
 }
