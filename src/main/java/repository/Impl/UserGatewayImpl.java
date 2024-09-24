@@ -3,10 +3,10 @@ package repository.Impl;
 import entity.BaseEntity;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
-import repository.UserRepository;
+import repository.UserGateway;
 
-public abstract class UserRepositoryImpl<T extends BaseEntity> extends BaseEntityRepositoryImpl<T> implements UserRepository<T> {
-    public UserRepositoryImpl(EntityManager entityManager) {
+public abstract class UserGatewayImpl<T extends BaseEntity> extends BaseEntityGatewayImpl<T> implements UserGateway<T> {
+    public UserGatewayImpl(EntityManager entityManager) {
         super(entityManager);
     }
 

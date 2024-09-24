@@ -24,8 +24,8 @@ public class Suggestion extends BaseEntity {
     @Builder.Default
     private ZonedDateTime suggestedDateAndTime = ZonedDateTime.now();
 
-    private ZonedDateTime suggestedTimeStartWork;
-    String durationOfWork;
+    private ZonedDateTime suggestedTimeStartService;
+    String durationOfService;
 
     @ManyToOne
     Expert expert;

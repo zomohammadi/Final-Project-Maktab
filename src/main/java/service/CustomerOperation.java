@@ -1,8 +1,7 @@
 package service;
 
 import dto.RegisterCustomerDto;
-import entity.Customer;
 
-public interface CustomerService {
+public interface CustomerOperation {
     void register(RegisterCustomerDto customerDto);
 }

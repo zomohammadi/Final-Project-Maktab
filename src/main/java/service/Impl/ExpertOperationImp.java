@@ -10,18 +10,18 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 import lombok.RequiredArgsConstructor;
 import mapper.Mapper;
-import repository.ExpertRepository;
-import service.ExpertService;
+import repository.ExpertGateway;
+import service.ExpertOperation;
 
 import java.io.*;
 import java.util.List;
 import java.util.Set;
 
-import static service.Impl.CheckInputInfoFromDB.checkUserInfoFromDB;
+import static service.Impl.CheckInputFromDBOperation.checkUserInfoFromDB;
 
 @RequiredArgsConstructor
-public class ExpertServiceImp implements ExpertService {
-    private final ExpertRepository expertRepository;
+public class ExpertOperationImp implements ExpertOperation {
+    private final ExpertGateway expertGateway;
     private final Validator validator;
 
 
@@ -108,17 +108,18 @@ public class ExpertServiceImp implements ExpertService {
         expert.setRole(Role.Expert);
         expert.setCredit(Credit.builder().build());
         expert.setPicture(processImageFile(expertDto.picturePath()));
-        expertRepository.save(expert);
+        expertGateway.save(expert);
+        System.out.println("expert register done");
 
     }
 
     private boolean checkInputIsNotValid(RegisterExpertDto expertDto) {
         Set<ConstraintViolation<RegisterExpertDto>> violations = validator.validate(expertDto);
         Set<String> experts = checkUserInfoFromDB("Expert",
-                expertRepository.existUserByNationalCode(expertDto.nationalCode()),
-                expertRepository.existUserByMobileNumber(expertDto.mobileNumber()),
-                expertRepository.existUserByEmailAddress(expertDto.emailAddress()),
-                expertRepository.existUserByUserName(expertDto.userName()));
+                expertGateway.existUserByNationalCode(expertDto.nationalCode()),
+                expertGateway.existUserByMobileNumber(expertDto.mobileNumber()),
+                expertGateway.existUserByEmailAddress(expertDto.emailAddress()),
+                expertGateway.existUserByUserName(expertDto.userName()));
         if (!violations.isEmpty() || !experts.isEmpty()) {
             for (ConstraintViolation<RegisterExpertDto> violation : violations) {
                 System.out.println("\u001B[31m" + violation.getMessage() + "\u001B[0m");
@@ -134,7 +135,7 @@ public class ExpertServiceImp implements ExpertService {
 
 
     private List<byte[]> getPictureByUserName(String userName) {
-        return expertRepository.getPictureByUserName(userName);
+        return expertGateway.getPictureByUserName(userName);
     }
 
     @Override
@@ -153,7 +154,7 @@ public class ExpertServiceImp implements ExpertService {
         if (status.equalsIgnoreCase(String.valueOf(Status.NEW))
             || status.equalsIgnoreCase(String.valueOf(Status.CONFIRMED)) ||
             status.equalsIgnoreCase(String.valueOf(Status.PENDING_CONFIRMATION))) {
-            Expert expert = expertRepository.findById(expertId);
+            Expert expert = expertGateway.findById(expertId);
             if (expert != null) {
                 status = status.toLowerCase();
                 String enumStatus = String.valueOf(expert.getStatus());
@@ -170,7 +171,7 @@ public class ExpertServiceImp implements ExpertService {
 
     private void changeStatusOperation(String status, Expert expert) {
         expert.setStatus(Status.valueOf(status.toUpperCase()));
-        expertRepository.update(expert);
-        System.out.println("done");
+        expertGateway.update(expert);
+        System.out.println("change Status Operation done");
     }
 }

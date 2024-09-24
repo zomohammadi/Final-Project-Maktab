@@ -8,16 +8,16 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 import lombok.RequiredArgsConstructor;
 import mapper.Mapper;
-import repository.CustomerRepository;
-import service.CustomerService;
+import repository.CustomerGateway;
+import service.CustomerOperation;
 
 import java.util.Set;
 
-import static service.Impl.CheckInputInfoFromDB.checkUserInfoFromDB;
+import static service.Impl.CheckInputFromDBOperation.checkUserInfoFromDB;
 
 @RequiredArgsConstructor
-public class CustomerServiceImpl implements CustomerService {
-    private final CustomerRepository customerRepository;
+public class CustomerOperationImpl implements CustomerOperation {
+    private final CustomerGateway customerRepository;
     private final Validator validator;
 
 
@@ -30,6 +30,7 @@ public class CustomerServiceImpl implements CustomerService {
         customer.setCredit(Credit.builder().build());
 
         customerRepository.save(customer);
+        System.out.println("customer register done");
 
     }
 

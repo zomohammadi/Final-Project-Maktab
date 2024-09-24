@@ -6,14 +6,14 @@ import jakarta.persistence.Persistence;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
-import repository.CustomerRepository;
-import repository.ExpertRepository;
-import repository.Impl.CustomerRepositoryImpl;
-import repository.Impl.ExpertRepositoryImpl;
-import repository.Impl.SubWorkRepositoryImpl;
-import repository.Impl.WorkRepositoryImpl;
-import repository.SubWorkRepository;
-import repository.WorkRepository;
+import repository.CustomerGateway;
+import repository.ExpertGateway;
+import repository.Impl.CustomerGatewayImpl;
+import repository.Impl.ExpertGatewayImpl;
+import repository.Impl.SubServiceGatewayImpl;
+import repository.Impl.ServiceGatewayImpl;
+import repository.SubServiceGateway;
+import repository.ServiceGateway;
 import service.*;
 import service.Impl.*;
 
@@ -24,9 +24,9 @@ public class ApplicationContext {
     ValidatorFactory validatorFactory;
     private Validator validator;
     //service
-    private final ExpertService expertService;
-    private final CustomerService customerService;
-    private final AdminService adminService;
+    private final ExpertOperation expertOperation;
+    private final CustomerOperation customerOperation;
+    private final AdminOperation adminOperation;
     private final ServiceOperation serviceOperation;
     private final SubServiceOperation subServiceOperation;
 
@@ -36,20 +36,18 @@ public class ApplicationContext {
             validatorFactory = Validation.buildDefaultValidatorFactory();
         }
         //repository
-        //BaseEntityRepository<Expert> expertBaseEntityRepository = new ExpertRepositoryImpl(em);
-        ExpertRepository expertRepository = new ExpertRepositoryImpl(em);
-        CustomerRepository customerRepository = new CustomerRepositoryImpl(em);
-        // BaseEntityRepository<Customer> customerBaseEntityRepository = new CustomerRepositoryImpl(em);
-        WorkRepository workRepository = new WorkRepositoryImpl(em);
-        SubWorkRepository subWorkRepository = new SubWorkRepositoryImpl(em);
+        ExpertGateway expertGateway = new ExpertGatewayImpl(em);
+        CustomerGateway customerGateway = new CustomerGatewayImpl(em);
+        ServiceGateway serviceGateway = new ServiceGatewayImpl(em);
+        SubServiceGateway subServiceGateway = new SubServiceGatewayImpl(em);
 
 
         //service
-        expertService = new ExpertServiceImp(expertRepository, getValidator());
-        customerService = new CustomerServiceImpl(customerRepository, getValidator());
-        adminService = new AdminServiceImpl(subWorkRepository, expertRepository);
-        serviceOperation = new ServiceOperationImpl(workRepository, getValidator());
-        subServiceOperation = new SubServiceOperationImpl(workRepository, subWorkRepository, getValidator());
+        expertOperation = new ExpertOperationImp(expertGateway, getValidator());
+        customerOperation = new CustomerOperationImpl(customerGateway, getValidator());
+        adminOperation = new AdminOperationImpl(subServiceGateway, expertGateway);
+        serviceOperation = new ServiceOperationImpl(serviceGateway, getValidator());
+        subServiceOperation = new SubServiceOperationImpl(serviceGateway, subServiceGateway, getValidator());
     }
 
     private static ApplicationContext applicationContext;
@@ -91,16 +89,16 @@ public class ApplicationContext {
     }
     //getter
 
-    public ExpertService getExpertService() {
-        return expertService;
+    public ExpertOperation getExpertOperation() {
+        return expertOperation;
     }
 
-    public CustomerService getCustomerService() {
-        return customerService;
+    public CustomerOperation getCustomerOperation() {
+        return customerOperation;
     }
 
-    public AdminService getAdminService() {
-        return adminService;
+    public AdminOperation getAdminOperation() {
+        return adminOperation;
     }
 
     public ServiceOperation getServiceOperation() {

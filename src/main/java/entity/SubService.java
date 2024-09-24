@@ -11,7 +11,10 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 
@@ -22,19 +25,19 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class SubWork extends BaseEntity {
+public class SubService extends BaseEntity {
 
-    @ManyToMany(mappedBy = "subWorks")
-    private List<Expert> experts;
+    @ManyToMany(mappedBy = "subServices")
+    private Set<Expert> experts = new HashSet<>();
 
     @ManyToOne
-    private Work work;
+    private Service service;
 
     @Column(unique = true)
-    @NotBlank(message = "SubWork Name cannot be Blank")
-    @Size(min = 3, max = 30, message = "SubWork Name must be less than {max} characters" +
+    @NotBlank(message = "SubService Name cannot be Blank")
+    @Size(min = 3, max = 30, message = "SubService Name must be less than {max} characters" +
                                        "and greater Than {min} characters")
-    @Pattern(regexp = "^[a-zA-Z\\s]+$", message = "SubWork Name can only contain letters")
+    @Pattern(regexp = "^[a-zA-Z\\s]+$", message = "SubService Name can only contain letters")
     private String name;
 
     private String description;

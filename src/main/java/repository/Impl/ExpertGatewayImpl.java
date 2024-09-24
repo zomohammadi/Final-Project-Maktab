@@ -3,12 +3,12 @@ package repository.Impl;
 import entity.Expert;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
-import repository.ExpertRepository;
+import repository.ExpertGateway;
 
 import java.util.List;
 
-public class ExpertRepositoryImpl extends UserRepositoryImpl<Expert> implements ExpertRepository {
-    public ExpertRepositoryImpl(EntityManager entityManager) {
+public class ExpertGatewayImpl extends UserGatewayImpl<Expert> implements ExpertGateway {
+    public ExpertGatewayImpl(EntityManager entityManager) {
         super(entityManager);
     }
 

@@ -1,51 +1,51 @@
 package service.Impl;
 
-import dto.RegisterSubWorkDto;
-import dto.ResponceSubWorkDto;
-import entity.SubWork;
-import entity.Work;
+import dto.RegisterSubServiceDto;
+import dto.ResponceSubServiceDto;
+import entity.SubService;
+import entity.Service;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 import lombok.RequiredArgsConstructor;
 import mapper.Mapper;
-import repository.SubWorkRepository;
-import repository.WorkRepository;
+import repository.SubServiceGateway;
+import repository.ServiceGateway;
 import service.SubServiceOperation;
 
 import java.util.List;
 import java.util.Set;
 @RequiredArgsConstructor
 public class SubServiceOperationImpl implements SubServiceOperation {
-    private final WorkRepository workRepository;
-    private final SubWorkRepository subWorkRepository;
+    private final ServiceGateway serviceGateway;
+    private final SubServiceGateway subServiceGateway;
     private final Validator validator;
 
     @Override
-    public void subWorkRegister(RegisterSubWorkDto subWorkDto) {
-        Set<ConstraintViolation<RegisterSubWorkDto>> violations = validator.validate(subWorkDto);
-        boolean exists = subWorkRepository.existsByName(subWorkDto.name());
-        Work work = workRepository.findById(subWorkDto.workId());
-        if (!violations.isEmpty() || exists || work == null) {
-            for (ConstraintViolation<RegisterSubWorkDto> violation : violations) {
+    public void subServiceRegister(RegisterSubServiceDto subServiceDto) {
+        Set<ConstraintViolation<RegisterSubServiceDto>> violations = validator.validate(subServiceDto);
+        boolean exists = subServiceGateway.existsByName(subServiceDto.name());
+        Service service = serviceGateway.findById(subServiceDto.serviceId());
+        if (!violations.isEmpty() || exists || service == null) {
+            for (ConstraintViolation<RegisterSubServiceDto> violation : violations) {
                 System.out.println("\u001B[31m" + violation.getMessage() + "\u001B[0m");
             }
             if (exists)
-                System.out.println("\u001B[31m" + " Sub Work with this name is already exists" + "\u001B[0m");
-            if (work == null)
-                System.out.println("\u001B[31m" + " work with this Id not Found" + "\u001B[0m");
+                System.out.println("\u001B[31m" + " Sub Service with this name is already exists" + "\u001B[0m");
+            if (service == null)
+                System.out.println("\u001B[31m" + " service with this Id not Found" + "\u001B[0m");
             return;
         }
-        SubWork subWork = Mapper.convertSubWorkDtoToEntity(subWorkDto, work);
-        subWorkRepository.save(subWork);
-        System.out.println("done");
+        SubService subService = Mapper.convertSubServiceDtoToEntity(subServiceDto, service);
+        subServiceGateway.save(subService);
+        System.out.println("SubService Register done");
     }
     @Override
-    public List<ResponceSubWorkDto> findAllSubWork() {
-        List<SubWork> subWorkList = subWorkRepository.findAll();
-        List<ResponceSubWorkDto> responceSubWorkDtos = subWorkList.stream()
-                .map(Mapper::convertSubWorkToDto).toList();////Mapper.convertSubWorkToDto(subWork))
-        if (responceSubWorkDtos.isEmpty())
-            System.out.println("There are currently no SubWork.");
-        return responceSubWorkDtos;
+    public List<ResponceSubServiceDto> findAllSubService() {
+        List<SubService> subServiceList = subServiceGateway.findAll();
+        List<ResponceSubServiceDto> responceSubServiceDtos = subServiceList.stream()
+                .map(Mapper::convertSubServiceToDto).toList();////Mapper.convertSubServiceToDto(subService))
+        if (responceSubServiceDtos.isEmpty())
+            System.out.println("There are currently no SubService.");
+        return responceSubServiceDtos;
     }
 }

@@ -1,11 +1,11 @@
 package service;
 
-import dto.RegisterSubWorkDto;
-import dto.ResponceSubWorkDto;
+import dto.RegisterSubServiceDto;
+import dto.ResponceSubServiceDto;
 
 import java.util.List;
 
 public interface SubServiceOperation {
-    void subWorkRegister(RegisterSubWorkDto subWorkDto);
-    List<ResponceSubWorkDto> findAllSubWork();
+    void subServiceRegister(RegisterSubServiceDto subServiceDto);
+    List<ResponceSubServiceDto> findAllSubService();
 }

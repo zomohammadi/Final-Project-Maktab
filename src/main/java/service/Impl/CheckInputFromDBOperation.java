@@ -3,7 +3,7 @@ package service.Impl;
 import java.util.HashSet;
 import java.util.Set;
 
-public class CheckInputInfoFromDB {
+public class CheckInputFromDBOperation {
     static Set<String> checkUserInfoFromDB(String entity, boolean b, boolean b2, boolean b3, boolean b4) {
         Set<String> errors = new HashSet<>();
         if (b)

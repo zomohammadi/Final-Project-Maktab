@@ -2,12 +2,12 @@ package mapper;
 
 import dto.RegisterCustomerDto;
 import dto.RegisterExpertDto;
-import dto.RegisterSubWorkDto;
-import dto.ResponceSubWorkDto;
+import dto.RegisterSubServiceDto;
+import dto.ResponceSubServiceDto;
 import entity.Customer;
 import entity.Expert;
-import entity.SubWork;
-import entity.Work;
+import entity.SubService;
+import entity.Service;
 
 public class Mapper {
     public static Expert convertExpertDtoToEntity(RegisterExpertDto dto) {
@@ -32,21 +32,21 @@ public class Mapper {
                 .password(customerDto.password()).build();
     }
 
-    public static SubWork convertSubWorkDtoToEntity(RegisterSubWorkDto subWorkDto, Work work) {
-        return SubWork.builder()
-                .name(subWorkDto.name())
-                .description(subWorkDto.description())
-                .BasePrice(subWorkDto.BasePrice())
-                .work(work)
+    public static SubService convertSubServiceDtoToEntity(RegisterSubServiceDto subServiceDto, Service service) {
+        return SubService.builder()
+                .name(subServiceDto.name())
+                .description(subServiceDto.description())
+                .BasePrice(subServiceDto.BasePrice())
+                .service(service)
                 .build();
     }
 
-    public static ResponceSubWorkDto convertSubWorkToDto(SubWork subWork) {
-        return ResponceSubWorkDto.builder()
-                .name(subWork.getName())
-                .description(subWork.getDescription())
-                .BasePrice(subWork.getBasePrice())
-                .workName(subWork.getWork().getName())
+    public static ResponceSubServiceDto convertSubServiceToDto(SubService subService) {
+        return ResponceSubServiceDto.builder()
+                .name(subService.getName())
+                .description(subService.getDescription())
+                .BasePrice(subService.getBasePrice())
+                .serviceName(subService.getService().getName())
                 .build();
 
     }

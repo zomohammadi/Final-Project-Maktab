@@ -4,14 +4,14 @@ import entity.BaseEntity;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
-import repository.BaseEntityRepository;
+import repository.BaseEntityGateway;
 
 import java.util.List;
 
-public abstract class BaseEntityRepositoryImpl<T extends BaseEntity> implements BaseEntityRepository<T> {
+public abstract class BaseEntityGatewayImpl<T extends BaseEntity> implements BaseEntityGateway<T> {
     private final EntityManager entityManager;
 
-    public BaseEntityRepositoryImpl(EntityManager entityManager) {
+    public BaseEntityGatewayImpl(EntityManager entityManager) {
         this.entityManager = entityManager;
     }
 

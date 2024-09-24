@@ -4,7 +4,7 @@ import entity.BaseEntity;
 
 import java.util.List;
 
-public interface BaseEntityRepository<T extends BaseEntity> {
+public interface BaseEntityGateway<T extends BaseEntity> {
     void save(T t);
 
     T findById(Long id);

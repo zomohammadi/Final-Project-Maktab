@@ -21,7 +21,7 @@ import java.time.ZonedDateTime;
 public class Orders extends BaseEntity {
 
     @ManyToOne
-    private SubWork subWork;
+    private SubService subService;
 
     @ManyToOne
     private Customer customer;
@@ -29,7 +29,7 @@ public class Orders extends BaseEntity {
     private Double priceSuggested;
     private String address;
     private OrderStatus orderStatus;
-    private ZonedDateTime timeForWorkDone;
-    private String workDescription;
+    private ZonedDateTime timeForServiceDone;
+    private String serviceDescription;
 
 }

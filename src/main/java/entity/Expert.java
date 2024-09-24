@@ -8,6 +8,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -25,7 +26,7 @@ public class Expert extends Users {
     private byte[] picture;
 
     @ManyToMany
-    private Set<SubWork> subWorks;
+    private Set<SubService> subServices=new HashSet<>();
 
     @Builder.Default
     private Status status = Status.NEW;

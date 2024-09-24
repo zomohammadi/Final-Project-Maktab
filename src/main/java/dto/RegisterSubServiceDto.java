@@ -4,12 +4,12 @@ import jakarta.validation.constraints.*;
 import lombok.Builder;
 
 @Builder
-public record RegisterSubWorkDto(
+public record RegisterSubServiceDto(
 
-        @NotBlank(message = "SubWork Name cannot be Blank")
-        @Size(min = 3, max = 30, message = "SubWork Name must be less than {max} characters" +
+        @NotBlank(message = "SubService Name cannot be Blank")
+        @Size(min = 3, max = 30, message = "SubService Name must be less than {max} characters" +
                                            "and greater Than {min} characters")
-        @Pattern(regexp = "^[a-zA-Z\\s]+$", message = "SubWork Name can only contain letters")
+        @Pattern(regexp = "^[a-zA-Z\\s]+$", message = "SubService Name can only contain letters")
         String name,
 
         @NotBlank(message = "description Name cannot be Blank")
@@ -23,7 +23,7 @@ public record RegisterSubWorkDto(
         //@Positive
         Double BasePrice,
 
-        @NotNull(message = "workId cannot be Null")
-        Long workId
+        @NotNull(message = "serviceId cannot be Null")
+        Long serviceId
 ) {
 }

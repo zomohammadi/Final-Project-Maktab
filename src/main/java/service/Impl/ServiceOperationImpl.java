@@ -1,44 +1,44 @@
 package service.Impl;
 
-import entity.Work;
+import entity.Service;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 import lombok.RequiredArgsConstructor;
-import repository.WorkRepository;
+import repository.ServiceGateway;
 import service.ServiceOperation;
 
 import java.util.List;
 import java.util.Set;
 @RequiredArgsConstructor
 public class ServiceOperationImpl implements ServiceOperation {
-    private final WorkRepository workRepository;
+    private final ServiceGateway serviceGateway;
     private final Validator validator;
     @Override
-    public void workRegister(String workName) {
-        Work work = Work.builder().name(workName).build();
-        Set<ConstraintViolation<Work>> violations = validator.validate(work);
-        boolean exists = workRepository.existsByName(workName);
+    public void serviceRegister(String serviceName) {
+        Service service = Service.builder().name(serviceName).build();
+        Set<ConstraintViolation<Service>> violations = validator.validate(service);
+        boolean exists = serviceGateway.existsByName(serviceName);
         if (!violations.isEmpty() || exists) {
-            for (ConstraintViolation<Work> violation : violations) {
+            for (ConstraintViolation<Service> violation : violations) {
                 System.out.println("\u001B[31m" + violation.getMessage() + "\u001B[0m");
             }
             if (exists)
-                System.out.println("\u001B[31m" + "work with this name is already exists" + "\u001B[0m");
+                System.out.println("\u001B[31m" + "service with this name is already exists" + "\u001B[0m");
             return;
         }
-       /* if (workRepository.existsByName(workName))
-            throw new FoundException("work with this name is already exists");*/
+       /* if (serviceGateway.existsByName(serviceName))
+            throw new FoundException("service with this name is already exists");*/
 
-        workRepository.save(work);
-        System.out.println("done");
+        serviceGateway.save(service);
+        System.out.println("service Register done");
 
 
     }
     @Override
-    public List<String> findAllWork() {
-        List<String> list = workRepository.findAll().stream().map(Work::getName).toList();
+    public List<String> findAllService() {
+        List<String> list = serviceGateway.findAll().stream().map(Service::getName).toList();
         if (list.isEmpty())
-            System.out.println("There are currently no Work.");
+            System.out.println("There are currently no Service.");
         return list;
     }
 }

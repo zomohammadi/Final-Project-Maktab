@@ -2,10 +2,10 @@ package repository.Impl;
 
 import entity.Customer;
 import jakarta.persistence.EntityManager;
-import repository.CustomerRepository;
+import repository.CustomerGateway;
 
-public class CustomerRepositoryImpl extends UserRepositoryImpl<Customer > implements CustomerRepository {
-    public CustomerRepositoryImpl(EntityManager entityManager) {
+public class CustomerGatewayImpl extends UserGatewayImpl<Customer > implements CustomerGateway {
+    public CustomerGatewayImpl(EntityManager entityManager) {
         super(entityManager);
     }
 

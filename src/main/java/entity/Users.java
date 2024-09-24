@@ -15,6 +15,10 @@ import java.time.ZonedDateTime;
 
 @SuperBuilder
 
+@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"mobile_number", "role"}),
+        @UniqueConstraint(columnNames = {"national_code", "role"})
+})
+
 @Setter
 @Getter
 @NoArgsConstructor
@@ -26,10 +30,10 @@ public class Users extends BaseEntity {
     private String firstName;
     private String lastName;
 
-    @Column(unique = true)
+    //@Column(unique = true)
     private String nationalCode;
 
-    @Column(unique = true)
+    //@Column(unique = true)
     private String mobileNumber;
 
     @Builder.Default
