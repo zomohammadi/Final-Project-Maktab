@@ -12,8 +12,8 @@ public record RegisterSubServiceDto(
         @Pattern(regexp = "^[a-zA-Z\\s]+$", message = "SubService Name can only contain letters")
         String name,
 
-        @NotBlank(message = "description Name cannot be Blank")
-        @Size(min = 3, max = 30, message = "description Name must be less than {max} characters" +
+        @NotBlank(message = "description cannot be Blank")
+        @Size(min = 3, max = 30, message = "description must be less than {max} characters" +
                                            "and greater Than {min} characters")
         String description,
 
@@ -24,6 +24,8 @@ public record RegisterSubServiceDto(
         Double BasePrice,
 
         @NotNull(message = "serviceId cannot be Null")
+        @Min(value = 1, message = "serviceId must be greater than or equal to {value}")
+        @Max(value = Long.MAX_VALUE, message = "serviceId must be less than or equal to {value}")
         Long serviceId
 ) {
 }

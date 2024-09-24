@@ -6,14 +6,8 @@ import jakarta.persistence.Persistence;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
-import repository.CustomerGateway;
-import repository.ExpertGateway;
-import repository.Impl.CustomerGatewayImpl;
-import repository.Impl.ExpertGatewayImpl;
-import repository.Impl.SubServiceGatewayImpl;
-import repository.Impl.ServiceGatewayImpl;
-import repository.SubServiceGateway;
-import repository.ServiceGateway;
+import repository.*;
+import repository.Impl.*;
 import service.*;
 import service.Impl.*;
 
@@ -29,6 +23,7 @@ public class ApplicationContext {
     private final AdminOperation adminOperation;
     private final ServiceOperation serviceOperation;
     private final SubServiceOperation subServiceOperation;
+    private final OrderOperation orderOperation;
 
     public ApplicationContext() {
         this.em = getEntityManager();
@@ -40,7 +35,7 @@ public class ApplicationContext {
         CustomerGateway customerGateway = new CustomerGatewayImpl(em);
         ServiceGateway serviceGateway = new ServiceGatewayImpl(em);
         SubServiceGateway subServiceGateway = new SubServiceGatewayImpl(em);
-
+        OrderGateway orderGateway = new OrderGatewayImpl(em);
 
         //service
         expertOperation = new ExpertOperationImp(expertGateway, getValidator());
@@ -48,6 +43,7 @@ public class ApplicationContext {
         adminOperation = new AdminOperationImpl(subServiceGateway, expertGateway);
         serviceOperation = new ServiceOperationImpl(serviceGateway, getValidator());
         subServiceOperation = new SubServiceOperationImpl(serviceGateway, subServiceGateway, getValidator());
+        orderOperation = new OrderOperationImpl(orderGateway, subServiceGateway, customerGateway, getValidator());
     }
 
     private static ApplicationContext applicationContext;
@@ -107,5 +103,9 @@ public class ApplicationContext {
 
     public SubServiceOperation getSubServiceOperation() {
         return subServiceOperation;
+    }
+
+    public OrderOperation getOrderOperation() {
+        return orderOperation;
     }
 }

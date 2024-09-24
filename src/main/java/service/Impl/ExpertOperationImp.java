@@ -6,6 +6,7 @@ import entity.Credit;
 import entity.Expert;
 import enumaration.Role;
 import enumaration.Status;
+import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 import lombok.RequiredArgsConstructor;
@@ -104,7 +105,7 @@ public class ExpertOperationImp implements ExpertOperation {
 
         if (checkInputIsNotValid(expertDto)) return;
 
-        Expert expert = Mapper.convertExpertDtoToEntity(expertDto);
+        Expert expert = Mapper.ConvertDtoToEntity.convertExpertDtoToEntity(expertDto);
         expert.setRole(Role.Expert);
         expert.setCredit(Credit.builder().build());
         expert.setPicture(processImageFile(expertDto.picturePath()));

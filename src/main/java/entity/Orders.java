@@ -26,6 +26,9 @@ public class Orders extends BaseEntity {
     @ManyToOne
     private Customer customer;
 
+    @ManyToOne
+    Expert expert;
+
     private Double priceSuggested;
     private String address;
     private OrderStatus orderStatus;

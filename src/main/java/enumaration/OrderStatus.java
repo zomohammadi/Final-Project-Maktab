@@ -3,7 +3,7 @@ package enumaration;
 public enum OrderStatus {
     WaitingForSuggestionOfExperts,
     WaitingForExpertSelection,
-    WaitingForSpecialistToComeToYourPlace,
+    WaitingForExpertToComeToYourPlace,
     Started,
     Done,
     Paid

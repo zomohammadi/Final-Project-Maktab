@@ -35,7 +35,7 @@ public class SubServiceOperationImpl implements SubServiceOperation {
                 System.out.println("\u001B[31m" + " service with this Id not Found" + "\u001B[0m");
             return;
         }
-        SubService subService = Mapper.convertSubServiceDtoToEntity(subServiceDto, service);
+        SubService subService = Mapper.ConvertDtoToEntity.convertSubServiceDtoToEntity(subServiceDto, service);
         subServiceGateway.save(subService);
         System.out.println("SubService Register done");
     }
@@ -43,7 +43,7 @@ public class SubServiceOperationImpl implements SubServiceOperation {
     public List<ResponceSubServiceDto> findAllSubService() {
         List<SubService> subServiceList = subServiceGateway.findAll();
         List<ResponceSubServiceDto> responceSubServiceDtos = subServiceList.stream()
-                .map(Mapper::convertSubServiceToDto).toList();////Mapper.convertSubServiceToDto(subService))
+                .map(Mapper.ConvertEntityToDto::convertSubServiceToDto).toList();////Mapper.ConvertEntityToDto.convertSubServiceToDto(subService))
         if (responceSubServiceDtos.isEmpty())
             System.out.println("There are currently no SubService.");
         return responceSubServiceDtos;

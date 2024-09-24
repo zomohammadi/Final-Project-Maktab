@@ -25,7 +25,7 @@ public class CustomerOperationImpl implements CustomerOperation {
     public void register(RegisterCustomerDto customerDto) {
 
         if (checkInputIsNotValid(customerDto)) return;
-        Customer customer = Mapper.convertCustomerDtoToEntity(customerDto);
+        Customer customer = Mapper.ConvertDtoToEntity.convertCustomerDtoToEntity(customerDto);
         customer.setRole(Role.Customer);
         customer.setCredit(Credit.builder().build());
 

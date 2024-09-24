@@ -1,15 +1,18 @@
 import customeException.NotFoundException;
 import dto.RegisterCustomerDto;
 import dto.RegisterExpertDto;
+import dto.RegisterOrderDto;
 import dto.RegisterSubServiceDto;
 import util.ApplicationContext;
+
+import java.time.ZonedDateTime;
 
 public class Application {
     public static void main(String[] args) {
         ApplicationContext instance = ApplicationContext.getInstance();
 
         //----------------save Expert
-    /*    RegisterExpertDto specialistDto = RegisterExpertDto.builder().firstName("zohreh")
+        /*RegisterExpertDto specialistDto = RegisterExpertDto.builder().firstName("zohreh")
                 .lastName("Mohammadi").emailAddress("zo.mohammadi@gmail.com")
                 .mobileNumber("09197847756").nationalCode("0045265772")
                 .userName("zo.mohammadi")
@@ -112,7 +115,27 @@ public class Application {
        /*
        instance.getAdminOperation().deleteSubServiceFromExpert(1l, 1l);
 */
-        //-----------order
+        //-----------order ---ثبت سفارش
+
+//        RegisterOrderDto orderDto = RegisterOrderDto.builder()
+//                .customerId(1l)
+//                .subServiceId(1l)
+//                .priceSuggested(100000.0)
+//                .address("fdsgdfs 3434 34")
+//                .timeForServiceDone(ZonedDateTime.of(2024, 9, 24, 22, 31
+//                        , 0, 0, ZonedDateTime.now().getZone()))
+//                .build();
+
+       /* RegisterOrderDto orderDto = RegisterOrderDto.builder()
+                .customerId(2l)
+                .subServiceId(1l)
+                .priceSuggested(100000.0)
+                .address("fdsgdfs 3434 34")
+                .timeForServiceDone(ZonedDateTime.of(2024, 10, 24, 22, 31
+                        , 0, 0, ZonedDateTime.now().getZone()))
+                .build();
+
+        instance.getOrderOperation().orderRegister(orderDto);*/
 
 
     }
