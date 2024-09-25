@@ -25,14 +25,27 @@ public class OrderOperationImpl implements OrderOperation {
 
     @Override
     public void orderRegister(RegisterOrderDto orderDto) {
-        if (isNotValidate(orderDto)) return;
+        Set<ConstraintViolation<RegisterOrderDto>> violations = validator.validate(orderDto);
         SubService subService = subServiceGateway.findById(orderDto.subServiceId());
         Customer customer = customerGateway.findById(orderDto.customerId());
-        if (customer != null && subService != null) {
-            if (subService.getBasePrice() < orderDto.priceSuggested()) {
+        if (!violations.isEmpty() || subService==null || customer==null) {
+            for (ConstraintViolation<RegisterOrderDto> violation : violations) {
+                System.out.println("\u001B[31m" + violation.getMessage() + "\u001B[0m");
+            }
+            if (subService==null)
+                System.out.println("\u001B[31m" + "subService not found" + "\u001B[0m");
+            if (customer==null)
+                System.out.println("\u001B[31m" + "Customer not found" + "\u001B[0m");
+            if (subService!=null && subService.getBasePrice() > orderDto.priceSuggested())
+                System.out.println("\u001B[31m" + """
+                        your suggested price is less than the Base Price of this SubService
+                        """ + "\u001B[0m");
+            return;
+        }
+       // if (subService!=null && customer !=null) {
+            if (subService.getBasePrice() > orderDto.priceSuggested()) {
                 System.err.println("""
-                        your suggested price is less than
-                        the Base Price of this SubService
+                        your suggested price is less than the Base Price of this SubService
                         """);
                 return;
             }
@@ -41,24 +54,10 @@ public class OrderOperationImpl implements OrderOperation {
             order.setOrderStatus(OrderStatus.WaitingForSuggestionOfExperts);
             orderGateway.save(order);
             System.out.println("Order Register Done");
-        } else {
-            if (customer == null)
-                System.err.println("customer not found");
-            if (subService == null)
-                System.err.println("subService not found");
-        }
+      //  }
     }
 
-    private boolean isNotValidate(RegisterOrderDto orderDto) {
-        Set<ConstraintViolation<RegisterOrderDto>> violations = validator.validate(orderDto);
-        if (!violations.isEmpty()) {
-            for (ConstraintViolation<RegisterOrderDto> violation : violations) {
-                System.out.println("\u001B[31m" + violation.getMessage() + "\u001B[0m");
-            }
-            return true;
-        }
-        return false;
-    }
+
 
 }
 

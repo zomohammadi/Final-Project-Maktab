@@ -1,16 +1,17 @@
 package service.Impl;
 
 import customeException.NotFoundException;
+import dto.ChangePasswordDto;
 import dto.RegisterExpertDto;
 import entity.Credit;
 import entity.Expert;
 import enumaration.Role;
 import enumaration.Status;
-import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 import lombok.RequiredArgsConstructor;
 import mapper.Mapper;
+import org.mindrot.jbcrypt.BCrypt;
 import repository.ExpertGateway;
 import service.ExpertOperation;
 
@@ -21,7 +22,7 @@ import java.util.Set;
 import static service.Impl.CheckInputFromDBOperation.checkUserInfoFromDB;
 
 @RequiredArgsConstructor
-public class ExpertOperationImp implements ExpertOperation {
+public class ExpertOperationImp  implements ExpertOperation {
     private final ExpertGateway expertGateway;
     private final Validator validator;
 
@@ -100,6 +101,10 @@ public class ExpertOperationImp implements ExpertOperation {
         }
     }
 
+    private String hashPassword(String plainTextPassword) {
+        return BCrypt.hashpw(plainTextPassword, BCrypt.gensalt());
+    }
+
     @Override
     public void register(RegisterExpertDto expertDto) {
 
@@ -109,6 +114,7 @@ public class ExpertOperationImp implements ExpertOperation {
         expert.setRole(Role.Expert);
         expert.setCredit(Credit.builder().build());
         expert.setPicture(processImageFile(expertDto.picturePath()));
+        expert.setPassword(hashPassword(expertDto.password()));
         expertGateway.save(expert);
         System.out.println("expert register done");
 
@@ -174,5 +180,27 @@ public class ExpertOperationImp implements ExpertOperation {
         expert.setStatus(Status.valueOf(status.toUpperCase()));
         expertGateway.update(expert);
         System.out.println("change Status Operation done");
+    }
+
+
+    public void changePassword(ChangePasswordDto passwordDto) {
+        if (isNotValid(passwordDto)) return;
+        Expert expert = expertGateway.findById(passwordDto.userId());
+        if (expert != null) {
+            expert.setPassword(hashPassword(passwordDto.password()));
+            expertGateway.update(expert);
+            System.out.println("change password done");
+        } else System.err.println("Expert not found");
+    }
+
+    private boolean isNotValid(ChangePasswordDto passwordDto) {
+        Set<ConstraintViolation<ChangePasswordDto>> violations = validator.validate(passwordDto);
+        if (!violations.isEmpty()) {
+            for (ConstraintViolation<ChangePasswordDto> violation : violations) {
+                System.out.println("\u001B[31m" + violation.getMessage() + "\u001B[0m");
+            }
+            return true;
+        }
+        return false;
     }
 }

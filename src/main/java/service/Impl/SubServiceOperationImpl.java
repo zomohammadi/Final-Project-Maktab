@@ -48,4 +48,15 @@ public class SubServiceOperationImpl implements SubServiceOperation {
             System.out.println("There are currently no SubService.");
         return responceSubServiceDtos;
     }
+
+    @Override
+    public List<ResponceSubServiceDto> findAllSubServiceOfService(Long serviceId) {
+        List<SubService> allSubServiceOfService = subServiceGateway.findAllSubServiceOfService(serviceId);
+        List<ResponceSubServiceDto> responceSubServiceDtos = allSubServiceOfService.stream()
+                .map(Mapper.ConvertEntityToDto::convertSubServiceToDto).toList();
+        //.map(s -> Mapper.ConvertEntityToDto.convertSubServiceToDto(s))
+        if (responceSubServiceDtos.isEmpty())
+            System.out.println("There are currently no SubService.");
+        return responceSubServiceDtos;
+    }
 }

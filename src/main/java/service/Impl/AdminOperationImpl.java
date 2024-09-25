@@ -49,6 +49,11 @@ public class AdminOperationImpl implements AdminOperation {
         SubService subService = subServiceRepository.findById(subServiceId);
         if (expert != null && subService != null) {
             deleteOperation(expert, subService);
+        }else {
+            if (expert == null)
+                System.err.println("expert not found");
+            if (subService == null)
+                System.err.println("subService not found");
         }
     }
 

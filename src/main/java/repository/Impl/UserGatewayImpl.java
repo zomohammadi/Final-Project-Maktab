@@ -1,11 +1,13 @@
 package repository.Impl;
 
+import dto.ChangePasswordDto;
 import entity.BaseEntity;
+import entity.Users;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import repository.UserGateway;
 
-public abstract class UserGatewayImpl<T extends BaseEntity> extends BaseEntityGatewayImpl<T> implements UserGateway<T> {
+public abstract class UserGatewayImpl<T extends Users> extends BaseEntityGatewayImpl<T> implements UserGateway<T> {
     public UserGatewayImpl(EntityManager entityManager) {
         super(entityManager);
     }

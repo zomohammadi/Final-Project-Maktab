@@ -10,8 +10,8 @@ import java.time.ZonedDateTime;
 public record RegisterOrderDto(
 
         @NotNull(message = "serviceId cannot be Null")
-        @Min(value = 1, message = "serviceId must be greater than or equal to {value}")
-        @Max(value = Long.MAX_VALUE, message = "serviceId must be less than or equal to {value}")
+        @Min(value = 1, message = "customerId must be greater than or equal to {value}")
+        @Max(value = Long.MAX_VALUE, message = "customerId must be less than or equal to {value}")
         Long customerId,
 
         @NotNull(message = "serviceId cannot be Null")
