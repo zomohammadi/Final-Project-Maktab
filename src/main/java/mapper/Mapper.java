@@ -50,6 +50,17 @@ public class Mapper {
                 builder.serviceDescription(orderDto.serviceDescription());
             return builder.build();
         }
+
+        public static SubService convertChangeSubServiceDtoToEntity(ChangeSubServiceDto subServiceDto) {
+            SubService.SubServiceBuilder<?, ?> builder = SubService.builder().id(subServiceDto.serviceId());
+            if (subServiceDto.name() != null)
+                builder.name(subServiceDto.name());
+            if (subServiceDto.description() != null)
+                builder.description(subServiceDto.description());
+            if (subServiceDto.BasePrice() != null)
+                builder.BasePrice(subServiceDto.BasePrice());
+            return builder.build();
+        }
     }
 
     public static class ConvertEntityToDto {
@@ -62,6 +73,7 @@ public class Mapper {
                     .build();
 
         }
+
     }
 
 

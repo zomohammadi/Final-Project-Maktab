@@ -52,22 +52,25 @@ public class Application {
         instance.getCustomerOperation().register(customerDto);*/
 
         //---------------تغییر پسورد------------------------------
-        //----------change password for customer
+
+        //----------change --- تغییر پسورد مشتری
 
         /*ChangePasswordDto passwordDto = ChangePasswordDto.builder()
                 .userId(2l).password("123456ss").build();
         instance.getCustomerOperation().changePassword(passwordDto);*/
 
-        //----------change password for Expert ---
+        //----------change  --- تغییر پسورد متخصص
 
   /*      ChangePasswordDto passwordDto2 = ChangePasswordDto.builder()
                 .userId(1l).password("123456ss").build();
         instance.getExpertOperation().changePassword(passwordDto2);*/
 
-        //----------------save Service
+        //----------------save Service -------------- اضافه کردن خدمت
+
        /* instance.getServiceOperation().serviceRegister("Household appliances");
         instance.getServiceOperation().serviceRegister("cleaning");*/
-        //---------------save SubService
+
+        //---------------save SubService --------اضافه کردن زیر خدمت
 
        /* RegisterSubServiceDto subServiceDto1 = RegisterSubServiceDto.builder()
                 .name("Kitchen gas").description("123 ").BasePrice(2000000.0)
@@ -118,14 +121,13 @@ public class Application {
 
         //----------------admin --> تغییر وضعیت متخصص از وضعیت جدید به تایید شده
 
-        /*instance.getExpertOperation().changeExpertStatus(1l, "Confirmed");*/
+        /* instance.getExpertOperation().changeExpertStatus(1l, "Confirmed");*/
 
 
         //----------------admin --> اضافه کردن متخصص تایید شده به زیرخدمت
-     /*   instance.getAdminOperation().addSubServiceToExpert(1l, 1l);
+       /* instance.getAdminOperation().addSubServiceToExpert(1l, 1l);
 
-        instance.getAdminOperation().addSubServiceToExpert(1l, 2l);
-*/
+        instance.getAdminOperation().addSubServiceToExpert(1l, 2l);*/
 
         //---------------admin --> حذف  کردن متخصص از زیرخدمت
 
@@ -135,13 +137,13 @@ public class Application {
 
         //----------------------find service نمایش تمام خدمت ها
 
-        instance.getServiceOperation().findAllService().forEach(System.out::println);
+        /*   instance.getServiceOperation().findAllService().forEach(System.out::println);*/
 
-       //----------------------find sub service نمایش تمام زیرخدمت های یک خدمت
+        //----------------------find sub service نمایش تمام زیرخدمت های یک خدمت
 
-        instance.getSubServiceOperation().findAllSubServiceOfService(1l)
+   /*     instance.getSubServiceOperation().findAllSubServiceOfService(1l)
                 .forEach(System.out::println);
-
+*/
         //-----------order ---ثبت سفارش
 
 //        RegisterOrderDto orderDto = RegisterOrderDto.builder()
@@ -153,7 +155,20 @@ public class Application {
 //                        , 0, 0, ZonedDateTime.now().getZone()))
 //                .build();
 
-        RegisterOrderDto orderDto = RegisterOrderDto.builder()
+          /* RegisterOrderDto orderDto1 = RegisterOrderDto.builder()
+                .customerId(2l)
+                .subServiceId(1l)
+                .priceSuggested(2000000.0)
+                .address("fdsgdfs 3434 34")
+                  // .serviceDescription("2324jjjjjjjjjjjjjjjjj")
+                .timeForServiceDone(ZonedDateTime.of(2024, 10, 24, 22, 31
+                        , 0, 0, ZonedDateTime.now().getZone()))
+                .build();
+
+        instance.getOrderOperation().orderRegister(orderDto1);*/
+
+        // ----------------- اضافه کردن سفارش با اطلاعات نادرست-----------------
+     /*   RegisterOrderDto orderDto = RegisterOrderDto.builder()
                 .customerId(3l)
                 .subServiceId(3l)
                 .priceSuggested(100000.0)
@@ -162,10 +177,32 @@ public class Application {
                         , 0, 0, ZonedDateTime.now().getZone()))
                 .build();
 
-        instance.getOrderOperation().orderRegister(orderDto);
+        instance.getOrderOperation().orderRegister(orderDto);*/
 
-       //-----------------------------عملیات ثبت سفارش ------------------
 
+        //------------update  تغییر نام یا توضیحات یا قیمت پایه زیرخدمت
+        //dto بدون ای دی و با نام تکراری
+        //ChangeSubServiceDto subServiceDto1 = ChangeSubServiceDto.builder().name("Kitchen gas").build();
+
+        //آپدیت فقط نام
+
+       /* ChangeSubServiceDto subServiceDto4 = ChangeSubServiceDto.builder().name("Refrigerator repair")
+                .serviceId(1L).build();
+        instance.getSubServiceOperation().update(subServiceDto4);*/
+
+        //آپدیت توضیحات و قیمت
+
+        /*ChangeSubServiceDto subServiceDto5 = ChangeSubServiceDto.builder().description("fg fg fg fg  123")
+                .BasePrice(3000000.0)
+                .serviceId(1L).build();
+        instance.getSubServiceOperation().update(subServiceDto5);*/
+
+        //آپدیت فقط قیمت
+
+       /* ChangeSubServiceDto subServiceDto5 = ChangeSubServiceDto.builder()
+                .BasePrice(5000000.0)
+                .serviceId(1L).build();
+        instance.getSubServiceOperation().update(subServiceDto5);*/
 
 
     }

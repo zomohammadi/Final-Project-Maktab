@@ -1,5 +1,6 @@
 package service.Impl;
 
+import dto.ChangeSubServiceDto;
 import dto.RegisterSubServiceDto;
 import dto.ResponceSubServiceDto;
 import entity.SubService;
@@ -14,6 +15,7 @@ import service.SubServiceOperation;
 
 import java.util.List;
 import java.util.Set;
+
 @RequiredArgsConstructor
 public class SubServiceOperationImpl implements SubServiceOperation {
     private final ServiceGateway serviceGateway;
@@ -39,6 +41,7 @@ public class SubServiceOperationImpl implements SubServiceOperation {
         subServiceGateway.save(subService);
         System.out.println("SubService Register done");
     }
+
     @Override
     public List<ResponceSubServiceDto> findAllSubService() {
         List<SubService> subServiceList = subServiceGateway.findAll();
@@ -58,5 +61,49 @@ public class SubServiceOperationImpl implements SubServiceOperation {
         if (responceSubServiceDtos.isEmpty())
             System.out.println("There are currently no SubService.");
         return responceSubServiceDtos;
+    }
+
+    public void update(ChangeSubServiceDto subServiceDto) {
+        if (isNotValid(subServiceDto)) return;
+        SubService subService1 = Mapper.ConvertDtoToEntity.convertChangeSubServiceDtoToEntity(subServiceDto);
+        SubService subService = subServiceGateway.findById(subService1.getId());
+        updateOperation(subServiceDto, subService);
+
+    }
+
+    private void updateOperation(ChangeSubServiceDto subServiceDto, SubService subService) {
+        if (subService != null) {
+            if (subServiceDto.name() != null) {
+                subService.setName(subServiceDto.name());
+            }
+            if (subServiceDto.description() != null) {
+                subService.setDescription(subServiceDto.description());
+            }
+            if (subServiceDto.BasePrice() != null) {
+                subService.setBasePrice(subServiceDto.BasePrice());
+            }
+            subServiceGateway.update(subService);
+            System.out.println("SubService Updated!");
+        } else {
+            System.out.println("SubService not found");
+        }
+    }
+
+    private boolean isNotValid(ChangeSubServiceDto subServiceDto) {
+        Set<ConstraintViolation<ChangeSubServiceDto>> violations = validator.validate(subServiceDto);
+        boolean exists = false;
+        if (subServiceDto.name() != null) {
+            exists = subServiceGateway.existsByName(subServiceDto.name());
+        }
+        if (!violations.isEmpty() || exists /*||serviceId==null*/) {
+            for (ConstraintViolation<ChangeSubServiceDto> violation : violations) {
+                System.out.println("\u001B[31m" + violation.getMessage() + "\u001B[0m");
+            }
+            if (exists)
+                System.out.println("\u001B[31m" + "SubService with this name is already exists" + "\u001B[0m");
+
+            return true;
+        }
+        return false;
     }
 }
