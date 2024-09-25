@@ -1,10 +1,10 @@
 package service.Impl;
 
 import customeException.NotFoundException;
-import dto.ChangePasswordDto;
-import dto.RegisterExpertDto;
+import dto.*;
 import entity.Credit;
 import entity.Expert;
+import entity.SubService;
 import enumaration.Role;
 import enumaration.Status;
 import jakarta.validation.ConstraintViolation;
@@ -22,7 +22,7 @@ import java.util.Set;
 import static service.Impl.CheckInputFromDBOperation.checkUserInfoFromDB;
 
 @RequiredArgsConstructor
-public class ExpertOperationImp  implements ExpertOperation {
+public class ExpertOperationImp implements ExpertOperation {
     private final ExpertGateway expertGateway;
     private final Validator validator;
 
@@ -140,6 +140,75 @@ public class ExpertOperationImp  implements ExpertOperation {
         return false;
     }
 
+    public void update(ChangeExpertDto expertDto) {
+        if (validation(expertDto)) return;
+        Expert expert1 = Mapper.ConvertDtoToEntity.convertChangeExpertDtoToEntity(expertDto);
+        Expert expert = expertGateway.findById(expert1.getId());
+        updateOperation(expertDto, expert);
+    }
+
+    private boolean validation(ChangeExpertDto expertDto) {
+        Set<ConstraintViolation<ChangeExpertDto>> violations = validator.validate(expertDto);
+        boolean exists1 = false;
+        boolean exists2 = false;
+        boolean exists3 = false;
+        boolean exists4 = false;
+        if (expertDto.mobileNumber() != null) {
+            exists1 = expertGateway.existUserByMobileNumber(expertDto.mobileNumber());
+        }
+        if (expertDto.nationalCode() != null) {
+            exists2 = expertGateway.existUserByNationalCode(expertDto.nationalCode());
+        }
+        if (expertDto.emailAddress() != null) {
+            exists3 = expertGateway.existUserByEmailAddress(expertDto.emailAddress());
+        }
+        if (expertDto.userName() != null) {
+            exists4 = expertGateway.existUserByUserName(expertDto.userName());
+        }
+        if (!violations.isEmpty() || exists1 || exists2 || exists3 || exists4) {
+            for (ConstraintViolation<ChangeExpertDto> violation : violations) {
+                System.out.println("\u001B[31m" + violation.getMessage() + "\u001B[0m");
+            }
+            if (exists1)
+                System.out.println("\u001B[31m" + "Expert with this Mobile Number is already exists" + "\u001B[0m");
+            if (exists2)
+                System.out.println("\u001B[31m" + "Expert with this National Code is already exists" + "\u001B[0m");
+            if (exists3)
+                System.out.println("\u001B[31m" + "Expert with this Email Address is already exists" + "\u001B[0m");
+            if (exists4)
+                System.out.println("\u001B[31m" + "Expert with this UserName is already exists" + "\u001B[0m");
+
+            return true;
+        }
+        return false;
+    }
+
+    private void updateOperation(ChangeExpertDto expertDto, Expert expert) {
+        if (expert != null) {
+            if (expertDto.firstName() != null) {
+                expert.setFirstName(expertDto.firstName());
+            }
+            if (expertDto.lastName() != null) {
+                expert.setLastName(expertDto.lastName());
+            }
+            if (expertDto.mobileNumber() != null) {
+                expert.setMobileNumber(expertDto.mobileNumber());
+            }
+            if (expertDto.nationalCode() != null) {
+                expert.setNationalCode(expertDto.nationalCode());
+            }
+            if (expertDto.emailAddress() != null) {
+                expert.setEmailAddress(expertDto.emailAddress());
+            }
+            if (expertDto.userName() != null) {
+                expert.setUserName(expertDto.userName());
+            }
+            expertGateway.update(expert);
+            System.out.println("Expert Updated!");
+        } else {
+            System.out.println("Expert not found");
+        }
+    }
 
     private List<byte[]> getPictureByUserName(String userName) {
         return expertGateway.getPictureByUserName(userName);
@@ -203,4 +272,14 @@ public class ExpertOperationImp  implements ExpertOperation {
         }
         return false;
     }
+    @Override
+    public ResponceExpertDto findById(Long expertId) {
+        Expert expert = expertGateway.findById(expertId);
+        ResponceExpertDto responceExpertDto = null;
+        if (expert != null) {
+            responceExpertDto = Mapper.ConvertEntityToDto.convertExpertToDto(expert);
+        }
+        return responceExpertDto;
+    }
+
 }

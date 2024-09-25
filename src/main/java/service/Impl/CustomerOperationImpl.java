@@ -1,9 +1,10 @@
 package service.Impl;
 
-import dto.ChangePasswordDto;
-import dto.RegisterCustomerDto;
+import dto.*;
+import dto.ChangeCustomerDto;
 import entity.Credit;
 import entity.Customer;
+import entity.Expert;
 import enumaration.Role;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
@@ -73,6 +74,86 @@ public class CustomerOperationImpl implements CustomerOperation {
             customerGateway.update(customer);
             System.out.println("change password done");
         } else System.err.println("Customer not found");
+    }
+
+    @Override
+    public void update(ChangeCustomerDto customerDto) {
+        if (validation(customerDto)) return;
+        Customer customer1 = Mapper.ConvertDtoToEntity.convertChangeCustomerDtoToEntity(customerDto);
+        Customer customer = customerGateway.findById(customer1.getId());
+        updateOperation(customerDto, customer);
+    }
+
+    private boolean validation(ChangeCustomerDto customerDto) {
+        Set<ConstraintViolation<ChangeCustomerDto>> violations = validator.validate(customerDto);
+        boolean exists1 = false;
+        boolean exists2 = false;
+        boolean exists3 = false;
+        boolean exists4 = false;
+        if (customerDto.mobileNumber() != null) {
+            exists1 = customerGateway.existUserByMobileNumber(customerDto.mobileNumber());
+        }
+        if (customerDto.nationalCode() != null) {
+            exists2 = customerGateway.existUserByNationalCode(customerDto.nationalCode());
+        }
+        if (customerDto.emailAddress() != null) {
+            exists3 = customerGateway.existUserByEmailAddress(customerDto.emailAddress());
+        }
+        if (customerDto.userName() != null) {
+            exists4 = customerGateway.existUserByUserName(customerDto.userName());
+        }
+        if (!violations.isEmpty() || exists1 || exists2 || exists3 || exists4) {
+            for (ConstraintViolation<ChangeCustomerDto> violation : violations) {
+                System.out.println("\u001B[31m" + violation.getMessage() + "\u001B[0m");
+            }
+            if (exists1)
+                System.out.println("\u001B[31m" + "Expert with this Mobile Number is already exists" + "\u001B[0m");
+            if (exists2)
+                System.out.println("\u001B[31m" + "Expert with this National Code is already exists" + "\u001B[0m");
+            if (exists3)
+                System.out.println("\u001B[31m" + "Expert with this Email Address is already exists" + "\u001B[0m");
+            if (exists4)
+                System.out.println("\u001B[31m" + "Expert with this UserName is already exists" + "\u001B[0m");
+
+            return true;
+        }
+        return false;
+    }
+
+    private void updateOperation(ChangeCustomerDto customerDto, Customer customer) {
+        if (customer != null) {
+            if (customerDto.firstName() != null) {
+                customer.setFirstName(customerDto.firstName());
+            }
+            if (customerDto.lastName() != null) {
+                customer.setLastName(customerDto.lastName());
+            }
+            if (customerDto.mobileNumber() != null) {
+                customer.setMobileNumber(customerDto.mobileNumber());
+            }
+            if (customerDto.nationalCode() != null) {
+                customer.setNationalCode(customerDto.nationalCode());
+            }
+            if (customerDto.emailAddress() != null) {
+                customer.setEmailAddress(customerDto.emailAddress());
+            }
+            if (customerDto.userName() != null) {
+                customer.setUserName(customerDto.userName());
+            }
+            customerGateway.update(customer);
+            System.out.println("Customer Updated!");
+        } else {
+            System.out.println("Customer not found");
+        }
+    }
+    @Override
+    public ResponceCustomerDto findById(Long customerId) {
+        Customer customer = customerGateway.findById(customerId);
+        ResponceCustomerDto responceCustomerDto = null;
+        if (customer != null) {
+            responceCustomerDto = Mapper.ConvertEntityToDto.convertCustomerToDto(customer);
+        }
+        return responceCustomerDto;
     }
 
 }

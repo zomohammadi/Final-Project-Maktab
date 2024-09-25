@@ -1,5 +1,6 @@
 package service.Impl;
 
+import dto.ChangeExpertDto;
 import dto.ChangeSubServiceDto;
 import dto.RegisterSubServiceDto;
 import dto.ResponceSubServiceDto;
@@ -62,7 +63,7 @@ public class SubServiceOperationImpl implements SubServiceOperation {
             System.out.println("There are currently no SubService.");
         return responceSubServiceDtos;
     }
-
+    @Override
     public void update(ChangeSubServiceDto subServiceDto) {
         if (isNotValid(subServiceDto)) return;
         SubService subService1 = Mapper.ConvertDtoToEntity.convertChangeSubServiceDtoToEntity(subServiceDto);
@@ -106,4 +107,43 @@ public class SubServiceOperationImpl implements SubServiceOperation {
         }
         return false;
     }
+
+    @Override
+    public ResponceSubServiceDto findById(Long subServiceId) {
+        SubService subService = subServiceGateway.findById(subServiceId);
+        ResponceSubServiceDto responceSubServiceDto = null;
+        if (subService != null) {
+            responceSubServiceDto = Mapper.ConvertEntityToDto.convertSubServiceToDto(subService);
+        }
+        return responceSubServiceDto;
+    }
+
+
+   /* @Override
+    public void delete(Long subServiceId) {
+        SubService subService = subServiceGateway.findById(subServiceId);
+        if (subService != null) {
+            subServiceGateway.delete(subService);
+            System.out.println("delete Done");
+        } else System.err.println("SubService Not Found");
+    }*/
+
+
 }
+
+   /* public ResponceSubServiceDto findById(Long serviceId) {
+        Set<ConstraintViolation<Long>> violations = validator.validate(serviceId);
+        if (!violations.isEmpty()) {
+            for (ConstraintViolation<Long> violation : violations) {
+                System.out.println("\u001B[31m" + violation.getMessage() + "\u001B[0m");
+            }
+            return null;
+        }
+
+        SubService subService = subServiceGateway.findById(serviceId);
+        ResponceSubServiceDto responceSubServiceDto = null;
+        if (subService!=null) {
+            responceSubServiceDto = Mapper.ConvertEntityToDto.convertSubServiceToDto(subService);
+        }
+        return responceSubServiceDto;
+    }*/

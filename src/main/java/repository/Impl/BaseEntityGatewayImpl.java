@@ -39,6 +39,11 @@ public abstract class BaseEntityGatewayImpl<T extends BaseEntity> implements Bas
         entityManager.merge(t);
         entityManager.getTransaction().commit();
     }
+    public void delete(T t) {
+        entityManager.getTransaction().begin();
+        entityManager.remove(t);
+        entityManager.getTransaction().commit();
+    }
     public EntityManager getEntityManager() {
         return entityManager;
     }

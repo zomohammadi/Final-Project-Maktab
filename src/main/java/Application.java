@@ -15,8 +15,8 @@ public class Application {
                 .userName("zo.mohammadi")
                 .password("zo123456").picturePath("D:\\Java\\picture\\pic.jpg").build();
 
-        instance.getExpertOperation().register(specialistDto);*/
-
+        instance.getExpertOperation().register(specialistDto);
+*/
 
         // ----save another user with duplicate national code
 
@@ -179,7 +179,8 @@ public class Application {
 
         instance.getOrderOperation().orderRegister(orderDto);*/
 
-
+        //------------------------------------------Crud--------------------------------------------------------------
+        //----------------------------------SubService ---------------------------------------------------------------
         //------------update  تغییر نام یا توضیحات یا قیمت پایه زیرخدمت
         //dto بدون ای دی و با نام تکراری
         //ChangeSubServiceDto subServiceDto1 = ChangeSubServiceDto.builder().name("Kitchen gas").build();
@@ -204,6 +205,36 @@ public class Application {
                 .serviceId(1L).build();
         instance.getSubServiceOperation().update(subServiceDto5);*/
 
+        //------------------find by id
+        /* System.out.println(instance.getSubServiceOperation().findById(1L));*/
+
+        //----------------------------------Expert ---------------------------------------------------------------
+        //---------update
+
+      /*  ChangeExpertDto expertDto = ChangeExpertDto.builder().expertId(1l).firstName("zahra")
+                .emailAddress("zahra123@gmail.com").build();
+        instance.getExpertOperation().update(expertDto);*/
+
+        //----------find by id
+        /*System.out.println(instance.getExpertOperation().findById(3L));*/
+
+        //----------------------------------Customer --------------------------------------------------------------
+        //---------update
+        /*ChangeCustomerDto customerDto = ChangeCustomerDto.builder().customerId(2l).firstName("alireza")
+                .emailAddress("alireza123ali@gmail.com").build();
+        instance.getCustomerOperation().update(customerDto);*/
+
+        //----------find by id
+
+        /*System.out.println(instance.getCustomerOperation().findById(2L));*/
+        //----------------------------------Service --------------------------------------------------------------
+        //---------update
+        /*ChangeServiceDto serviceDto = ChangeServiceDto.builder().ServiceId(1l).name("sdf").build();
+        instance.getServiceOperation().update(serviceDto);*/
+
+        ////----------find by id
+
+        /*System.out.println(instance.getServiceOperation().findById(1L));*/
 
     }
 }
@@ -212,3 +243,5 @@ public class Application {
 //                 FoundNationalCodeException | FoundUserNameException e) {
 //            System.err.println(e.getMessage());
 //        }
+//------------------delete by id
+//  instance.getSubServiceOperation().delete(1l);

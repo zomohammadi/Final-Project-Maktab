@@ -12,4 +12,5 @@ public interface BaseEntityGateway<T extends BaseEntity> {
     List<T> findAll();
 
     void update(T t);
+    void delete(T t);
 }

@@ -52,7 +52,7 @@ public class Mapper {
         }
 
         public static SubService convertChangeSubServiceDtoToEntity(ChangeSubServiceDto subServiceDto) {
-            SubService.SubServiceBuilder<?, ?> builder = SubService.builder().id(subServiceDto.serviceId());
+            SubService.SubServiceBuilder<?, ?> builder = SubService.builder().id(subServiceDto.subServiceId());
             if (subServiceDto.name() != null)
                 builder.name(subServiceDto.name());
             if (subServiceDto.description() != null)
@@ -60,6 +60,44 @@ public class Mapper {
             if (subServiceDto.BasePrice() != null)
                 builder.BasePrice(subServiceDto.BasePrice());
             return builder.build();
+        }
+
+        public static Expert convertChangeExpertDtoToEntity(ChangeExpertDto expertDto) {
+            Expert.ExpertBuilder<?, ?> builder = Expert.builder().id(expertDto.expertId());
+            if (expertDto.firstName() != null)
+                builder.firstName(expertDto.firstName());
+            if (expertDto.lastName() != null)
+                builder.lastName(expertDto.lastName());
+            if (expertDto.nationalCode() != null)
+                builder.nationalCode(expertDto.nationalCode());
+            if (expertDto.mobileNumber() != null)
+                builder.mobileNumber(expertDto.mobileNumber());
+            if (expertDto.emailAddress() != null)
+                builder.emailAddress(expertDto.emailAddress());
+            if (expertDto.userName() != null)
+                builder.userName(expertDto.userName());
+            return builder.build();
+        }
+
+        public static Customer convertChangeCustomerDtoToEntity(ChangeCustomerDto customerDto) {
+            Customer.CustomerBuilder<?, ?> builder = Customer.builder().id(customerDto.customerId());
+            if (customerDto.firstName() != null)
+                builder.firstName(customerDto.firstName());
+            if (customerDto.lastName() != null)
+                builder.lastName(customerDto.lastName());
+            if (customerDto.nationalCode() != null)
+                builder.nationalCode(customerDto.nationalCode());
+            if (customerDto.mobileNumber() != null)
+                builder.mobileNumber(customerDto.mobileNumber());
+            if (customerDto.emailAddress() != null)
+                builder.emailAddress(customerDto.emailAddress());
+            if (customerDto.userName() != null)
+                builder.userName(customerDto.userName());
+            return builder.build();
+        }
+
+        public static Service convertChangeServiceDtoToEntity(ChangeServiceDto changeServiceDto) {
+            return Service.builder().id(changeServiceDto.ServiceId()).name(changeServiceDto.name()).build();
         }
     }
 
@@ -71,10 +109,30 @@ public class Mapper {
                     .BasePrice(subService.getBasePrice())
                     .serviceName(subService.getService().getName())
                     .build();
-
         }
 
+        public static ResponceExpertDto convertExpertToDto(Expert expert) {
+            return ResponceExpertDto.builder()
+                    .firstName(expert.getFirstName())
+                    .lastName(expert.getLastName())
+                    .emailAddress(expert.getEmailAddress())
+                    .mobileNumber(expert.getMobileNumber())
+                    .nationalCode(expert.getNationalCode())
+                    .userName(expert.getUserName())
+                    .score(expert.getScore())
+                    .status(expert.getStatus())
+                    .build();
+        }
+
+        public static ResponceCustomerDto convertCustomerToDto(Customer customer) {
+            return ResponceCustomerDto.builder()
+                    .firstName(customer.getFirstName())
+                    .lastName(customer.getLastName())
+                    .emailAddress(customer.getEmailAddress())
+                    .mobileNumber(customer.getMobileNumber())
+                    .nationalCode(customer.getNationalCode())
+                    .userName(customer.getUserName())
+                    .build();
+        }
     }
-
-
 }

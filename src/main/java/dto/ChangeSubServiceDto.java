@@ -21,10 +21,10 @@ public record ChangeSubServiceDto(
         @Max(value = 900000000, message = "Base Price must be less Than {value} numbers ")
         Double BasePrice,
 
-        @NotNull(message = "serviceId cannot be Null")
-        @Min(value = 1, message = "serviceId must be greater than or equal to {value}")
-        @Max(value = Long.MAX_VALUE, message = "serviceId must be less than or equal to {value}")
-        Long serviceId
+        @NotNull(message = "subServiceId cannot be Null")
+        @Min(value = 1, message = "subServiceId must be greater than or equal to {value}")
+        @Max(value = Long.MAX_VALUE, message = "subServiceId must be less than or equal to {value}")
+        Long subServiceId
 ) {
 
 }
