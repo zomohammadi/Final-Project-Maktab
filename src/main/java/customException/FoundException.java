@@ -1,4 +1,4 @@
-package customeException;
+package customException;
 
 public class FoundException extends RuntimeException {
     public FoundException() {

@@ -1,6 +1,7 @@
 package service.Impl;
 
-import customeException.NotFoundException;
+import customException.IoCustomException;
+import customException.NotFoundException;
 import dto.ChangeExpertDto;
 import dto.ChangePasswordDto;
 import dto.RegisterExpertDto;
@@ -29,18 +30,18 @@ public class ExpertOperationImp implements ExpertOperation {
     private final Validator validator;
 
 
-    // Method to check if the file is a JPG based on file extension
+
     private boolean isJpgFile(String filePath) {
         if (filePath.toLowerCase().endsWith(".jpg") || filePath.toLowerCase().endsWith(".jpeg")) {
             System.out.println("correct picture path");
             return true;
-        } else {
+       }  /*else {
             System.out.println("not valid picture path");
             return false;
-        }
+        }*/
+        return false;
     }
 
-    // Method to check if the file is a JPG by checking its content (magic number check)
     private boolean isJpgFileByContent(String filePath) {
         try (FileInputStream fis = new FileInputStream(filePath)) {
             byte[] header = new byte[3];
@@ -50,16 +51,16 @@ public class ExpertOperationImp implements ExpertOperation {
             // JPG files have a magic number starting with 0xFFD8FF
             return (header[0] & 0xFF) == 0xFF && (header[1] & 0xFF) == 0xD8 && (header[2] & 0xFF) == 0xFF;
         } catch (FileNotFoundException e) {
-            throw new RuntimeException("file not found");
+            throw new NotFoundException("file not found");
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new IoCustomException("Error saving image file", e);
         }
     }
 
     // Method to check if the file size is less than or equal to 300 KB
     private boolean isFileSizeValid(String filePath) {
         File file = new File(filePath);
-        return file.length() <= 800 * 1024; // 300 KB = 300 * 1024 bytes
+        return file.length() <= 300 * 1024; // 300 KB = 300 * 1024 bytes
     }
 
     // Method to convert the JPG file to a byte array
@@ -70,9 +71,9 @@ public class ExpertOperationImp implements ExpertOperation {
             fis.read(fileContent);
             return fileContent;
         } catch (FileNotFoundException e) {
-            throw new RuntimeException("file not found");
+            throw new NotFoundException("file not found");
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new IoCustomException("Error saving image file", e);
         }
     }
 
@@ -83,8 +84,6 @@ public class ExpertOperationImp implements ExpertOperation {
                 throw new IllegalArgumentException("File is not a valid JPG format.");
             }
         }
-
-
         if (!isFileSizeValid(filePath)) {
             throw new IllegalArgumentException("File size exceeds 300 KB.");
         }
