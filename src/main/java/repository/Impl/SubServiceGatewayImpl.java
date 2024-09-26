@@ -33,7 +33,6 @@ public class SubServiceGatewayImpl extends BaseEntityGatewayImpl<SubService> imp
                 select s from SubService s inner join Service e on s.service=e where e.id = ?1
                                 """, SubService.class);
         query.setParameter(1, serviceId);
-        List<SubService> resultList = query.getResultList();
-        return resultList;
+        return query.getResultList();
     }
 }

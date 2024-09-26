@@ -1,7 +1,5 @@
 package repository.Impl;
 
-import dto.ChangePasswordDto;
-import entity.BaseEntity;
 import entity.Users;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
@@ -35,7 +33,7 @@ public abstract class UserGatewayImpl<T extends Users> extends BaseEntityGateway
 
     public boolean existUserByEmailAddress(String emailAddress) {
         TypedQuery<Integer> query = getEntityManager().createQuery("""
-                        select 1 from Users where emailAddress = ?1 
+                        select 1 from Users where emailAddress = ?1
                                                               """
                 , Integer.class);
         query.setParameter(1, emailAddress);
@@ -44,7 +42,7 @@ public abstract class UserGatewayImpl<T extends Users> extends BaseEntityGateway
 
     public boolean existUserByUserName(String userName) {
         TypedQuery<Integer> query = getEntityManager().createQuery("""
-                        select 1 from Users u where u.userName = ?1 
+                        select 1 from Users u where u.userName = ?1
                                 """
                 , Integer.class);
         query.setParameter(1, userName);

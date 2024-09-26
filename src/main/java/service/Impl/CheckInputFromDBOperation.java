@@ -13,12 +13,15 @@ public class CheckInputFromDBOperation {
         if (b3)
             errors.add("User with Email Address already exists");
         if (b4)
-            // throw new FoundUserNameException("User with Username already exists");
-            // System.err.println("User with Username already exists");
             errors.add("User with Username already exists");
-        /*if (b || b2 || b3 || b4)
-            throw new FoundException("correct the entries! ");*/
-
         return errors;
     }
 }
+/*
+ if (b4)
+         // throw new FoundUserNameException("User with Username already exists");
+         // System.err.println("User with Username already exists");
+         errors.add("User with Username already exists");
+        */
+/*if (b || b2 || b3 || b4)
+            throw new FoundException("correct the entries! ");*/

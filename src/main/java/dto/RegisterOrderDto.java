@@ -1,6 +1,5 @@
 package dto;
 
-import enumaration.OrderStatus;
 import jakarta.validation.constraints.*;
 import lombok.Builder;
 

@@ -70,12 +70,6 @@ public class ApplicationContext {
         return em;
     }
 
-    /*public ValidatorFactory getValidatorFactory() {
-        if (validatorFactory == null) {
-            validatorFactory = Validation.buildDefaultValidatorFactory();
-        }
-        return validatorFactory;
-    }*/
 
     public Validator getValidator() {
         if (validator == null) {
@@ -109,3 +103,10 @@ public class ApplicationContext {
         return orderOperation;
     }
 }
+
+    /*public ValidatorFactory getValidatorFactory() {
+        if (validatorFactory == null) {
+            validatorFactory = Validation.buildDefaultValidatorFactory();
+        }
+        return validatorFactory;
+    }*/

@@ -1,17 +1,16 @@
 package service.Impl;
 
-import dto.ChangeExpertDto;
 import dto.ChangeSubServiceDto;
 import dto.RegisterSubServiceDto;
 import dto.ResponceSubServiceDto;
-import entity.SubService;
 import entity.Service;
+import entity.SubService;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 import lombok.RequiredArgsConstructor;
 import mapper.Mapper;
-import repository.SubServiceGateway;
 import repository.ServiceGateway;
+import repository.SubServiceGateway;
 import service.SubServiceOperation;
 
 import java.util.List;
@@ -119,7 +118,11 @@ public class SubServiceOperationImpl implements SubServiceOperation {
     }
 
 
-   /* @Override
+
+
+
+}
+/* @Override
     public void delete(Long subServiceId) {
         SubService subService = subServiceGateway.findById(subServiceId);
         if (subService != null) {
@@ -127,9 +130,6 @@ public class SubServiceOperationImpl implements SubServiceOperation {
             System.out.println("delete Done");
         } else System.err.println("SubService Not Found");
     }*/
-
-
-}
 
    /* public ResponceSubServiceDto findById(Long serviceId) {
         Set<ConstraintViolation<Long>> violations = validator.validate(serviceId);
