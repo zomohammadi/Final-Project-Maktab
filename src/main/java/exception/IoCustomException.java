@@ -1,4 +1,4 @@
-package customException;
+package exception;
 
 public class IoCustomException extends RuntimeException {
     public IoCustomException() {

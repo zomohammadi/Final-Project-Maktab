@@ -1,7 +1,7 @@
 package service.Impl;
 
-import customException.IoCustomException;
-import customException.NotFoundException;
+import exception.IoCustomException;
+import exception.NotFoundException;
 import dto.ChangeExpertDto;
 import dto.ChangePasswordDto;
 import dto.RegisterExpertDto;
