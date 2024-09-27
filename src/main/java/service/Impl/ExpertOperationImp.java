@@ -1,15 +1,14 @@
 package service.Impl;
 
+import dto.*;
+import exception.FoundException;
 import exception.IoCustomException;
 import exception.NotFoundException;
-import dto.ChangeExpertDto;
-import dto.ChangePasswordDto;
-import dto.RegisterExpertDto;
-import dto.ResponceExpertDto;
 import entity.Credit;
 import entity.Expert;
 import enumaration.Role;
 import enumaration.Status;
+import exception.ValidationException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +18,9 @@ import repository.ExpertGateway;
 import service.ExpertOperation;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -30,33 +32,31 @@ public class ExpertOperationImp implements ExpertOperation {
     private final Validator validator;
 
 
-
-    private boolean isJpgFile(String filePath) {
+    /*private boolean isJpgFile(String filePath) {
         if (filePath.toLowerCase().endsWith(".jpg") || filePath.toLowerCase().endsWith(".jpeg")) {
-            System.out.println("correct picture path");
+            //  System.out.println("correct picture path");
+
             return true;
-       }  /*else {
-            System.out.println("not valid picture path");
-            return false;
-        }*/
-        return false;
-    }
-
-    private boolean isJpgFileByContent(String filePath) {
-        try (FileInputStream fis = new FileInputStream(filePath)) {
-            byte[] header = new byte[3];
-            if (fis.read(header) != 3) {
-                return false;
-            }
-            // JPG files have a magic number starting with 0xFFD8FF
-            return (header[0] & 0xFF) == 0xFF && (header[1] & 0xFF) == 0xD8 && (header[2] & 0xFF) == 0xFF;
-        } catch (FileNotFoundException e) {
-            throw new NotFoundException("file not found");
-        } catch (IOException e) {
-            throw new IoCustomException("Error saving image file", e);
         }
-    }
+        return false;
+    }*/
 
+    /* private boolean isJpgFileByContent(String filePath) {
+         try (FileInputStream fis = new FileInputStream(filePath)) {
+             byte[] header = new byte[3];
+             int read = fis.read(header);
+             if (read != 3) {
+                 return false;
+             }
+             // JPG files have a magic number starting with 0xFFD8FF
+             return (header[0] & 0xFF) == 0xFF && (header[1] & 0xFF) == 0xD8 && (header[2] & 0xFF) == 0xFF;
+         } catch (FileNotFoundException e) {
+             throw new NotFoundException("file not found");
+         } catch (IOException e) {
+             throw new IoCustomException("Error saving image file", e);
+         }
+     }
+ */
     // Method to check if the file size is less than or equal to 300 KB
     private boolean isFileSizeValid(String filePath) {
         File file = new File(filePath);
@@ -77,12 +77,31 @@ public class ExpertOperationImp implements ExpertOperation {
         }
     }
 
+    public static boolean isImageFileUsingProbeContentType(String inputFilePath) {
+        File file = new File(inputFilePath);
+        Path filePath = file.toPath();
+        String mimeType = null;
+        try {
+            mimeType = Files.probeContentType(filePath);
+        } catch (IOException e) {
+            throw new IoCustomException("Error saving image file", e);
+        }
+        if (mimeType != null && (mimeType.equals("image/jpg") || mimeType.equals("image/jpeg")))
+            return true;
+        else return false;
+        //return mimeType != null && mimeType.startsWith("image/");
+    }
+
     // Method to validate the file and convert it to bytes
     private byte[] processImageFile(String filePath) {
-        if (!isJpgFile(filePath)) {
-            if (!isJpgFileByContent(filePath)) {
-                throw new IllegalArgumentException("File is not a valid JPG format.");
-            }
+        // if (!isJpgFile(filePath)) {
+      /*  if (!isJpgFileByContent(filePath)) {
+            throw new IllegalArgumentException("File is not a valid JPG format.");
+        }*/
+        //  }
+        if (!isImageFileUsingProbeContentType(filePath)) {
+            // if (!isJpgFile(filePath))
+            throw new IllegalArgumentException("File is not a valid JPG format.");
         }
         if (!isFileSizeValid(filePath)) {
             throw new IllegalArgumentException("File size exceeds 300 KB.");
@@ -123,20 +142,23 @@ public class ExpertOperationImp implements ExpertOperation {
 
     private boolean checkInputIsNotValid(RegisterExpertDto expertDto) {
         Set<ConstraintViolation<RegisterExpertDto>> violations = validator.validate(expertDto);
-        Set<String> experts = checkUserInfoFromDB("Expert",
+        Set<String> errors = new HashSet<>();
+        errors = checkUserInfoFromDB("Expert",
                 expertGateway.existUserByNationalCode(expertDto.nationalCode()),
                 expertGateway.existUserByMobileNumber(expertDto.mobileNumber()),
                 expertGateway.existUserByEmailAddress(expertDto.emailAddress()),
                 expertGateway.existUserByUserName(expertDto.userName()));
-        if (!violations.isEmpty() || !experts.isEmpty()) {
+        if (!violations.isEmpty() || !errors.isEmpty()) {
             for (ConstraintViolation<RegisterExpertDto> violation : violations) {
-                System.out.println("\u001B[31m" + violation.getMessage() + "\u001B[0m");
+                errors.add(violation.getMessage());
             }
-            if (!experts.isEmpty()) {
+            throw new ValidationException(errors);
+            //throw new ValidationException(violations); //M.F
+           /* if (!experts.isEmpty()) {
                 for (String s : experts)
                     System.out.println("\u001B[31m" + s + "\u001B[0m");
             }
-            return true;
+            return true;*/
         }
         return false;
     }
@@ -273,6 +295,7 @@ public class ExpertOperationImp implements ExpertOperation {
         }
         return false;
     }
+
     @Override
     public ResponceExpertDto findById(Long expertId) {
         Expert expert = expertGateway.findById(expertId);

@@ -29,7 +29,7 @@ public class SubServiceOperationImpl implements SubServiceOperation {
         Service service = serviceGateway.findById(subServiceDto.serviceId());
         if (!violations.isEmpty() || exists || service == null) {
             for (ConstraintViolation<RegisterSubServiceDto> violation : violations) {
-                System.out.println("\u001B[31m" + violation.getMessage() + "\u001B[0m");
+                System.out.println("\u001B[3m" + violation.getMessage() + "\u001B[0m");
             }
             if (exists)
                 System.out.println("\u001B[31m" + " Sub Service with this name is already exists" + "\u001B[0m");

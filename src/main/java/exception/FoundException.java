@@ -1,6 +1,13 @@
 package exception;
 
+import jakarta.validation.ConstraintViolation;
+import lombok.Getter;
+
+import java.util.Set;
+
+@Getter
 public class FoundException extends RuntimeException {
+
     public FoundException() {
         super();
     }

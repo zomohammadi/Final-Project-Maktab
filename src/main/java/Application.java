@@ -1,4 +1,7 @@
 import dto.*;
+import exception.ExceptionHandler;
+import exception.IoCustomException;
+import exception.NotFoundException;
 import util.ApplicationContext;
 
 import java.time.ZonedDateTime;
@@ -8,17 +11,15 @@ public class Application {
         ApplicationContext instance = ApplicationContext.getInstance();
 
         //----------------save Expert
- /*       RegisterExpertDto specialistDto = RegisterExpertDto.builder().firstName("zohreh")
+        RegisterExpertDto specialistDto = RegisterExpertDto.builder().firstName("zohreh")
                 .lastName("Mohammadi").emailAddress("zo.mohammadi@gmail.com")
-                .mobileNumber("09197847756").nationalCode("0045265772")
+                .mobileNumber("091978477456").nationalCode("0045265772")
                 .userName("zo.mohammadi")
                 .password("zo123456").picturePath("D:\\Java\\picture\\zohre.jpg").build();
 
-        try {
-            instance.getExpertOperation().register(specialistDto);
-        }  catch (NotFoundException | IllegalArgumentException | IoCustomException e) {
-            System.out.println(e.getMessage());
-        }*/
+        ExceptionHandler exceptionHandler = new ExceptionHandler();
+
+        exceptionHandler.handel(() -> instance.getExpertOperation().register(specialistDto));
 
 
         // ----save another user with duplicate national code
@@ -38,15 +39,15 @@ public class Application {
 //        }
 
         //----------------get picture of expert
-       /* try {
+      /*  try {
 
             instance.getExpertOperation().getPicture("zo.mohammadi");
         } catch (NotFoundException e) {
             System.err.println(e.getMessage());
         }*/
 
-       //---------------------------
-       // instance.getExpertOperation()
+        //---------------------------
+        // instance.getExpertOperation()
         //----------------save customer
        /* RegisterCustomerDto customerDto = RegisterCustomerDto.builder().firstName("ali")
                 .lastName("bayati").emailAddress("ali123123.com")
@@ -136,15 +137,15 @@ public class Application {
         instance.getAdminOperation().addSubServiceToExpert(3L, 1L);
 */
 
-   //    instance.getAdminOperation().addSubServiceToExpert(4L, 1L);
+        //    instance.getAdminOperation().addSubServiceToExpert(4L, 1L);
         //---------------admin --> حذف  کردن متخصص از زیرخدمت
 
-     /*   instance.getAdminOperation().deleteSubServiceFromExpert(3L, 1L);
+        /*   instance.getAdminOperation().deleteSubServiceFromExpert(3L, 1L);
 
-*/
+         */
         //----------------------find service نمایش تمام خدمت ها
 
-       // instance.getServiceOperation().findAllService().forEach(System.out::println);
+        // instance.getServiceOperation().findAllService().forEach(System.out::println);
 
 
         //----------------------find sub service نمایش تمام زیرخدمت های یک خدمت
@@ -157,7 +158,7 @@ public class Application {
 
         //-----------order ---ثبت سفارش
 
-        RegisterOrderDto orderDto1 = RegisterOrderDto.builder()
+     /*   RegisterOrderDto orderDto1 = RegisterOrderDto.builder()
                 .customerId(2L)
                 .subServiceId(2L)
                 .priceSuggested(5000000.0)
@@ -167,7 +168,7 @@ public class Application {
                         , 0, 0, ZonedDateTime.now().getZone()))
                 .build();
 
-        instance.getOrderOperation().orderRegister(orderDto1);
+        instance.getOrderOperation().orderRegister(orderDto1);*/
 
         // ----------------- اضافه کردن سفارش با اطلاعات نادرست-----------------
       /*  RegisterOrderDto orderDto = RegisterOrderDto.builder()
@@ -209,7 +210,7 @@ public class Application {
                 .subServiceId(1L).build();
         instance.getSubServiceOperation().update(subServiceDto6);*/
         //------------------find by id
-     //   System.out.println(instance.getSubServiceOperation().findById(2L));
+        //   System.out.println(instance.getSubServiceOperation().findById(2L));
         //----------------------------------Expert ---------------------------------------------------------------
         //---------update
 /*
@@ -221,8 +222,8 @@ public class Application {
 
 
         //----------find by id
-   /*     System.out.println(instance.getExpertOperation().findById(1L));
-*/
+        /*     System.out.println(instance.getExpertOperation().findById(1L));
+         */
         //----------------------------------Customer --------------------------------------------------------------
         //---------update
        /* ChangeCustomerDto customerDto5 = ChangeCustomerDto.builder().customerId(2L).firstName("alireza")
@@ -240,8 +241,8 @@ public class Application {
 
         ////----------find by id
 
-       /* System.out.println(instance.getServiceOperation().findById(1L));
-*/
+        /* System.out.println(instance.getServiceOperation().findById(1L));
+         */
 
     }
 }
