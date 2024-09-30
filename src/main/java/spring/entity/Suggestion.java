@@ -1,0 +1,35 @@
+package spring.entity;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToOne;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
+import lombok.experimental.SuperBuilder;
+
+import java.time.ZonedDateTime;
+
+@Entity
+
+@SuperBuilder
+
+@Setter
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public class Suggestion extends BaseEntity {
+
+    private Double priceSuggested;
+
+    @Builder.Default
+    private ZonedDateTime suggestedDateAndTime = ZonedDateTime.now();
+
+    private ZonedDateTime suggestedTimeStartService;
+    String durationOfService;
+
+    @ManyToOne
+    Expert expert;
+
+    @ManyToOne
+    Orders order;
+}
