@@ -11,8 +11,9 @@ import spring.service.ServiceOperation;
 
 import java.util.List;
 import java.util.Set;
-@org.springframework.stereotype.Service
+
 @RequiredArgsConstructor
+@org.springframework.stereotype.Service
 public class ServiceOperationImpl implements ServiceOperation {
     private final ServiceGateway serviceGateway;
     private final Validator validator;
@@ -30,8 +31,7 @@ public class ServiceOperationImpl implements ServiceOperation {
                 System.out.println("\u001B[31m" + "service with this name is already exists" + "\u001B[0m");
             return;
         }
-       /* if (serviceGateway.existsByName(serviceName))
-            throw new FoundException("service with this name is already exists");*/
+
 
         serviceGateway.save(service);
         System.out.println("service Register done");
@@ -96,3 +96,5 @@ public class ServiceOperationImpl implements ServiceOperation {
         return responceService;
     }
 }
+/* if (serviceGateway.existsByName(serviceName))
+            throw new FoundException("service with this name is already exists");*/

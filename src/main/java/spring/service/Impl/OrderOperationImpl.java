@@ -1,14 +1,15 @@
 package spring.service.Impl;
 
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validator;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import spring.dto.RegisterOrderDto;
 import spring.entity.Customer;
 import spring.entity.Orders;
 import spring.entity.SubService;
 import spring.enumaration.OrderStatus;
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.Validator;
-import lombok.RequiredArgsConstructor;
 import spring.mapper.Mapper;
 import spring.repository.CustomerGateway;
 import spring.repository.OrderGateway;
@@ -30,35 +31,46 @@ public class OrderOperationImpl implements OrderOperation {
         Set<ConstraintViolation<RegisterOrderDto>> violations = validator.validate(orderDto);
         SubService subService = subServiceGateway.findById(orderDto.subServiceId()).orElse(null);
         Customer customer = customerGateway.findById(orderDto.customerId()).orElse(null);
-        if (!violations.isEmpty() || subService==null || customer==null) {
+        if (!violations.isEmpty() || subService == null || customer == null) {
             for (ConstraintViolation<RegisterOrderDto> violation : violations) {
                 System.out.println("\u001B[31m" + violation.getMessage() + "\u001B[0m");
             }
-            if (subService==null)
+            if (subService == null)
                 System.out.println("\u001B[31m" + "subService not found" + "\u001B[0m");
-            if (customer==null)
+            if (customer == null)
                 System.out.println("\u001B[31m" + "Customer not found" + "\u001B[0m");
-            if (subService!=null && subService.getBasePrice() > orderDto.priceSuggested())
+            if (subService != null && subService.getBasePrice() > orderDto.priceSuggested())
                 System.out.println("\u001B[31m" + """
                         your suggested price is less than the Base Price of this SubService
                         """ + "\u001B[0m");
             return;
         }
-       // if (subService!=null && customer !=null) {
-            if (subService.getBasePrice() > orderDto.priceSuggested()) {
-                System.err.println("""
-                        your suggested price is less than the Base Price of this SubService
-                        """);
-                return;
-            }
-            Orders order = Mapper.ConvertDtoToEntity.
-                    convertOrderDtoToEntity(orderDto, customer, subService);
-            order.setOrderStatus(OrderStatus.WaitingForSuggestionOfExperts);
-            orderGateway.save(order);
-            System.out.println("Order Register Done");
-      //  }
+        // if (subService!=null && customer !=null) {
+        if (subService.getBasePrice() > orderDto.priceSuggested()) {
+            System.err.println("""
+                    your suggested price is less than the Base Price of this SubService
+                    """);
+            return;
+        }
+        Orders order = Mapper.ConvertDtoToEntity.
+                convertOrderDtoToEntity(orderDto, customer, subService);
+        order.setOrderStatus(OrderStatus.WaitingForSuggestionOfExperts);
+        orderGateway.save(order);
+        System.out.println("Order Register Done");
+        //  }
     }
 
+    @Override
+    public Orders findById(Long orderId) {
+        return orderGateway
+                .findById(orderId).orElseThrow(() -> new EntityNotFoundException("order not Found"));
+
+    }
+
+    public void changeOrderStatus(Orders oldOrder, OrderStatus status) {
+        oldOrder.setOrderStatus(status);
+        orderGateway.save(oldOrder);
+    }
 
 
 }

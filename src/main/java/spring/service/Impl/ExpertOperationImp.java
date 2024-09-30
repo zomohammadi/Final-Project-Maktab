@@ -25,7 +25,6 @@ import spring.service.ExpertOperation;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashSet;
 import java.util.Set;
 
 import static spring.service.Impl.CheckInputFromDBOperation.checkUserInfoFromDB;
@@ -52,7 +51,7 @@ public class ExpertOperationImp implements ExpertOperation {
 
     private boolean checkInputIsNotValid(RegisterExpertDto expertDto) {
         Set<ConstraintViolation<RegisterExpertDto>> violations = validator.validate(expertDto);
-        Set<String> errors = new HashSet<>();
+        Set<String> errors;
         errors = checkUserInfoFromDB("Expert",
                 expertGateway.existUserByNationalCode(expertDto.nationalCode()),
                 expertGateway.existUserByMobileNumber(expertDto.mobileNumber()),
@@ -63,40 +62,10 @@ public class ExpertOperationImp implements ExpertOperation {
                 errors.add(violation.getMessage());
             }
             throw new ValidationException(errors);
-            //throw new ValidationException(violations); //M.F
-           /* if (!experts.isEmpty()) {
-                for (String s : experts)
-                    System.out.println("\u001B[31m" + s + "\u001B[0m");
-            }
-            return true;*/
         }
         return false;
     }
-    /*private boolean isJpgFile(String filePath) {
-        if (filePath.toLowerCase().endsWith(".jpg") || filePath.toLowerCase().endsWith(".jpeg")) {
-            //  System.out.println("correct picture path");
 
-            return true;
-        }
-        return false;
-    }*/
-
-    /* private boolean isJpgFileByContent(String filePath) {
-         try (FileInputStream fis = new FileInputStream(filePath)) {
-             byte[] header = new byte[3];
-             int read = fis.read(header);
-             if (read != 3) {
-                 return false;
-             }
-             // JPG files have a magic number starting with 0xFFD8FF
-             return (header[0] & 0xFF) == 0xFF && (header[1] & 0xFF) == 0xD8 && (header[2] & 0xFF) == 0xFF;
-         } catch (FileNotFoundException e) {
-             throw new NotFoundException("file not found");
-         } catch (IOException e) {
-             throw new IoCustomException("Error saving image file", e);
-         }
-     }
- */
     // Method to check if the file size is less than or equal to 300 KB
     private boolean isFileSizeValid(String filePath) {
         File file = new File(filePath);
@@ -120,27 +89,18 @@ public class ExpertOperationImp implements ExpertOperation {
     public static boolean isImageFileUsingProbeContentType(String inputFilePath) {
         File file = new File(inputFilePath);
         Path filePath = file.toPath();
-        String mimeType = null;
+        String mimeType;
         try {
             mimeType = Files.probeContentType(filePath);
         } catch (IOException e) {
             throw new IoCustomException("Error saving image file", e);
         }
-        if (mimeType != null && (mimeType.equals("image/jpg") || mimeType.equals("image/jpeg")))
-            return true;
-        else return false;
-        //return mimeType != null && mimeType.startsWith("image/");
+        return mimeType != null && (mimeType.equals("image/jpg") || mimeType.equals("image/jpeg"));
     }
 
     // Method to validate the file and convert it to bytes
     private byte[] processImageFile(String filePath) {
-        // if (!isJpgFile(filePath)) {
-      /*  if (!isJpgFileByContent(filePath)) {
-            throw new IllegalArgumentException("File is not a valid JPG format.");
-        }*/
-        //  }
         if (!isImageFileUsingProbeContentType(filePath)) {
-            // if (!isJpgFile(filePath))
             throw new IllegalArgumentException("File is not a valid JPG format.");
         }
         if (!isFileSizeValid(filePath)) {
@@ -238,35 +198,19 @@ public class ExpertOperationImp implements ExpertOperation {
         }
     }
     @Transactional//(readOnly = true)
-    public /*Optional<*/byte[]/*>*/ getPictureByUserName(String userName) {
+    public byte[] getPictureByUserName(String userName) {
         return expertGateway.getPictureByUserName(userName);
     }
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public void getPicture(String userName) {
-        /*Optional<*/byte[]/*>*/ pictureOptional  = getPictureByUserName(userName);
-      //  if (pictureOptional.isEmpty()) {
+       byte[] pictureOptional  = getPictureByUserName(userName);
         if (pictureOptional==null) {
             throw new NotFoundException("Expert with this User Name not found!");
         }
         convertBytesToFile(pictureOptional, userName);
-        /*byte[] picture = pictureOptional.get();
-        convertBytesToFile(picture, userName);*/
     }
- /*   @Override
-    public void getPictureById(Long id) {
-        Optional<Expert> optionalExpert = expertGateway.findById(id);
-        if (optionalExpert.isEmpty()) {
-            throw new NotFoundException("Expert with this Id not found!");
-        }
-        Expert expert = optionalExpert.get();
-        byte[] picture = expert.getPicture();
-        String userName = expert.getUserName();
-        convertBytesToFile(picture, userName);
-        *//*byte[] picture = pictureOptional.get();
-        convertBytesToFile(picture, userName);*//*
-    }*/
     @Override
     public void changeExpertStatus(Long expertId, String status) {
 
@@ -327,3 +271,28 @@ public class ExpertOperationImp implements ExpertOperation {
     }
 
 }
+/*private boolean isJpgFile(String filePath) {
+        if (filePath.toLowerCase().endsWith(".jpg") || filePath.toLowerCase().endsWith(".jpeg")) {
+            //  System.out.println("correct picture path");
+
+            return true;
+        }
+        return false;
+    }*/
+
+    /* private boolean isJpgFileByContent(String filePath) {
+         try (FileInputStream fis = new FileInputStream(filePath)) {
+             byte[] header = new byte[3];
+             int read = fis.read(header);
+             if (read != 3) {
+                 return false;
+             }
+             // JPG files have a magic number starting with 0xFFD8FF
+             return (header[0] & 0xFF) == 0xFF && (header[1] & 0xFF) == 0xD8 && (header[2] & 0xFF) == 0xFF;
+         } catch (FileNotFoundException e) {
+             throw new NotFoundException("file not found");
+         } catch (IOException e) {
+             throw new IoCustomException("Error saving image file", e);
+         }
+     }
+ */

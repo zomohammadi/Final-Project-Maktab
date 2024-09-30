@@ -1,5 +1,7 @@
 package spring.exception;
 
+import jakarta.persistence.EntityNotFoundException;
+
 public class ExceptionHandler {
     public void handel(Runnable runnable) {
         try {
@@ -12,8 +14,9 @@ public class ExceptionHandler {
 
 
         }*/ catch (ValidationException e) {
-            e.getErrors().forEach(System.out::println);
-            //System.out.println("\u001B[34m" + e.getErrors() + "\u001B[0m");
+            e.getErrors().forEach(error->System.out.println("\u001B[33m" + error + "\u001B[0m"));
+        } catch (FoundException | EntityNotFoundException e) {
+            System.out.println("\u001B[33m" + e.getMessage() + "\u001B[0m");
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }

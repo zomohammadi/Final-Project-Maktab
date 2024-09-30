@@ -100,6 +100,16 @@ public class Mapper {
         public static Service convertChangeServiceDtoToEntity(ChangeServiceDto changeServiceDto) {
             return Service.builder().id(changeServiceDto.ServiceId()).name(changeServiceDto.name()).build();
         }
+        public static Suggestion convertSuggestionDtoToEntity(RegisterSuggestionDto suggestionDto
+                ,Expert expert,Orders order){
+            return Suggestion.builder()
+                    .expert(expert)
+                    .order(order)
+                    .durationOfService(suggestionDto.durationOfService())
+                    .priceSuggested(suggestionDto.priceSuggestion())
+                    .suggestedTimeStartService(suggestionDto.suggestedTimeStartService())
+                    .build();
+        }
     }
 
     public static class ConvertEntityToDto {

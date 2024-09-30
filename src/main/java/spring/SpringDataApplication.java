@@ -18,6 +18,7 @@ import java.time.ZonedDateTime;
 public class SpringDataApplication {
     public static void main(String[] args) {
         SpringApplication.run(SpringDataApplication.class, args);
+
     }
 
     @Bean
@@ -31,18 +32,19 @@ public class SpringDataApplication {
                                    ServiceOperation serviceOperation,
                                    SubServiceOperation subServiceOperation,
                                    OrderOperation orderOperation,
-                                   AdminOperation adminOperation) {
+                                   AdminOperation adminOperation,
+                                   SuggestionOperation suggestionOperation) {
         return args -> {
+            ExceptionHandler exceptionHandler = new ExceptionHandler();
 //--------------------------------save Expert
-            RegisterExpertDto specialistDto = RegisterExpertDto.builder().firstName("zohreh")
+           /* RegisterExpertDto specialistDto = RegisterExpertDto.builder().firstName("zohreh")
                     .lastName("Mohammadi").emailAddress("zo.mohammadi@gmail.com")
                     .mobileNumber("09197847456").nationalCode("0045265772")
                     .userName("zo.mohammadi")
                     .password("zo123456").picturePath("D:\\Java\\picture\\zohre.jpg").build();
 
-            ExceptionHandler exceptionHandler = new ExceptionHandler();
 
-            exceptionHandler.handel(() -> expertOperation.register(specialistDto));
+            exceptionHandler.handel(() -> expertOperation.register(specialistDto));*/
 //--------------------------------get picture of expert
           /*  try {
 
@@ -117,36 +119,37 @@ public class SpringDataApplication {
 //----------------find service نمایش تمام خدمت ها
 
 
-            serviceOperation.findAllService().forEach(System.out::println);
+            /*   serviceOperation.findAllService().forEach(System.out::println);*/
 
 
 //----------------find SubService  نمایش تمام زیرخدمت ها
 
 
-            subServiceOperation.findAllSubService().forEach(System.out::println);
+            /* subServiceOperation.findAllSubService().forEach(System.out::println);*/
 
 
 //----------------admin --> تغییر وضعیت متخصص از وضعیت جدید به تایید شده
 
 
-           /* expertOperation.changeExpertStatus(1L, "Confirmed");*/
+            /* expertOperation.changeExpertStatus(1L, "Confirmed");*/
 
 
 //----------------admin --> اضافه کردن متخصص تایید شده به زیرخدمت
 
 
-          /*  adminOperation.addSubServiceToExpert(1L, 1L);*/
-
+            /*  adminOperation.addSubServiceToExpert(1L, 1L);
+              adminOperation.addSubServiceToExpert(1L, 2L);
+*/
 
 //    adminOperation.addSubServiceToExpert(2L, 1L);
 //---------------admin --> حذف  کردن متخصص از زیرخدمت
 
-             /*adminOperation.deleteSubServiceFromExpert(1L, 1L);*/
+            /*adminOperation.deleteSubServiceFromExpert(1L, 1L);*/
 
 
 //----------------------find service نمایش تمام خدمت ها
 
-           /* serviceOperation.findAllService().forEach(System.out::println);*/
+            /* serviceOperation.findAllService().forEach(System.out::println);*/
 
 
 //----------------------find sub service نمایش تمام زیرخدمت های یک خدمت
@@ -158,7 +161,7 @@ public class SpringDataApplication {
 
 //-----------order ---ثبت سفارش
 
-            RegisterOrderDto orderDto1 = RegisterOrderDto.builder()
+           /* RegisterOrderDto orderDto1 = RegisterOrderDto.builder()
                     .customerId(2L)
                     .subServiceId(2L)
                     .priceSuggested(5000000.0)
@@ -168,7 +171,33 @@ public class SpringDataApplication {
                             , 0, 0, ZonedDateTime.now().getZone()))
                     .build();
 
-            orderOperation.orderRegister(orderDto1);
+            orderOperation.orderRegister(orderDto1);*/
+
+
+//----------------------------------------------------------Faz2--------------------------------------------------
+
+//---------------List orders that expert can  register suggestion for them:
+            suggestionOperation.listOrders(1L)
+                    .forEach(projection -> System.out.println(
+                            "orderId: " + projection.getId() +
+                            "  SubService: " + projection.getSubService() +
+                            "  Address: " + projection.getAddress() +
+                            "  UserName: " + projection.getUserName() +
+                            "  PriceSuggested: " + projection.getPriceSuggested() +
+                            "  ServiceDescription: " + projection.getServiceDescription() +
+                            "  TimeForServiceDone: " + projection.getTimeForServiceDone()
+
+                    ));
+
+//----------------------register Suggestion
+            RegisterSuggestionDto suggestionDto = RegisterSuggestionDto.builder()
+                    .expertId(1L).orderId(1L).priceSuggestion(5000000.0).durationOfService("5 saat")
+                    .suggestedTimeStartService(ZonedDateTime.of(2024, 11, 12, 8, 31
+                            , 0, 0, ZonedDateTime.now().getZone()))
+                    .build();
+
+            exceptionHandler.handel(() -> suggestionOperation.registerSuggestion(suggestionDto));
+
         };
     }
 

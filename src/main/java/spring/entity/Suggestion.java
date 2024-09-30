@@ -2,6 +2,8 @@ package spring.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
@@ -11,6 +13,8 @@ import java.time.ZonedDateTime;
 @Entity
 
 @SuperBuilder
+
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"expert_id", "order_id"}))
 
 @Setter
 @Getter
