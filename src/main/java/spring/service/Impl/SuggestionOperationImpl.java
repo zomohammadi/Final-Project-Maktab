@@ -13,6 +13,7 @@ import spring.entity.Expert;
 import spring.entity.Orders;
 import spring.entity.Suggestion;
 import spring.enumaration.OrderStatus;
+import spring.exception.NotFoundException;
 import spring.exception.ValidationException;
 import spring.exception.ViolationsException;
 import spring.mapper.Mapper;
@@ -22,10 +23,7 @@ import spring.repository.SuggestionGateway;
 import spring.service.OrderOperation;
 import spring.service.SuggestionOperation;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -38,7 +36,10 @@ public class SuggestionOperationImpl implements SuggestionOperation {
 
     @Override
     public List<OrdersBriefProjection> listOrders(Long expertId) {
-        return suggestionGateway.listOrders(expertId);
+        List<OrdersBriefProjection> ordersBriefProjections = suggestionGateway.listOrders(expertId);
+        if (ordersBriefProjections.isEmpty())
+            throw new NotFoundException("no list Found for this expert");
+        return ordersBriefProjections;
     }
 
 
@@ -66,7 +67,11 @@ public class SuggestionOperationImpl implements SuggestionOperation {
 
             throw new ViolationsException(violations);
         }
-        return suggestionGateway.listOrderSuggestions(orderOfCustomerDto);
+        List<SuggestionBriefProjection> suggestionBriefProjections = suggestionGateway.listOrderSuggestions(orderOfCustomerDto.customerId()
+                , orderOfCustomerDto.orderId());
+        if (suggestionBriefProjections.isEmpty())
+            throw new NotFoundException("no List Found for this customer and this order");
+        return suggestionBriefProjections;
     }
 
 
@@ -92,6 +97,17 @@ public class SuggestionOperationImpl implements SuggestionOperation {
             throw new ValidationException(errors);
         }
     }
+
+    public void selectSuggestionOfOrder(Long suggestionId) {
+        Suggestion suggestion = suggestionGateway.findById(suggestionId)
+                .orElseThrow(() -> new NotFoundException("suggestion not found"));
+
+        Orders order = suggestion.getOrder();
+
+        orderOperation.addExpertToOrder(order,suggestion.getExpert(),
+                OrderStatus.WaitingForExpertToComeToYourPlace);
+    }
+
 }
 
 /*

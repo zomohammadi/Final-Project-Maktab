@@ -7,9 +7,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import spring.dto.RegisterOrderDto;
 import spring.entity.Customer;
+import spring.entity.Expert;
 import spring.entity.Orders;
 import spring.entity.SubService;
 import spring.enumaration.OrderStatus;
+import spring.exception.NotFoundException;
 import spring.mapper.Mapper;
 import spring.repository.CustomerGateway;
 import spring.repository.OrderGateway;
@@ -67,11 +69,23 @@ public class OrderOperationImpl implements OrderOperation {
 
     }
 
-    public void changeOrderStatus(Orders oldOrder, OrderStatus status) {
-        oldOrder.setOrderStatus(status);
-        orderGateway.save(oldOrder);
+    public void changeOrderStatus(Orders order, OrderStatus status) {
+        order.setOrderStatus(status);
+        orderGateway.save(order);
     }
 
+    public void addExpertToOrder(Orders order, Expert expert, OrderStatus status) {
+        order.setExpert(expert);
+        changeOrderStatus(order, status);
+    }
+
+    public void changeOrderStatusToStarted(Long orderId) {
+        Orders order = orderGateway.findById(orderId)
+                .orElseThrow(() -> new EntityNotFoundException("order not Found"));
+        if (order.getOrderStatus() == OrderStatus.WaitingForExpertToComeToYourPlace)
+            changeOrderStatus(order, OrderStatus.Started);
+        else throw new NotFoundException("your status is not Waiting For Expert To Come To YourPlace ");
+    }
 
 }
 

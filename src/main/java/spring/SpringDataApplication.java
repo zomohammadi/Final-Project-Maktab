@@ -1,7 +1,5 @@
 package spring;
 
-import jakarta.validation.Validation;
-import jakarta.validation.Validator;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -22,11 +20,6 @@ public class SpringDataApplication {
     }
 
     @Bean
-    Validator validator() {
-        return Validation.buildDefaultValidatorFactory().getValidator();
-    }
-
-    @Bean
     CommandLineRunner expertRunner(ExpertOperation expertOperation,
                                    CustomerOperation customerOperation,
                                    ServiceOperation serviceOperation,
@@ -41,6 +34,15 @@ public class SpringDataApplication {
                     .lastName("Mohammadi").emailAddress("zo.mohammadi@gmail.com")
                     .mobileNumber("09197847456").nationalCode("0045265772")
                     .userName("zo.mohammadi")
+                    .password("zo123456").picturePath("D:\\Java\\picture\\zohre.jpg").build();
+
+
+            exceptionHandler.handel(() -> expertOperation.register(specialistDto));*/
+            //-----add another expert
+         /*    RegisterExpertDto specialistDto = RegisterExpertDto.builder().firstName("shima")
+                    .lastName("heydari").emailAddress("shima@gmail.com")
+                    .mobileNumber("09179948746").nationalCode("0017845718")
+                    .userName("sh123")
                     .password("zo123456").picturePath("D:\\Java\\picture\\zohre.jpg").build();
 
 
@@ -132,6 +134,7 @@ public class SpringDataApplication {
 
 
             /* expertOperation.changeExpertStatus(1L, "Confirmed");*/
+            /* expertOperation.changeExpertStatus(3L, "Confirmed");*/
 
 
 //----------------admin --> اضافه کردن متخصص تایید شده به زیرخدمت
@@ -141,7 +144,7 @@ public class SpringDataApplication {
               adminOperation.addSubServiceToExpert(1L, 2L);
 */
 
-//    adminOperation.addSubServiceToExpert(2L, 1L);
+    //adminOperation.addSubServiceToExpert(3L, 2L);
 //---------------admin --> حذف  کردن متخصص از زیرخدمت
 
             /*adminOperation.deleteSubServiceFromExpert(1L, 1L);*/
@@ -177,7 +180,7 @@ public class SpringDataApplication {
 //----------------------------------------------------------Faz2--------------------------------------------------
 
 //---------------List orders that expert can  register suggestion for them:
-        /*    suggestionOperation.listOrders(1L)
+           /* exceptionHandler.handel(() ->suggestionOperation.listOrders(4L)
                     .forEach(projection -> System.out.println(
                             "orderId: " + projection.getId() +
                             "  SubService: " + projection.getSubService() +
@@ -187,7 +190,7 @@ public class SpringDataApplication {
                             "  ServiceDescription: " + projection.getServiceDescription() +
                             "  TimeForServiceDone: " + projection.getTimeForServiceDone()
 
-                    ));*/
+                    )));*/
 
 //----------------------register Suggestion
            /* RegisterSuggestionDto suggestionDto = RegisterSuggestionDto.builder()
@@ -198,13 +201,22 @@ public class SpringDataApplication {
 
             exceptionHandler.handel(() -> suggestionOperation.registerSuggestion(suggestionDto));*/
 
+            //for expert_id = 3
+             /* RegisterSuggestionDto suggestionDto = RegisterSuggestionDto.builder()
+                    .expertId(3L).orderId(1L).priceSuggestion(6000000.0).durationOfService("1 saat")
+                    .suggestedTimeStartService(ZonedDateTime.of(2024, 11, 12, 8, 31
+                            , 0, 0, ZonedDateTime.now().getZone()))
+                    .build();
+
+            exceptionHandler.handel(() -> suggestionOperation.registerSuggestion(suggestionDto));*/
+
 //--------------------List Order Suggestion of customer:
-            OrderOfCustomerDto orderOfCustomerDto = OrderOfCustomerDto.builder()
+          /*  OrderOfCustomerDto orderOfCustomerDto = OrderOfCustomerDto.builder()
                     .customerId(2L)
                     .orderId(1L)
                     .build();
 
-            suggestionOperation.listOrderSuggestions(orderOfCustomerDto)
+            exceptionHandler.handel(() ->suggestionOperation.listOrderSuggestions(orderOfCustomerDto)
                     .forEach(projection -> System.out.println(
                             "Id: " + projection.getId() +
                             "  DurationOfService: " + projection.getDurationOfService() +
@@ -214,8 +226,13 @@ public class SpringDataApplication {
                             "  FirstName: " + projection.getFirstName() +
                             "  LastName: " + projection.getLastName() +
                             "  Score: " + projection.getScore()
-                    ));
+                    )));*/
+//--------------------select suggestion of above list: (change the order status and add expert_id to Order table)
 
+           /* exceptionHandler.handel(() -> suggestionOperation.selectSuggestionOfOrder(4L));*/
+
+//-------------------
+           /* exceptionHandler.handel(() ->orderOperation.changeOrderStatusToStarted(1L));*/
         };
     }
 

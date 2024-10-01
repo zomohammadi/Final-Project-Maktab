@@ -13,4 +13,5 @@ public interface SuggestionOperation {
     void registerSuggestion(RegisterSuggestionDto suggestionDto);
 
     List<SuggestionBriefProjection> listOrderSuggestions(OrderOfCustomerDto orderOfCustomerDto);
+    void selectSuggestionOfOrder(Long suggestionId);
 }

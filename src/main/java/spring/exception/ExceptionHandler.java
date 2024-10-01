@@ -14,7 +14,7 @@ public class ExceptionHandler {
                 System.out.println(v.getMessage());
 
         } catch (FoundException |
-                 EntityNotFoundException e) {
+                 EntityNotFoundException|NotFoundException e) {
             System.out.println("\u001B[33m" + e.getMessage() + "\u001B[0m");
         } catch (
                 Exception e) {
