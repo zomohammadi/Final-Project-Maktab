@@ -5,13 +5,16 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import spring.dto.OrderOfCustomerDto;
 import spring.dto.RegisterSuggestionDto;
 import spring.dto.projection.OrdersBriefProjection;
+import spring.dto.projection.SuggestionBriefProjection;
 import spring.entity.Expert;
 import spring.entity.Orders;
 import spring.entity.Suggestion;
 import spring.enumaration.OrderStatus;
 import spring.exception.ValidationException;
+import spring.exception.ViolationsException;
 import spring.mapper.Mapper;
 import spring.repository.ExpertGateway;
 import spring.repository.OrderGateway;
@@ -21,6 +24,7 @@ import spring.service.SuggestionOperation;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 @Service
@@ -54,6 +58,17 @@ public class SuggestionOperationImpl implements SuggestionOperation {
             if (order.getOrderStatus() != OrderStatus.WaitingForExpertSelection)
                 orderOperation.changeOrderStatus(order, OrderStatus.WaitingForExpertSelection);
     }
+
+    @Override
+    public List<SuggestionBriefProjection> listOrderSuggestions(OrderOfCustomerDto orderOfCustomerDto) {
+        Set<ConstraintViolation<OrderOfCustomerDto>> violations = validator.validate(orderOfCustomerDto);
+        if (!violations.isEmpty()) {
+
+            throw new ViolationsException(violations);
+        }
+        return suggestionGateway.listOrderSuggestions(orderOfCustomerDto);
+    }
+
 
     private void registerValidation(RegisterSuggestionDto suggestionDto, Expert expert, Orders order) {
         Set<ConstraintViolation<RegisterSuggestionDto>> violations = validator.validate(suggestionDto);

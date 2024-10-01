@@ -271,6 +271,15 @@ public class ExpertOperationImp implements ExpertOperation {
     }
 
 }
+
+/*
+
+    Set<ConstraintViolation<RegisterExpertDto>> violations = validator.validate(expertDto);
+        if (!violations.isEmpty() ) {
+                throw new ValidationException2(violations);
+}*/
+
+
 /*private boolean isJpgFile(String filePath) {
         if (filePath.toLowerCase().endsWith(".jpg") || filePath.toLowerCase().endsWith(".jpeg")) {
             //  System.out.println("correct picture path");

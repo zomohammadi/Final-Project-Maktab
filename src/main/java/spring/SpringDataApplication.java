@@ -177,7 +177,7 @@ public class SpringDataApplication {
 //----------------------------------------------------------Faz2--------------------------------------------------
 
 //---------------List orders that expert can  register suggestion for them:
-            suggestionOperation.listOrders(1L)
+        /*    suggestionOperation.listOrders(1L)
                     .forEach(projection -> System.out.println(
                             "orderId: " + projection.getId() +
                             "  SubService: " + projection.getSubService() +
@@ -187,16 +187,34 @@ public class SpringDataApplication {
                             "  ServiceDescription: " + projection.getServiceDescription() +
                             "  TimeForServiceDone: " + projection.getTimeForServiceDone()
 
-                    ));
+                    ));*/
 
 //----------------------register Suggestion
-            RegisterSuggestionDto suggestionDto = RegisterSuggestionDto.builder()
+           /* RegisterSuggestionDto suggestionDto = RegisterSuggestionDto.builder()
                     .expertId(1L).orderId(1L).priceSuggestion(5000000.0).durationOfService("5 saat")
                     .suggestedTimeStartService(ZonedDateTime.of(2024, 11, 12, 8, 31
                             , 0, 0, ZonedDateTime.now().getZone()))
                     .build();
 
-            exceptionHandler.handel(() -> suggestionOperation.registerSuggestion(suggestionDto));
+            exceptionHandler.handel(() -> suggestionOperation.registerSuggestion(suggestionDto));*/
+
+//--------------------List Order Suggestion of customer:
+            OrderOfCustomerDto orderOfCustomerDto = OrderOfCustomerDto.builder()
+                    .customerId(2L)
+                    .orderId(1L)
+                    .build();
+
+            suggestionOperation.listOrderSuggestions(orderOfCustomerDto)
+                    .forEach(projection -> System.out.println(
+                            "Id: " + projection.getId() +
+                            "  DurationOfService: " + projection.getDurationOfService() +
+                            "  PriceSuggested: " + projection.getPriceSuggested() +
+                            "  SuggestedTimeStartService: " + projection.getSuggestedTimeStartService() +
+                            "  UserName: " + projection.getUserName() +
+                            "  FirstName: " + projection.getFirstName() +
+                            "  LastName: " + projection.getLastName() +
+                            "  Score: " + projection.getScore()
+                    ));
 
         };
     }

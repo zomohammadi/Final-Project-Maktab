@@ -3,7 +3,9 @@ package spring.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import spring.dto.OrderOfCustomerDto;
 import spring.dto.projection.OrdersBriefProjection;
+import spring.dto.projection.SuggestionBriefProjection;
 import spring.entity.Expert;
 import spring.entity.Orders;
 import spring.entity.Suggestion;
@@ -28,4 +30,24 @@ public interface SuggestionGateway extends JpaRepository<Suggestion, Long> {
 
     boolean existsSuggestionByExpertAndOrder(Expert expert, Orders order);
 
+    @Query(nativeQuery = true,
+           value = """
+select s.id id
+     , s.duration_of_service 
+     , s.price_suggested
+     , s.suggested_time_start_service
+     , u.user_name
+     , u.first_name
+     , u.last_name
+     , e.score
+from orders o
+         inner join customer c on c.id = o.customer_id
+         inner join suggestion s on o.id = s.order_id
+         inner join expert e on e.id = s.expert_id
+         inner join users u on u.id = e.id
+where c.id = 2
+  and o.id = 1
+"""
+    )
+    List<SuggestionBriefProjection> listOrderSuggestions(OrderOfCustomerDto orderOfCustomerDto);
 }

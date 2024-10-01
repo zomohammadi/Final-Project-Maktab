@@ -8,7 +8,7 @@ import java.time.ZonedDateTime;
 @Builder
 public record RegisterOrderDto(
 
-        @NotNull(message = "serviceId cannot be Null")
+        @NotNull(message = "customerId cannot be Null")
         @Min(value = 1, message = "customerId must be greater than or equal to {value}")
         @Max(value = Long.MAX_VALUE, message = "customerId must be less than or equal to {value}")
         Long customerId,
@@ -18,8 +18,8 @@ public record RegisterOrderDto(
         @Max(value = Long.MAX_VALUE, message = "serviceId must be less than or equal to {value}")
         Long subServiceId,
 
-        @NotNull(message = "serviceId cannot be Null")
-        @Min(value = 1, message = "serviceId must be greater than or equal to {value}")
+        @NotNull(message = "priceSuggested cannot be Null")
+        @Min(value = 1, message = "priceSuggested must be greater than or equal to {value}")
         @DecimalMax(value = "" + Double.MAX_VALUE, message = "priceSuggested must be less than or equal to {value}")
         Double priceSuggested,
 
@@ -33,7 +33,7 @@ public record RegisterOrderDto(
         @Future(message = "timeForServiceDone must be in the future")
         ZonedDateTime timeForServiceDone,
 
-        @Size( max = 300, message = "address  must be less Than {max} characters")
+        @Size( max = 300, message = "serviceDescription  must be less Than {max} characters")
         String serviceDescription
 ) {
 }

@@ -1,6 +1,5 @@
 package spring.exception;
 
-import jakarta.validation.ConstraintViolation;
 import lombok.Getter;
 
 import java.util.Set;
@@ -12,9 +11,21 @@ public class ValidationException extends RuntimeException {
     public ValidationException(Set<String> errors) {
         this.errors = errors;
     }
-
-    //private Set<ConstraintViolation<?>> violations;
-   /* public ValidationException(Set<?> violations) {
-        this.violations = (Set<ConstraintViolation<?>>) violations;
-    }*/
 }
+
+//M.f
+/*
+@Getter
+public class ValidationException2 extends RuntimeException {
+
+    private Set<ConstraintViolation<?>> violations;
+    public ValidationException2(Set<?> violations) {
+        this.violations = (Set<ConstraintViolation<?>>) violations;
+    }
+}*/
+
+
+    /*Set<ConstraintViolation<RegisterExpertDto>> violations = validator.validate(expertDto);
+        if (!violations.isEmpty() ) {
+                throw new ValidationException2(violations);
+                }*/
