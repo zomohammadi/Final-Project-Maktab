@@ -9,6 +9,7 @@ public class ValidationException extends RuntimeException {
     private Set<String> errors;
 
     public ValidationException(Set<String> errors) {
+        super(errors.isEmpty() ? "Validation failed with unknown errors." : String.join(", ", errors));
         this.errors = errors;
     }
 }

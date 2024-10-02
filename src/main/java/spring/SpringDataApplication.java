@@ -193,13 +193,13 @@ public class SpringDataApplication {
                     )));*/
 
 //----------------------register Suggestion
-           /* RegisterSuggestionDto suggestionDto = RegisterSuggestionDto.builder()
+            RegisterSuggestionDto suggestionDto = RegisterSuggestionDto.builder()
                     .expertId(1L).orderId(1L).priceSuggestion(5000000.0).durationOfService("5 saat")
                     .suggestedTimeStartService(ZonedDateTime.of(2024, 11, 12, 8, 31
                             , 0, 0, ZonedDateTime.now().getZone()))
                     .build();
 
-            exceptionHandler.handel(() -> suggestionOperation.registerSuggestion(suggestionDto));*/
+            exceptionHandler.handel(() -> suggestionOperation.registerSuggestion(suggestionDto));
 
             //for expert_id = 3
              /* RegisterSuggestionDto suggestionDto = RegisterSuggestionDto.builder()
@@ -231,8 +231,11 @@ public class SpringDataApplication {
 
            /* exceptionHandler.handel(() -> suggestionOperation.selectSuggestionOfOrder(4L));*/
 
-//-------------------
+//-------------------change status from wanting for coming Expert to your Place -->to Started
            /* exceptionHandler.handel(() ->orderOperation.changeOrderStatusToStarted(1L));*/
+
+//------------------- change status from Started to Done
+            /* exceptionHandler.handel(() ->orderOperation.changeOrderStatusToDone(1L));*/
         };
     }
 

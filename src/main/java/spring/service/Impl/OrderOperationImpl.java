@@ -86,6 +86,13 @@ public class OrderOperationImpl implements OrderOperation {
             changeOrderStatus(order, OrderStatus.Started);
         else throw new NotFoundException("your status is not Waiting For Expert To Come To YourPlace ");
     }
+    public void changeOrderStatusToDone(Long orderId) {
+        Orders order = orderGateway.findById(orderId)
+                .orElseThrow(() -> new EntityNotFoundException("order not Found"));
+        if (order.getOrderStatus() == OrderStatus.Started)
+            changeOrderStatus(order, OrderStatus.Done);
+        else throw new NotFoundException("your status is Started");
+    }
 
 }
 

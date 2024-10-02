@@ -34,6 +34,11 @@ public class SuggestionOperationImpl implements SuggestionOperation {
     private final OrderGateway orderGateway;
     private final Validator validator;
 
+    public Suggestion findById(Long suggestionId) {
+        return suggestionGateway.findById(suggestionId)
+                .orElseThrow(() -> new NotFoundException("no Suggestion Found "));
+    }
+
     @Override
     public List<OrdersBriefProjection> listOrders(Long expertId) {
         List<OrdersBriefProjection> ordersBriefProjections = suggestionGateway.listOrders(expertId);
@@ -50,7 +55,6 @@ public class SuggestionOperationImpl implements SuggestionOperation {
         Orders order = orderGateway.findById(suggestionDto.orderId()).orElse(null);
 
         registerValidation(suggestionDto, expert, order);
-
         Suggestion suggestion = Mapper.ConvertDtoToEntity
                 .convertSuggestionDtoToEntity(suggestionDto, expert, order);
 
@@ -58,53 +62,53 @@ public class SuggestionOperationImpl implements SuggestionOperation {
         if (order != null)
             if (order.getOrderStatus() != OrderStatus.WaitingForExpertSelection)
                 orderOperation.changeOrderStatus(order, OrderStatus.WaitingForExpertSelection);
+
     }
-
-    @Override
-    public List<SuggestionBriefProjection> listOrderSuggestions(OrderOfCustomerDto orderOfCustomerDto) {
-        Set<ConstraintViolation<OrderOfCustomerDto>> violations = validator.validate(orderOfCustomerDto);
-        if (!violations.isEmpty()) {
-
-            throw new ViolationsException(violations);
-        }
-        List<SuggestionBriefProjection> suggestionBriefProjections = suggestionGateway.listOrderSuggestions(orderOfCustomerDto.customerId()
-                , orderOfCustomerDto.orderId());
-        if (suggestionBriefProjections.isEmpty())
-            throw new NotFoundException("no List Found for this customer and this order");
-        return suggestionBriefProjections;
-    }
-
 
     private void registerValidation(RegisterSuggestionDto suggestionDto, Expert expert, Orders order) {
         Set<ConstraintViolation<RegisterSuggestionDto>> violations = validator.validate(suggestionDto);
         Set<String> errors = new HashSet<>();
         if (expert == null) errors.add("expert not Found");
         if (order == null) errors.add("order not Found");
-        if (order != null) {
+        else {
             double basePrice = order.getSubService().getBasePrice();
             if (basePrice > suggestionDto.priceSuggestion())
-                errors.add("your suggested price is less than " +
-                           "the Base Price of this SubService");
-        }
-        if (order != null && expert != null) {
+                errors.add("your suggested price is less than the Base Price of this SubService");
             if (suggestionGateway.existsSuggestionByExpertAndOrder(expert, order))
                 errors.add("the suggestion of this order for this expert are exists");
         }
+
         if (!violations.isEmpty() || !errors.isEmpty()) {
             for (ConstraintViolation<RegisterSuggestionDto> violation : violations) {
                 errors.add(violation.getMessage());
+
             }
             throw new ValidationException(errors);
         }
     }
 
+    @Override
+    public List<SuggestionBriefProjection> listOrderSuggestions(OrderOfCustomerDto orderOfCustomerDto) {
+
+        Set<ConstraintViolation<OrderOfCustomerDto>> violations = validator.validate(orderOfCustomerDto);
+        if (!violations.isEmpty()) {
+            throw new ViolationsException(violations);
+        }
+
+        List<SuggestionBriefProjection> suggestionBriefProjections = suggestionGateway
+                .listOrderSuggestions(orderOfCustomerDto.customerId()
+                        , orderOfCustomerDto.orderId());
+        if (suggestionBriefProjections.isEmpty())
+            throw new NotFoundException("no List Found for this customer and this order");
+        return suggestionBriefProjections;
+    }
+
+    @Override
     public void selectSuggestionOfOrder(Long suggestionId) {
         Suggestion suggestion = suggestionGateway.findById(suggestionId)
                 .orElseThrow(() -> new NotFoundException("suggestion not found"));
-
         Orders order = suggestion.getOrder();
-
-        orderOperation.addExpertToOrder(order,suggestion.getExpert(),
+        orderOperation.addExpertToOrder(order, suggestion.getExpert(),
                 OrderStatus.WaitingForExpertToComeToYourPlace);
     }
 
