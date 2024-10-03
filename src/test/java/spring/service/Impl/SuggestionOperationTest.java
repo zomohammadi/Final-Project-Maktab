@@ -2,10 +2,12 @@ package spring.service.Impl;
 
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.*;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import spring.dto.OrderOfCustomerDto;
 import spring.dto.RegisterSuggestionDto;
@@ -236,7 +238,6 @@ void setUp() {
         when(order.getSubService()).thenReturn(subService);
         when(subService.getBasePrice()).thenReturn(400.0);
 
-        // No validation violations
         Set<ConstraintViolation<RegisterSuggestionDto>> violations = Collections.emptySet();
         when(validator.validate(suggestionDto)).thenReturn(violations);
 
@@ -280,34 +281,29 @@ void setUp() {
 
     @Test
     void testListOrderSuggestions_ValidationViolations_ThrowsViolationsException() {
-        // Arrange
+
         OrderOfCustomerDto invalidDto = new OrderOfCustomerDto(null, null); // Example of an invalid DTO
         Set<ConstraintViolation<OrderOfCustomerDto>> violations = new HashSet<>();
         ConstraintViolation<OrderOfCustomerDto> violation = mock(ConstraintViolation.class);
 //        when(violation.getMessage()).thenReturn("Invalid customer ID");
         violations.add(violation);
 
-        // Mock the validator to return the violations when validating the invalid DTO
         when(validator.validate(invalidDto)).thenReturn(violations);
 
-        // Act & Assert
         ViolationsException exception = assertThrows(ViolationsException.class, () -> {
             underTest.listOrderSuggestions(invalidDto);
         });
 
-        // Assert that the violations in the exception match the mocked violations
         assertEquals(violations, exception.getViolations());
     }
 
     @Test
     void testListOrderSuggestions_NoSuggestionsFound_ThrowsNotFoundException() {
-        // Arrange
         OrderOfCustomerDto validDto = new OrderOfCustomerDto(1L, 2L); // Replace with actual constructor
         when(validator.validate(validDto)).thenReturn(Collections.emptySet());
         when(suggestionGateway.listOrderSuggestions(validDto.customerId(), validDto.orderId()))
                 .thenReturn(Collections.emptyList());
 
-        // Act & Assert
         NotFoundException exception = assertThrows(NotFoundException.class, () -> {
             underTest.listOrderSuggestions(validDto);
         });
@@ -317,7 +313,6 @@ void setUp() {
 //---------Test For selectSuggestionOfOrder
 @Test
 void testSelectSuggestionOfOrder_Success() {
-    // Arrange
     Long suggestionId = 1L;
     Suggestion suggestion = mock(Suggestion.class);
     Orders order = mock(Orders.class);
@@ -327,21 +322,17 @@ void testSelectSuggestionOfOrder_Success() {
     when(suggestion.getOrder()).thenReturn(order);
     when(suggestion.getExpert()).thenReturn(expert);
 
-    // Act
     underTest.selectSuggestionOfOrder(suggestionId);
 
-    // Assert
     verify(orderOperation).addExpertToOrder(order, expert, OrderStatus.WaitingForExpertToComeToYourPlace);
 }
 
     @Test
     void testSelectSuggestionOfOrder_NotFound() {
-        // Arrange
         Long suggestionId = 1L;
 
         when(suggestionGateway.findById(suggestionId)).thenReturn(Optional.empty());
 
-        // Act & Assert
         NotFoundException exception = assertThrows(NotFoundException.class, () -> {
             underTest.selectSuggestionOfOrder(suggestionId);
         });
