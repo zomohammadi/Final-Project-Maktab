@@ -164,7 +164,7 @@ public class SpringDataApplication {
 
 //-----------order ---ثبت سفارش
 
-           /* RegisterOrderDto orderDto1 = RegisterOrderDto.builder()
+        /*    RegisterOrderDto orderDto1 = RegisterOrderDto.builder()
                     .customerId(2L)
                     .subServiceId(2L)
                     .priceSuggested(5000000.0)
@@ -174,9 +174,20 @@ public class SpringDataApplication {
                             , 0, 0, ZonedDateTime.now().getZone()))
                     .build();
 
-            orderOperation.orderRegister(orderDto1);*/
+            exceptionHandler.handel(() -> orderOperation.orderRegister(orderDto1));*/
+
+ /*           RegisterOrderDto orderDto1 = RegisterOrderDto.builder()
+                    .customerId(2L)
+                    .subServiceId(3L)
+                    .priceSuggested(40000.0)
+                    .address("fdsgdfs 3434 34")
+                    // .serviceDescription("2324jjjjjjjjjjjjjjjjj")
+                    .timeForServiceDone(ZonedDateTime.of(2024, 11, 27, 8, 31
+                            , 0, 0, ZonedDateTime.now().getZone()))
+                    .build();
 
 
+            exceptionHandler.handel(() -> orderOperation.orderRegister(orderDto1));*/
 //----------------------------------------------------------Faz2--------------------------------------------------
 
 //---------------List orders that expert can  register suggestion for them:
@@ -193,14 +204,14 @@ public class SpringDataApplication {
                     )));*/
 
 //----------------------register Suggestion
-            RegisterSuggestionDto suggestionDto = RegisterSuggestionDto.builder()
+         /*   RegisterSuggestionDto suggestionDto = RegisterSuggestionDto.builder()
                     .expertId(1L).orderId(1L).priceSuggestion(5000000.0).durationOfService("5 saat")
                     .suggestedTimeStartService(ZonedDateTime.of(2024, 11, 12, 8, 31
                             , 0, 0, ZonedDateTime.now().getZone()))
                     .build();
 
             exceptionHandler.handel(() -> suggestionOperation.registerSuggestion(suggestionDto));
-
+*/
             //for expert_id = 3
              /* RegisterSuggestionDto suggestionDto = RegisterSuggestionDto.builder()
                     .expertId(3L).orderId(1L).priceSuggestion(6000000.0).durationOfService("1 saat")

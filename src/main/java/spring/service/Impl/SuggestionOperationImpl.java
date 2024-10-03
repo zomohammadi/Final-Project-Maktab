@@ -51,10 +51,12 @@ public class SuggestionOperationImpl implements SuggestionOperation {
     @Transactional
     public void registerSuggestion(RegisterSuggestionDto suggestionDto) {
 
-        Expert expert = expertGateway.findById(suggestionDto.expertId()).orElse(null);
-        Orders order = orderGateway.findById(suggestionDto.orderId()).orElse(null);
+        Expert expert = expertGateway.findById(suggestionDto.expertId())
+                .orElse(null);
+        Orders order = orderGateway.findById(suggestionDto.orderId())
+                .orElse(null);
 
-        registerValidation(suggestionDto, expert, order);
+        validateInput(suggestionDto, expert, order);
         Suggestion suggestion = Mapper.ConvertDtoToEntity
                 .convertSuggestionDtoToEntity(suggestionDto, expert, order);
 
@@ -65,11 +67,13 @@ public class SuggestionOperationImpl implements SuggestionOperation {
 
     }
 
-    private void registerValidation(RegisterSuggestionDto suggestionDto, Expert expert, Orders order) {
+    private void validateInput(RegisterSuggestionDto suggestionDto, Expert expert, Orders order) {
         Set<ConstraintViolation<RegisterSuggestionDto>> violations = validator.validate(suggestionDto);
         Set<String> errors = new HashSet<>();
-        if (expert == null) errors.add("expert not Found");
-        if (order == null) errors.add("order not Found");
+        if (expert == null)
+            errors.add("expert not Found");
+        if (order == null)
+            errors.add("order not Found");
         else {
             double basePrice = order.getSubService().getBasePrice();
             if (basePrice > suggestionDto.priceSuggestion())
@@ -81,8 +85,8 @@ public class SuggestionOperationImpl implements SuggestionOperation {
         if (!violations.isEmpty() || !errors.isEmpty()) {
             for (ConstraintViolation<RegisterSuggestionDto> violation : violations) {
                 errors.add(violation.getMessage());
-
             }
+
             throw new ValidationException(errors);
         }
     }
