@@ -15,6 +15,7 @@ import spring.entity.Expert;
 import spring.entity.Orders;
 import spring.entity.SubService;
 import spring.enumaration.OrderStatus;
+import spring.exception.NotFoundException;
 import spring.exception.ValidationException;
 import spring.repository.CustomerGateway;
 import spring.repository.OrderGateway;
@@ -229,6 +230,104 @@ class OrderOperationImplTest {
 
         assertEquals(expert, order.getExpert());
         verify(orderGateway, times(1)).save(order);
+    }
+
+
+    //test  for changeOrderStatusToStarted
+
+    @Test
+    void changeOrderStatusToStarted_validStatus_shouldChangeStatus() {
+
+        Long orderId = 1L;
+        Orders order = new Orders();
+        order.setOrderStatus(OrderStatus.WaitingForExpertToComeToYourPlace);
+
+        when(orderGateway.findById(orderId)).thenReturn(Optional.of(order));
+
+        underTest.changeOrderStatusToStarted(orderId);
+
+        verify(orderGateway, times(1)).findById(orderId);
+        verify(orderGateway, times(1)).save(order);
+        assertEquals(OrderStatus.Started, order.getOrderStatus());
+    }
+
+    @Test
+    void changeOrderStatusToStarted_invalidStatus_shouldThrowNotFoundException() {
+        Long orderId = 2L;
+        Orders order = new Orders();
+        order.setOrderStatus(OrderStatus.WaitingForExpertSelection); // Not the expected status
+
+        when(orderGateway.findById(orderId)).thenReturn(Optional.of(order));
+
+        NotFoundException exception = assertThrows(NotFoundException.class, () -> {
+            underTest.changeOrderStatusToStarted(orderId);
+        });
+
+        assertEquals("your status is not Waiting For Expert To Come To YourPlace", exception.getMessage());
+        verify(orderGateway, times(1)).findById(orderId);
+        verify(orderGateway, never()).save(any());
+    }
+
+    @Test
+    void changeOrderStatusToStarted_orderNotFound_shouldThrowEntityNotFoundException() {
+        Long orderId = 3L;
+
+        when(orderGateway.findById(orderId)).thenReturn(Optional.empty());
+
+        assertThrows(EntityNotFoundException.class, () -> {
+            underTest.changeOrderStatusToStarted(orderId);
+        });
+
+        verify(orderGateway, times(1)).findById(orderId);
+        verify(orderGateway, never()).save(any());
+    }
+
+    //test method for changeOrderStatusToDone:
+
+    @Test
+    void changeOrderStatusToDone_validStatus_shouldChangeToDone() {
+        Long orderId = 1L;
+        Orders order = new Orders();
+        order.setOrderStatus(OrderStatus.Started);
+
+        when(orderGateway.findById(orderId)).thenReturn(Optional.of(order));
+
+        underTest.changeOrderStatusToDone(orderId);
+
+        assertEquals(OrderStatus.Done, order.getOrderStatus());
+        verify(orderGateway, times(1)).save(order);
+    }
+
+    @Test
+    void changeOrderStatusToDone_invalidStatus_shouldThrowNotFoundException() {
+        Long orderId = 2L;
+        Orders order = new Orders();
+        order.setOrderStatus(OrderStatus.WaitingForExpertToComeToYourPlace);
+
+        when(orderGateway.findById(orderId)).thenReturn(Optional.of(order));
+
+        NotFoundException exception = assertThrows(NotFoundException.class, () -> {
+            underTest.changeOrderStatusToDone(orderId);
+        });
+
+        assertEquals("your status is Started", exception.getMessage());
+        verify(orderGateway, times(1)).findById(orderId);
+        verify(orderGateway, never()).save(any());
+    }
+
+    @Test
+    void changeOrderStatusToDone_orderNotFound_shouldThrowEntityNotFoundException() {
+        Long orderId = 3L;
+
+        when(orderGateway.findById(orderId)).thenReturn(Optional.empty());
+
+        EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, () -> {
+            underTest.changeOrderStatusToDone(orderId);
+        });
+
+        assertEquals("order not Found", exception.getMessage());
+        verify(orderGateway, times(1)).findById(orderId);
+        verify(orderGateway, never()).save(any());
     }
 
 }

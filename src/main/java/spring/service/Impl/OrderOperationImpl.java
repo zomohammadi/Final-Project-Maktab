@@ -86,7 +86,7 @@ public class OrderOperationImpl implements OrderOperation {
         if (order.getOrderStatus() == OrderStatus.WaitingForExpertToComeToYourPlace)
             changeOrderStatus(order, OrderStatus.Started);
         else
-            throw new NotFoundException("your status is not Waiting For Expert To Come To YourPlace ");
+            throw new NotFoundException("your status is not Waiting For Expert To Come To YourPlace");
     }
 
     public void changeOrderStatusToDone(Long orderId) {
