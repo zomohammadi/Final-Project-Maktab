@@ -257,32 +257,66 @@ void setUp() {
             underTest.registerSuggestion(suggestionDto);
 
         }
+
     }
 
+
+    @Test
+    void testRegisterSuggestion_WithValidationViolations() {
+        Long expertId = 1L;
+        Long orderId = 1L;
+        RegisterSuggestionDto suggestionDto = RegisterSuggestionDto.builder()
+                .expertId(expertId)
+                .orderId(orderId)
+                .priceSuggestion(5000000.0)
+                .durationOfService("5 saat")
+                .suggestedTimeStartService(ZonedDateTime.of(2024, 11, 12, 8, 31, 0, 0, ZonedDateTime.now().getZone()))
+                .build();
+
+        Expert expert = mock(Expert.class);
+        Orders order = mock(Orders.class);
+
+        when(expertGateway.findById(expertId)).thenReturn(Optional.of(expert));
+        when(orderGateway.findById(orderId)).thenReturn(Optional.of(order));
+
+        SubService subService = mock(SubService.class);
+        when(order.getSubService()).thenReturn(subService);
+        when(subService.getBasePrice()).thenReturn(400.0);
+
+        Set<ConstraintViolation<RegisterSuggestionDto>> violations = new HashSet<>();
+        ConstraintViolation<RegisterSuggestionDto> violation = mock(ConstraintViolation.class);
+        when(violation.getMessage()).thenReturn("Sample validation error");
+        violations.add(violation);
+
+        when(validator.validate(suggestionDto)).thenReturn(violations);
+
+        ValidationException exception = assertThrows(ValidationException.class, () -> {
+            underTest.registerSuggestion(suggestionDto);
+        });
+
+        assertTrue(exception.getMessage().contains("Sample validation error"));
+    }
     //Test for listOrderSuggestions  Method:
 
 
     @Test
     void testListOrderSuggestions_ValidDto_ReturnsSuggestions() {
-        // Arrange
         OrderOfCustomerDto validDto = new OrderOfCustomerDto(1L, 2L); // Replace with actual constructor
         SuggestionBriefProjection suggestion = mock(SuggestionBriefProjection.class);
         when(suggestionGateway.listOrderSuggestions(validDto.customerId(), validDto.orderId()))
                 .thenReturn(List.of(suggestion));
 
-        // Act
         List<SuggestionBriefProjection> result = underTest.listOrderSuggestions(validDto);
 
-        // Assert
         assertNotNull(result);
         assertEquals(1, result.size());
-        assertSame(suggestion, result.get(0)); // Check if the same suggestion is returned
+        assertSame(suggestion, result.get(0));
     }
 
     @Test
     void testListOrderSuggestions_ValidationViolations_ThrowsViolationsException() {
 
-        OrderOfCustomerDto invalidDto = new OrderOfCustomerDto(null, null); // Example of an invalid DTO
+        OrderOfCustomerDto invalidDto = new OrderOfCustomerDto(null, null);
         Set<ConstraintViolation<OrderOfCustomerDto>> violations = new HashSet<>();
         ConstraintViolation<OrderOfCustomerDto> violation = mock(ConstraintViolation.class);
 //        when(violation.getMessage()).thenReturn("Invalid customer ID");
@@ -299,7 +333,7 @@ void setUp() {
 
     @Test
     void testListOrderSuggestions_NoSuggestionsFound_ThrowsNotFoundException() {
-        OrderOfCustomerDto validDto = new OrderOfCustomerDto(1L, 2L); // Replace with actual constructor
+        OrderOfCustomerDto validDto = new OrderOfCustomerDto(1L, 2L);
         when(validator.validate(validDto)).thenReturn(Collections.emptySet());
         when(suggestionGateway.listOrderSuggestions(validDto.customerId(), validDto.orderId()))
                 .thenReturn(Collections.emptyList());
