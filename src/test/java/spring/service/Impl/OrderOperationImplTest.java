@@ -1,5 +1,6 @@
 package spring.service.Impl;
 
+
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
@@ -31,7 +32,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class OrderOperationImplTest {
+public class OrderOperationImplTest {
 
     @Mock
     private OrderGateway orderGateway;
@@ -48,7 +49,7 @@ class OrderOperationImplTest {
     @InjectMocks
     private OrderOperationImpl underTest;
 
-//Test Method for orderRegister
+    //Test Method for orderRegister
     @Test
     void orderRegister_validInput_shouldSaveOrder() {
         RegisterOrderDto orderDto =
@@ -154,6 +155,7 @@ class OrderOperationImplTest {
         assertTrue(exception.getErrors().contains(" your suggested price is less than the Base Price of this SubService"));
         verify(orderGateway, never()).save(any());
     }
+
     @Test
     void orderRegister_withViolations_shouldThrowValidationException() {
 
@@ -207,6 +209,7 @@ class OrderOperationImplTest {
                 () -> underTest.findById(1L)
         );
     }
+
     //Test Method for changeOrderStatus
     @Test
     void changeOrderStatus_shouldUpdateOrderStatusAndSave() {
@@ -331,5 +334,3 @@ class OrderOperationImplTest {
     }
 
 }
-
-
