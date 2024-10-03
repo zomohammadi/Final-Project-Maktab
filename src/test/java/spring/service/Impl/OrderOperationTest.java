@@ -1,5 +1,6 @@
 package spring.service.Impl;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 import org.junit.jupiter.api.Test;
@@ -43,19 +44,17 @@ class OrderOperationImplTest {
     private Validator validator;
 
     @InjectMocks
-    private OrderOperationImpl orderOperation;
+    private OrderOperationImpl underTest;
 
-
+//Test Method for orderRegister
     @Test
     void orderRegister_validInput_shouldSaveOrder() {
-        // Given
         RegisterOrderDto orderDto =
                 RegisterOrderDto.builder()
                         .customerId(2L)
                         .subServiceId(2L)
                         .priceSuggested(5000000.0)
                         .address("fdsgdfs 3434 34")
-                        // .serviceDescription("2324jjjjjjjjjjjjjjjjj")
                         .timeForServiceDone(ZonedDateTime.of(2024, 11, 27, 8, 31
                                 , 0, 0, ZonedDateTime.now().getZone()))
                         .build();
@@ -68,10 +67,8 @@ class OrderOperationImplTest {
         when(subServiceGateway.findById(orderDto.subServiceId())).thenReturn(Optional.of(subService));
         when(customerGateway.findById(orderDto.customerId())).thenReturn(Optional.of(customer));
 
-        // When
-        orderOperation.orderRegister(orderDto);
+        underTest.orderRegister(orderDto);
 
-        // Then
         ArgumentCaptor<Orders> orderCaptor = ArgumentCaptor.forClass(Orders.class);
         verify(orderGateway, times(1)).save(orderCaptor.capture());
         Orders savedOrder = orderCaptor.getValue();
@@ -84,7 +81,6 @@ class OrderOperationImplTest {
 
     @Test
     void orderRegister_subServiceNotFound_shouldThrowValidationException() {
-        // Given
         RegisterOrderDto orderDto =
                 RegisterOrderDto.builder()
                         .customerId(2L)
@@ -98,9 +94,8 @@ class OrderOperationImplTest {
         when(subServiceGateway.findById(orderDto.subServiceId())).thenReturn(Optional.empty());
         when(customerGateway.findById(orderDto.customerId())).thenReturn(Optional.of(new Customer()));
 
-        // When/Then
         ValidationException exception = assertThrows(ValidationException.class, () -> {
-            orderOperation.orderRegister(orderDto);
+            underTest.orderRegister(orderDto);
         });
 
         assertTrue(exception.getErrors().contains("subService not Found"));
@@ -109,7 +104,6 @@ class OrderOperationImplTest {
 
     @Test
     void orderRegister_customerNotFound_shouldThrowValidationException() {
-        // Given
         RegisterOrderDto orderDto = RegisterOrderDto.builder()
                 .customerId(2L)
                 .subServiceId(2L)
@@ -121,13 +115,11 @@ class OrderOperationImplTest {
         SubService subService = new SubService();
         subService.setBasePrice(500.0);  // Ensure basePrice is set to avoid NullPointerException
 
-        // Stubbing subServiceGateway and customerGateway
         when(subServiceGateway.findById(orderDto.subServiceId())).thenReturn(Optional.of(subService));
         when(customerGateway.findById(orderDto.customerId())).thenReturn(Optional.empty());
 
-        // When/Then
         ValidationException exception = assertThrows(ValidationException.class, () -> {
-            orderOperation.orderRegister(orderDto);
+            underTest.orderRegister(orderDto);
         });
 
         assertTrue(exception.getErrors().contains("Customer not Found"));
@@ -136,7 +128,7 @@ class OrderOperationImplTest {
 
     @Test
     void orderRegister_suggestedPriceLessThanBasePrice_shouldThrowValidationException() {
-        // Given
+
         RegisterOrderDto orderDto = RegisterOrderDto.builder()
                 .customerId(2L)
                 .subServiceId(2L)
@@ -153,9 +145,8 @@ class OrderOperationImplTest {
         when(subServiceGateway.findById(orderDto.subServiceId())).thenReturn(Optional.of(subService));
         when(customerGateway.findById(orderDto.customerId())).thenReturn(Optional.of(customer));
 
-        // When/Then
         ValidationException exception = assertThrows(ValidationException.class, () -> {
-            orderOperation.orderRegister(orderDto);
+            underTest.orderRegister(orderDto);
         });
 
         assertTrue(exception.getErrors().contains(" your suggested price is less than the Base Price of this SubService"));
@@ -163,7 +154,7 @@ class OrderOperationImplTest {
     }
     @Test
     void orderRegister_withViolations_shouldThrowValidationException() {
-        // Given
+
         RegisterOrderDto orderDto = RegisterOrderDto.builder()
                 .customerId(2L)
                 .subServiceId(2L)
@@ -175,11 +166,9 @@ class OrderOperationImplTest {
         subService.setBasePrice(500.0);
         Customer customer = new Customer();
 
-        // Create a mock ConstraintViolation
         ConstraintViolation<RegisterOrderDto> violation = mock(ConstraintViolation.class);
         when(violation.getMessage()).thenReturn("Address must not be blank");
 
-        // Set up the Validator to return a set with the violation
         Set<ConstraintViolation<RegisterOrderDto>> violations = new HashSet<>();
         violations.add(violation);
         when(validator.validate(any(RegisterOrderDto.class))).thenReturn(violations);
@@ -187,13 +176,45 @@ class OrderOperationImplTest {
         when(subServiceGateway.findById(orderDto.subServiceId())).thenReturn(Optional.of(subService));
         when(customerGateway.findById(orderDto.customerId())).thenReturn(Optional.of(customer));
 
-        // When/Then
+
         ValidationException exception = assertThrows(ValidationException.class, () -> {
-            orderOperation.orderRegister(orderDto);
+            underTest.orderRegister(orderDto);
         });
 
         assertTrue(exception.getErrors().contains("Address must not be blank"));
         verify(orderGateway, never()).save(any());
+    }
+
+    //Test for findById Method:
+
+    @Test
+    void canFindById() {
+
+        when(orderGateway.findById(anyLong()))
+                .thenReturn(Optional.of(
+                        new Orders()
+                ));
+        Orders actual = underTest.findById(1L);
+    }
+
+
+    @Test
+    void canNotFindById() {
+        assertThrowsExactly(
+                EntityNotFoundException.class,
+                () -> underTest.findById(1L)
+        );
+    }
+    //Test Method for changeOrderStatus
+    @Test
+    void changeOrderStatus_shouldUpdateOrderStatusAndSave() {
+        Orders order = new Orders();
+        OrderStatus newStatus = OrderStatus.Started;
+
+        underTest.changeOrderStatus(order, newStatus);
+
+        assertEquals(newStatus, order.getOrderStatus());
+        verify(orderGateway, times(1)).save(order);
     }
 }
 
