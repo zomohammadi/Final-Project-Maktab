@@ -11,6 +11,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import spring.dto.RegisterOrderDto;
 import spring.entity.Customer;
+import spring.entity.Expert;
 import spring.entity.Orders;
 import spring.entity.SubService;
 import spring.enumaration.OrderStatus;
@@ -216,6 +217,20 @@ class OrderOperationImplTest {
         assertEquals(newStatus, order.getOrderStatus());
         verify(orderGateway, times(1)).save(order);
     }
+
+    //Test For addExpertToOrder
+    @Test
+    void addExpertToOrder_shouldSetExpertAndChangeOrderStatus() {
+        Orders order = new Orders();
+        Expert expert = new Expert();
+        OrderStatus newStatus = OrderStatus.WaitingForExpertToComeToYourPlace;
+
+        underTest.addExpertToOrder(order, expert, newStatus);
+
+        assertEquals(expert, order.getExpert());
+        verify(orderGateway, times(1)).save(order);
+    }
+
 }
 
 
