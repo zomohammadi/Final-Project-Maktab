@@ -1,5 +1,6 @@
 package spring.service.Impl;
 
+import org.springframework.transaction.annotation.Transactional;
 import spring.dto.ChangeSubServiceDto;
 import spring.dto.RegisterSubServiceDto;
 import spring.dto.ResponceSubServiceDto;
@@ -18,12 +19,14 @@ import java.util.Set;
 
 @RequiredArgsConstructor
 @org.springframework.stereotype.Service
+@Transactional(readOnly = true)
 public class SubServiceOperationImpl implements SubServiceOperation {
     private final ServiceGateway serviceGateway;
     private final SubServiceGateway subServiceGateway;
     private final Validator validator;
 
     @Override
+    @Transactional
     public void subServiceRegister(RegisterSubServiceDto subServiceDto) {
         Set<ConstraintViolation<RegisterSubServiceDto>> violations = validator.validate(subServiceDto);
         boolean exists = subServiceGateway.existsByName(subServiceDto.name());
@@ -64,9 +67,10 @@ public class SubServiceOperationImpl implements SubServiceOperation {
         return responceSubServiceDtos;
     }
     @Override
+    @Transactional
     public void update(ChangeSubServiceDto subServiceDto) {
         if (isNotValid(subServiceDto)) return;
-        SubService subService1 = Mapper.ConvertDtoToEntity.convertChangeSubServiceDtoToEntity(subServiceDto);
+        SubService subService1 = Mapper.ConvertDtoToEntity.convertChangeSubServiceDtoToEntity(subServiceDto);//  edit
         SubService subService = subServiceGateway.findById(subService1.getId()).orElse(null);
         updateOperation(subServiceDto, subService);
 
@@ -75,9 +79,9 @@ public class SubServiceOperationImpl implements SubServiceOperation {
     private void updateOperation(ChangeSubServiceDto subServiceDto, SubService subService) {
         if (subService != null) {
             if (subServiceDto.name() != null) {
-                subService.setName(subServiceDto.name());
+                subService.setName(subServiceDto.name()); //method:(subServiceDto.name(),subService.setName())
             }
-            if (subServiceDto.description() != null) {
+            if (subServiceDto.description() != null) {//duplicate code
                 subService.setDescription(subServiceDto.description());
             }
             if (subServiceDto.BasePrice() != null) {

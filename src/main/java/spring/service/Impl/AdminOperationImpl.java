@@ -1,7 +1,8 @@
 package spring.service.Impl;
 
-import jakarta.transaction.Transactional;
+
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import spring.entity.Expert;
 import spring.entity.SubService;
 import spring.enumaration.Status;
@@ -14,6 +15,7 @@ import java.util.HashSet;
 import java.util.Set;
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class AdminOperationImpl implements AdminOperation {
     private final SubServiceGateway subServiceRepository;
     private final ExpertGateway expertRepository;
@@ -41,7 +43,7 @@ public class AdminOperationImpl implements AdminOperation {
         Set<SubService> subServices = expert.getSubServices();
         if (subServices == null) subServices = new HashSet<>();
         subServices.add(subService);
-        expert.setSubServices(subServices);
+        expert.setSubServices(subServices);//no need
         expertRepository.save(expert);
         System.out.println("add Sub Service To Expert done");
     }
@@ -63,7 +65,7 @@ public class AdminOperationImpl implements AdminOperation {
     private void deleteOperation(Expert expert, SubService subService) {
         Set<SubService> subServices = expert.getSubServices();
         subServices.remove(subService);
-        expert.setSubServices(subServices);
+        expert.setSubServices(subServices);//no need
         expertRepository.save(expert);
         System.out.println("delete SubService From Expert done");
     }

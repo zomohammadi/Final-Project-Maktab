@@ -1,5 +1,6 @@
 package spring.service.Impl;
 
+import org.springframework.transaction.annotation.Transactional;
 import spring.dto.ChangeServiceDto;
 import spring.entity.Service;
 import jakarta.validation.ConstraintViolation;
@@ -13,12 +14,14 @@ import java.util.List;
 import java.util.Set;
 
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 @org.springframework.stereotype.Service
 public class ServiceOperationImpl implements ServiceOperation {
     private final ServiceGateway serviceGateway;
     private final Validator validator;
 
     @Override
+    @Transactional
     public void serviceRegister(String serviceName) {
         Service service = Service.builder().name(serviceName).build();
         Set<ConstraintViolation<Service>> violations = validator.validate(service);
@@ -48,6 +51,7 @@ public class ServiceOperationImpl implements ServiceOperation {
     }
 
     @Override
+    @Transactional
     public void update(ChangeServiceDto changeServiceDto) {
         if (isNotValid(changeServiceDto)) return;
         Service service1 = Mapper.ConvertDtoToEntity.convertChangeServiceDtoToEntity(changeServiceDto);

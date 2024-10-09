@@ -73,7 +73,7 @@ public class OrderOperationImplTest {
         underTest.orderRegister(orderDto);
 
         ArgumentCaptor<Orders> orderCaptor = ArgumentCaptor.forClass(Orders.class);
-        verify(orderGateway, times(1)).save(orderCaptor.capture());
+        verify(orderGateway/*, times(1)*/).save(orderCaptor.capture());
         Orders savedOrder = orderCaptor.getValue();
 
         assertEquals(OrderStatus.WaitingForSuggestionOfExperts, savedOrder.getOrderStatus());
@@ -116,7 +116,7 @@ public class OrderOperationImplTest {
                 .build();
 
         SubService subService = new SubService();
-        subService.setBasePrice(500.0);  // Ensure basePrice is set to avoid NullPointerException
+        subService.setBasePrice(500.0);
 
         when(subServiceGateway.findById(orderDto.subServiceId())).thenReturn(Optional.of(subService));
         when(customerGateway.findById(orderDto.customerId())).thenReturn(Optional.empty());

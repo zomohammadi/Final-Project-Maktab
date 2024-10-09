@@ -91,8 +91,10 @@ void setUp() {
     void testListOrders_whenOrdersExist() {
 
         Long expertId = 1L;
-        OrdersBriefProjection mockOrder = mock(OrdersBriefProjection.class);
-        List<OrdersBriefProjection> mockOrders = List.of(mockOrder);
+       // OrdersBriefProjection mockOrder = mock(OrdersBriefProjection.class);
+        // List<OrdersBriefProjection> mockOrders = List.of(mockOrder);
+        List<OrdersBriefProjection> mockOrders = mock(List.class);
+        when(mockOrders.size()).thenReturn(1);
         when(suggestionGateway.listOrders(expertId)).thenReturn(mockOrders);
 
         List<OrdersBriefProjection> result = underTest.listOrders(expertId);
@@ -168,7 +170,8 @@ void setUp() {
                 .orderId(orderId)
                 .priceSuggestion(300.0) // Price is below base price
                 .durationOfService("5 saat")
-                .suggestedTimeStartService(ZonedDateTime.of(2024, 11, 12, 8, 31, 0, 0, ZonedDateTime.now().getZone()))
+                .suggestedTimeStartService(ZonedDateTime.of(2024, 11, 12,
+                        8, 31, 0, 0, ZonedDateTime.now().getZone()))
                 .build();
 
         Expert expert = mock(Expert.class);
@@ -186,6 +189,7 @@ void setUp() {
         assertTrue(exception.getMessage().contains("your suggested price is less than the Base Price of this SubService"));
 
     }
+
     @Test
     void testRegisterSuggestion_ExistingSuggestion() {
         Long expertId = 1L;
@@ -206,7 +210,7 @@ void setUp() {
         when(orderGateway.findById(orderId)).thenReturn(Optional.of(order));
         when(order.getSubService()).thenReturn(subService);
         when(subService.getBasePrice()).thenReturn(400.0);
-        when(suggestionGateway.existsSuggestionByExpertAndOrder(expert, order)).thenReturn(true); // Suggestion already exists
+        when(suggestionGateway.existsSuggestionByExpertAndOrder(expert, order)).thenReturn(true);
 
         ValidationException exception = assertThrows(ValidationException.class, () -> {
             underTest.registerSuggestion(suggestionDto);
@@ -225,7 +229,8 @@ void setUp() {
                 .orderId(orderId)
                 .priceSuggestion(5000000.0)
                 .durationOfService("5 saat")
-                .suggestedTimeStartService(ZonedDateTime.of(2024, 11, 12, 8, 31, 0, 0, ZonedDateTime.now().getZone()))
+                .suggestedTimeStartService(ZonedDateTime.of(2024, 11, 12,
+                        8, 31, 0, 0, ZonedDateTime.now().getZone()))
                 .build();
 
         Expert expert = mock(Expert.class);
@@ -270,7 +275,8 @@ void setUp() {
                 .orderId(orderId)
                 .priceSuggestion(5000000.0)
                 .durationOfService("5 saat")
-                .suggestedTimeStartService(ZonedDateTime.of(2024, 11, 12, 8, 31, 0, 0, ZonedDateTime.now().getZone()))
+                .suggestedTimeStartService(ZonedDateTime.of(2024, 11, 12,
+                        8, 31, 0, 0, ZonedDateTime.now().getZone()))
                 .build();
 
         Expert expert = mock(Expert.class);
@@ -285,7 +291,7 @@ void setUp() {
 
         Set<ConstraintViolation<RegisterSuggestionDto>> violations = new HashSet<>();
         ConstraintViolation<RegisterSuggestionDto> violation = mock(ConstraintViolation.class);
-        when(violation.getMessage()).thenReturn("Sample validation error");
+        when(violation.getMessage()).thenReturn("validation error");
         violations.add(violation);
 
         when(validator.validate(suggestionDto)).thenReturn(violations);
@@ -294,14 +300,14 @@ void setUp() {
             underTest.registerSuggestion(suggestionDto);
         });
 
-        assertTrue(exception.getMessage().contains("Sample validation error"));
+        assertTrue(exception.getMessage().contains("validation error"));
     }
     //Test for listOrderSuggestions  Method:
 
 
     @Test
     void testListOrderSuggestions_ValidDto_ReturnsSuggestions() {
-        OrderOfCustomerDto validDto = new OrderOfCustomerDto(1L, 2L); // Replace with actual constructor
+        OrderOfCustomerDto validDto = new OrderOfCustomerDto(1L, 2L);
         SuggestionBriefProjection suggestion = mock(SuggestionBriefProjection.class);
         when(suggestionGateway.listOrderSuggestions(validDto.customerId(), validDto.orderId()))
                 .thenReturn(List.of(suggestion));
@@ -344,22 +350,23 @@ void setUp() {
 
         assertEquals("no List Found for this customer and this order", exception.getMessage());
     }
-//---------Test For selectSuggestionOfOrder
-@Test
-void testSelectSuggestionOfOrder_Success() {
-    Long suggestionId = 1L;
-    Suggestion suggestion = mock(Suggestion.class);
-    Orders order = mock(Orders.class);
-    Expert expert = mock(Expert.class);
 
-    when(suggestionGateway.findById(suggestionId)).thenReturn(Optional.of(suggestion));
-    when(suggestion.getOrder()).thenReturn(order);
-    when(suggestion.getExpert()).thenReturn(expert);
+    //---------Test For selectSuggestionOfOrder
+    @Test
+    void testSelectSuggestionOfOrder_Success() {
+        Long suggestionId = 1L;
+        Suggestion suggestion = mock(Suggestion.class);
+        Orders order = mock(Orders.class);
+        Expert expert = mock(Expert.class);
 
-    underTest.selectSuggestionOfOrder(suggestionId);
+        when(suggestionGateway.findById(suggestionId)).thenReturn(Optional.of(suggestion));
+        when(suggestion.getOrder()).thenReturn(order);
+        when(suggestion.getExpert()).thenReturn(expert);
 
-    verify(orderOperation).addExpertToOrder(order, expert, OrderStatus.WaitingForExpertToComeToYourPlace);
-}
+        underTest.selectSuggestionOfOrder(suggestionId);
+
+        verify(orderOperation).addExpertToOrder(order, expert, OrderStatus.WaitingForExpertToComeToYourPlace);
+    }
 
     @Test
     void testSelectSuggestionOfOrder_NotFound() {

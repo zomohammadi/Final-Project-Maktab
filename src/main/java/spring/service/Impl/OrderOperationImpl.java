@@ -5,6 +5,7 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import spring.dto.RegisterOrderDto;
 import spring.entity.Customer;
 import spring.entity.Expert;
@@ -24,6 +25,7 @@ import java.util.Set;
 
 @RequiredArgsConstructor
 @Service
+@Transactional(readOnly = true)
 public class OrderOperationImpl implements OrderOperation {
     private final OrderGateway orderGateway;
     private final SubServiceGateway subServiceGateway;
@@ -31,21 +33,23 @@ public class OrderOperationImpl implements OrderOperation {
     private final Validator validator;
 
     @Override
+    @Transactional
     public void orderRegister(RegisterOrderDto orderDto) {
 
-        Set<String> errors = new HashSet<>();
+
         SubService subService = subServiceGateway.findById(orderDto.subServiceId())
                 .orElse(null);
         Customer customer = customerGateway.findById(orderDto.customerId())
                 .orElse(null);
-        validateInput(orderDto, errors, subService, customer);
+        validateInput(orderDto, subService, customer);
         Orders order = Mapper.ConvertDtoToEntity.
                 convertOrderDtoToEntity(orderDto, customer, subService);
         order.setOrderStatus(OrderStatus.WaitingForSuggestionOfExperts);
         orderGateway.save(order);
     }
 
-    private void validateInput(RegisterOrderDto orderDto, Set<String> errors, SubService subService, Customer customer) {
+    private void validateInput(RegisterOrderDto orderDto, SubService subService, Customer customer) {
+        Set<String> errors = new HashSet<>();
         Set<ConstraintViolation<RegisterOrderDto>> violations = validator.validate(orderDto);
         if (subService == null)
             errors.add("subService not Found");
@@ -70,6 +74,8 @@ public class OrderOperationImpl implements OrderOperation {
 
     }
 
+    @Override
+    @Transactional
     public void changeOrderStatus(Orders order, OrderStatus status) {
         order.setOrderStatus(status);
         orderGateway.save(order);

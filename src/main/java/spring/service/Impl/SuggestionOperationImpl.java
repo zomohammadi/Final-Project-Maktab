@@ -1,10 +1,10 @@
 package spring.service.Impl;
 
-import jakarta.transaction.Transactional;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import spring.dto.OrderOfCustomerDto;
 import spring.dto.RegisterSuggestionDto;
 import spring.dto.projection.OrdersBriefProjection;
@@ -27,6 +27,7 @@ import java.util.*;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class SuggestionOperationImpl implements SuggestionOperation {
     private final SuggestionGateway suggestionGateway;
     private final ExpertGateway expertGateway;
@@ -47,7 +48,7 @@ public class SuggestionOperationImpl implements SuggestionOperation {
         return ordersBriefProjections;
     }
 
-
+    @Override
     @Transactional
     public void registerSuggestion(RegisterSuggestionDto suggestionDto) {
 
@@ -55,7 +56,7 @@ public class SuggestionOperationImpl implements SuggestionOperation {
                 .orElse(null);
         Orders order = orderGateway.findById(suggestionDto.orderId())
                 .orElse(null);
-
+//if --> order status in (0,1)
         validateInput(suggestionDto, expert, order);
         Suggestion suggestion = Mapper.ConvertDtoToEntity
                 .convertSuggestionDtoToEntity(suggestionDto, expert, order);

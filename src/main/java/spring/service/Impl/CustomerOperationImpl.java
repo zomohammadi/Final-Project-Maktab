@@ -1,6 +1,7 @@
 package spring.service.Impl;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import spring.dto.ChangeCustomerDto;
 import spring.dto.ChangePasswordDto;
 import spring.dto.RegisterCustomerDto;
@@ -20,6 +21,7 @@ import java.util.Set;
 
 @RequiredArgsConstructor
 @Service
+@Transactional(readOnly = true)
 public class CustomerOperationImpl implements CustomerOperation {
     private final CustomerGateway customerGateway;
     private final Validator validator;
@@ -29,6 +31,7 @@ public class CustomerOperationImpl implements CustomerOperation {
     }
 
     @Override
+    @Transactional
     public void register(RegisterCustomerDto customerDto) {
 
         if (checkInputIsNotValid(customerDto)) return;
@@ -60,7 +63,8 @@ public class CustomerOperationImpl implements CustomerOperation {
         }
         return false;
     }
-
+    @Transactional
+    @Override
     public void changePassword(ChangePasswordDto passwordDto) {
         Set<ConstraintViolation<ChangePasswordDto>> violations = validator.validate(passwordDto);
         if (!violations.isEmpty()) {
@@ -78,6 +82,7 @@ public class CustomerOperationImpl implements CustomerOperation {
     }
 
     @Override
+    @Transactional
     public void update(ChangeCustomerDto customerDto) {
         if (validation(customerDto)) return;
         Customer customer1 = Mapper.ConvertDtoToEntity.convertChangeCustomerDtoToEntity(customerDto);

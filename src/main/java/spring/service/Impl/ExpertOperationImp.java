@@ -31,10 +31,13 @@ import static spring.service.Impl.CheckInputFromDBOperation.checkUserInfoFromDB;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class ExpertOperationImp implements ExpertOperation {
     private final ExpertGateway expertGateway;
     private final Validator validator;
 
+    @Override
+    @Transactional
     public void register(RegisterExpertDto expertDto) {
 
         if (checkInputIsNotValid(expertDto)) return;
@@ -42,7 +45,7 @@ public class ExpertOperationImp implements ExpertOperation {
         Expert expert = Mapper.ConvertDtoToEntity.convertExpertDtoToEntity(expertDto);
         expert.setRole(Role.Expert);
         expert.setCredit(Credit.builder().build());
-        expert.setPicture(processImageFile(expertDto.picturePath()));
+        expert.setPicture(processImageFile(expertDto.picturePath()));//InputStream ---or File
         expert.setPassword(hashPassword(expertDto.password()));
         expertGateway.save(expert);
         System.out.println("expert register done");
@@ -126,8 +129,7 @@ public class ExpertOperationImp implements ExpertOperation {
     }
 
     @Override
-
-
+    @Transactional
     public void update(ChangeExpertDto expertDto) {
         if (validation(expertDto)) return;
         Expert expert1 = Mapper.ConvertDtoToEntity.convertChangeExpertDtoToEntity(expertDto);
@@ -197,6 +199,7 @@ public class ExpertOperationImp implements ExpertOperation {
             System.out.println("Expert not found");
         }
     }
+
     @Transactional//(readOnly = true)
     public byte[] getPictureByUserName(String userName) {
         return expertGateway.getPictureByUserName(userName);
@@ -205,12 +208,13 @@ public class ExpertOperationImp implements ExpertOperation {
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public void getPicture(String userName) {
-       byte[] pictureOptional  = getPictureByUserName(userName);
-        if (pictureOptional==null) {
+        byte[] pictureOptional = getPictureByUserName(userName);
+        if (pictureOptional == null) {
             throw new NotFoundException("Expert with this User Name not found!");
         }
         convertBytesToFile(pictureOptional, userName);
     }
+
     @Override
     public void changeExpertStatus(Long expertId, String status) {
 
@@ -238,7 +242,8 @@ public class ExpertOperationImp implements ExpertOperation {
         System.out.println("change Status Operation done");
     }
 
-
+    @Override
+    @Transactional
     public void changePassword(ChangePasswordDto passwordDto) {
         if (isNotValid(passwordDto)) return;
         Expert expert = expertGateway.findById(passwordDto.userId()).orElse(null);
