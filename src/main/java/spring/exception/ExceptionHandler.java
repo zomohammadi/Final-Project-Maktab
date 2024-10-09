@@ -1,5 +1,6 @@
 package spring.exception;
 
+import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolation;
 
@@ -14,7 +15,7 @@ public class ExceptionHandler {
                 System.out.println(v.getMessage());
 
         } catch (FoundException |
-                 EntityNotFoundException|NotFoundException e) {
+                 EntityNotFoundException | NotFoundException | EntityExistsException e) {
             System.out.println("\u001B[33m" + e.getMessage() + "\u001B[0m");
         } catch (
                 Exception e) {

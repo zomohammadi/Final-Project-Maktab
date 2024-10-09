@@ -20,10 +20,10 @@ import lombok.experimental.SuperBuilder;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Service extends BaseEntity {
 
-    @Column(unique = true)
+/*    @Column(unique = true)
     @NotBlank(message = "Service Name cannot be Blank")
     @Size(min = 3,max = 30, message = "Service Name must be less than {max} characters"+
                                       "and greater Than {min} characters")
-    @Pattern(regexp = "^[a-zA-Z\\s]+$", message = "Service Name can only contain letters")
+    @Pattern(regexp = "^[a-zA-Z\\s]+$", message = "Service Name can only contain letters")*/
     private String name;
 }
