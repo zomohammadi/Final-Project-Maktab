@@ -20,53 +20,6 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <dependencies>
-        <!--<dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <version>42.3.10</version>
-        </dependency>-->
-
-        <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
-       <!-- <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.18.24</version>
-            <scope>provided</scope>
-        </dependency>-->
-
-       <!-- <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-core</artifactId>
-            <version>6.5.2.Final</version>
-        </dependency>-->
-
-        <!-- validation dependency-->
-
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-validator</artifactId>
-            <version>8.0.0.Final</version>
-        </dependency>
-
-
-        <!--<dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-validator-annotation-processor</artifactId>
-            <version>8.0.0.Final</version>
-        </dependency>-->
-
-
-        <dependency>
-            <groupId>jakarta.el</groupId>
-            <artifactId>jakarta.el-api</artifactId>
-            <version>4.0.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.glassfish</groupId>
-            <artifactId>jakarta.el</artifactId>
-            <version>4.0.0</version>
-        </dependency>
-
         <!-- encryption-->
         <dependency>
             <groupId>org.mindrot</groupId>
@@ -95,31 +48,15 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
-        <!-- PowerMockito-->
-    <!--    <dependency>
-            <groupId>org.powermock</groupId>
-            <artifactId>powermock-module-junit4</artifactId>
-            <version>2.0.9</version>
-            <scope>test</scope>
+        <!-- validation-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.powermock</groupId>
-            <artifactId>powermock-api-mockito2</artifactId>
-            <version>2.0.9</version>
-            <scope>test</scope>
-        </dependency>-->
-        <!--<dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-core</artifactId>
-            <version>5.11.0</version> &lt;!&ndash; Ensure this is at least 4.0.0 &ndash;&gt;
-            <scope>test</scope>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-junit-jupiter</artifactId>
-            <version>5.11.0</version> &lt;!&ndash; Ensure this is at least 4.0.0 &ndash;&gt;
-            <scope>test</scope>
-        </dependency>-->
     </dependencies>
 
     <build>

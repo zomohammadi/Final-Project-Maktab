@@ -1,104 +1,57 @@
 package spring.service.Impl;
 
+import jakarta.persistence.EntityExistsException;
+import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 import spring.dto.ChangeServiceDto;
+import spring.dto.RegisterServiceDto;
 import spring.entity.Service;
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.Validator;
-import lombok.RequiredArgsConstructor;
-import spring.mapper.Mapper;
+import spring.exception.NotFoundException;
 import spring.repository.ServiceGateway;
 import spring.service.ServiceOperation;
 
 import java.util.List;
-import java.util.Set;
 
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 @org.springframework.stereotype.Service
 public class ServiceOperationImpl implements ServiceOperation {
     private final ServiceGateway serviceGateway;
-    private final Validator validator;
 
     @Override
     @Transactional
-    public void serviceRegister(String serviceName) {
-        Service service = Service.builder().name(serviceName).build();
-        Set<ConstraintViolation<Service>> violations = validator.validate(service);
-        boolean exists = serviceGateway.existsByName(serviceName);
-        if (!violations.isEmpty() || exists) {
-            for (ConstraintViolation<Service> violation : violations) {
-                System.out.println("\u001B[31m" + violation.getMessage() + "\u001B[0m");
-            }
-            if (exists)
-                System.out.println("\u001B[31m" + "service with this name is already exists" + "\u001B[0m");
-            return;
+    public void serviceRegister(RegisterServiceDto serviceDto) {
+        if (serviceGateway.existsByName(serviceDto.name())) {
+            throw new EntityExistsException("service with this name is already exists");
         }
-
-
+        Service service = Service.builder().name(serviceDto.name()).build();
         serviceGateway.save(service);
-        System.out.println("service Register done");
-
-
     }
 
     @Override
     public List<String> findAllService() {
         List<String> list = serviceGateway.findAll().stream().map(Service::getName).toList();
         if (list.isEmpty())
-            System.out.println("There are currently no Service.");
+            throw new NotFoundException("There are currently no Service.");
         return list;
     }
 
     @Override
     @Transactional
     public void update(ChangeServiceDto changeServiceDto) {
-        if (isNotValid(changeServiceDto)) return;
-        Service service1 = Mapper.ConvertDtoToEntity.convertChangeServiceDtoToEntity(changeServiceDto);
-        Service service = serviceGateway.findById(service1.getId()).orElse(null);
-        updateOperation(changeServiceDto, service);
-
-    }
-
-    private void updateOperation(ChangeServiceDto changeServiceDto, Service service) {
-        if (service != null) {
-            if (changeServiceDto.name() != null) {
-                service.setName(changeServiceDto.name());
-            }
-            serviceGateway.save(service);
-            System.out.println("Service Updated!");
-        } else {
-            System.out.println("Service not found");
-        }
-    }
-
-    private boolean isNotValid(ChangeServiceDto changeServiceDto) {
-        Set<ConstraintViolation<ChangeServiceDto>> violations = validator.validate(changeServiceDto);
-        boolean exists = false;
-        if (changeServiceDto.name() != null) {
-            exists = serviceGateway.existsByName(changeServiceDto.name());
-        }
-        if (!violations.isEmpty() || exists) {
-            for (ConstraintViolation<ChangeServiceDto> violation : violations) {
-                System.out.println("\u001B[31m" + violation.getMessage() + "\u001B[0m");
-            }
-            if (exists)
-                System.out.println("\u001B[31m" + "Service with this name is already exists" + "\u001B[0m");
-
-            return true;
-        }
-        return false;
+        if (serviceGateway.existsByName(changeServiceDto.name()))
+            throw new EntityExistsException("Service with this name is already exists");
+        Service service = findById(changeServiceDto.ServiceId());
+        service.setName(changeServiceDto.name());
+        serviceGateway.save(service);
     }
 
     @Override
-    public String findById(Long subServiceId) {
-        Service service = serviceGateway.findById(subServiceId).orElse(null);
-        String responceService = null;
-        if (service != null) {
-            responceService = service.getName();
-        }
-        return responceService;
+    public Service findById(Long serviceId) {
+        if (serviceId == null)
+            throw new IllegalArgumentException("serviceId can not be Null");
+        return serviceGateway.findById(serviceId)
+                .orElseThrow(() -> new EntityNotFoundException("Service not found"));
     }
 }
-/* if (serviceGateway.existsByName(serviceName))
-            throw new FoundException("service with this name is already exists");*/

@@ -1,16 +1,7 @@
 package spring;
 
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
-import org.springframework.context.annotation.Bean;
-import spring.dto.*;
-import spring.exception.ExceptionHandler;
-import spring.exception.NotFoundException;
-import spring.service.*;
-
-import java.time.ZonedDateTime;
 
 @SpringBootApplication
 public class SpringDataApplication {
@@ -18,7 +9,8 @@ public class SpringDataApplication {
         SpringApplication.run(SpringDataApplication.class, args);
 
     }
-
+}//----------
+/*
     @Bean
     CommandLineRunner expertRunner(ExpertOperation expertOperation,
                                    CustomerOperation customerOperation,
@@ -28,7 +20,7 @@ public class SpringDataApplication {
                                    AdminOperation adminOperation,
                                    SuggestionOperation suggestionOperation) {
         return args -> {
-            ExceptionHandler exceptionHandler = new ExceptionHandler();
+            ExceptionHandler exceptionHandler = new ExceptionHandler();*/
 //--------------------------------save Expert
            /* RegisterExpertDto specialistDto = RegisterExpertDto.builder().firstName("zohreh")
                     .lastName("Mohammadi").emailAddress("zo.mohammadi@gmail.com")
@@ -38,7 +30,7 @@ public class SpringDataApplication {
 
 
             exceptionHandler.handel(() -> expertOperation.register(specialistDto));*/
-            //-----add another expert
+//-----add another expert
          /*    RegisterExpertDto specialistDto = RegisterExpertDto.builder().firstName("shima")
                     .lastName("heydari").emailAddress("shima@gmail.com")
                     .mobileNumber("09179948746").nationalCode("0017845718")
@@ -78,10 +70,15 @@ public class SpringDataApplication {
             expertOperation.changePassword(passwordDto2);
 */
 //----------------save Service -------------- اضافه کردن خدمت
-/*
-            serviceOperation.serviceRegister("Household appliances");
-            serviceOperation.serviceRegister("cleaning");*/
+           /* exceptionHandler.handel(() ->
+                    serviceOperation.serviceRegister(RegisterServiceDto.builder()
+                            .name("").build()));*/
 
+        /*    exceptionHandler.handel(() ->
+                    serviceOperation.serviceRegister(RegisterServiceDto.builder()
+                            .name("Household appliances").build()));
+            exceptionHandler.handel(() ->
+                    serviceOperation.serviceRegister(RegisterServiceDto.builder().name("cleaning").build()));*/
 //---------------save SubService --------اضافه کردن زیر خدمت
 
           /*  RegisterSubServiceDto subServiceDto1 = RegisterSubServiceDto.builder()
@@ -121,20 +118,20 @@ public class SpringDataApplication {
 //----------------find service نمایش تمام خدمت ها
 
 
-            /*   serviceOperation.findAllService().forEach(System.out::println);*/
+/*   serviceOperation.findAllService().forEach(System.out::println);*/
 
 
 //----------------find SubService  نمایش تمام زیرخدمت ها
 
 
-            /* subServiceOperation.findAllSubService().forEach(System.out::println);*/
+/* subServiceOperation.findAllSubService().forEach(System.out::println);*/
 
 
 //----------------admin --> تغییر وضعیت متخصص از وضعیت جدید به تایید شده
 
 
-            /* expertOperation.changeExpertStatus(1L, "Confirmed");*/
-            /* expertOperation.changeExpertStatus(3L, "Confirmed");*/
+/* expertOperation.changeExpertStatus(1L, "Confirmed");*/
+/* expertOperation.changeExpertStatus(3L, "Confirmed");*/
 
 
 //----------------admin --> اضافه کردن متخصص تایید شده به زیرخدمت
@@ -144,15 +141,15 @@ public class SpringDataApplication {
               adminOperation.addSubServiceToExpert(1L, 2L);
 */
 
-    //adminOperation.addSubServiceToExpert(3L, 2L);
+//adminOperation.addSubServiceToExpert(3L, 2L);
 //---------------admin --> حذف  کردن متخصص از زیرخدمت
 
-            /*adminOperation.deleteSubServiceFromExpert(1L, 1L);*/
+/*adminOperation.deleteSubServiceFromExpert(1L, 1L);*/
 
 
 //----------------------find service نمایش تمام خدمت ها
 
-            /* serviceOperation.findAllService().forEach(System.out::println);*/
+/* serviceOperation.findAllService().forEach(System.out::println);*/
 
 
 //----------------------find sub service نمایش تمام زیرخدمت های یک خدمت
@@ -212,7 +209,7 @@ public class SpringDataApplication {
 
             exceptionHandler.handel(() -> suggestionOperation.registerSuggestion(suggestionDto));
 */
-            //for expert_id = 3
+//for expert_id = 3
              /* RegisterSuggestionDto suggestionDto = RegisterSuggestionDto.builder()
                     .expertId(3L).orderId(1L).priceSuggestion(6000000.0).durationOfService("1 saat")
                     .suggestedTimeStartService(ZonedDateTime.of(2024, 11, 12, 8, 31
@@ -240,15 +237,15 @@ public class SpringDataApplication {
                     )));*/
 //--------------------select suggestion of above list: (change the order status and add expert_id to Order table)
 
-           /* exceptionHandler.handel(() -> suggestionOperation.selectSuggestionOfOrder(4L));*/
+/* exceptionHandler.handel(() -> suggestionOperation.selectSuggestionOfOrder(4L));*/
 
 //-------------------change status from wanting for coming Expert to your Place -->to Started
-           /* exceptionHandler.handel(() ->orderOperation.changeOrderStatusToStarted(1L));*/
+/* exceptionHandler.handel(() ->orderOperation.changeOrderStatusToStarted(1L));*/
 
 //------------------- change status from Started to Done
-            /* exceptionHandler.handel(() ->orderOperation.changeOrderStatusToDone(1L));*/
-        };
+/* exceptionHandler.handel(() ->orderOperation.changeOrderStatusToDone(1L));*/
+   /*     };
     }
 
 
-}
+}*/
