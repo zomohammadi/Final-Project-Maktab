@@ -1,6 +1,4 @@
 package spring;
-import spring.dto.RegisterExpertDto;
-import spring.exception.ExceptionHandler;
 
 public class Application {
    /* public static void main(String[] args) {
