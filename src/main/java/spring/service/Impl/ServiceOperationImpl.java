@@ -12,6 +12,7 @@ import spring.repository.ServiceGateway;
 import spring.service.ServiceOperation;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -33,7 +34,7 @@ public class ServiceOperationImpl implements ServiceOperation {
     public List<String> findAllService() {
         List<String> list = serviceGateway.findAll().stream().map(Service::getName).toList();
         if (list.isEmpty())
-            throw new NotFoundException("There are currently no Service.");
+            throw new NoSuchElementException("There are currently no Service.");
         return list;
     }
 

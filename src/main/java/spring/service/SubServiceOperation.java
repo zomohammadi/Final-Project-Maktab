@@ -3,6 +3,7 @@ package spring.service;
 import spring.dto.ChangeSubServiceDto;
 import spring.dto.RegisterSubServiceDto;
 import spring.dto.ResponceSubServiceDto;
+import spring.entity.SubService;
 
 import java.util.List;
 
@@ -15,7 +16,7 @@ public interface SubServiceOperation {
 
     void update(ChangeSubServiceDto subServiceDto);
 
-    ResponceSubServiceDto findById(Long subServiceId);
+    SubService findById(Long subServiceId);
 
     //void delete(Long subServiceId);
 }

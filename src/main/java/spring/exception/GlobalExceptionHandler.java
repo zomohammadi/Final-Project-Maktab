@@ -12,22 +12,21 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import spring.dto.FieldErrorDto;
 
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestControllerAdvice
 //@ControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
+    private final Map<String, Object> body = new LinkedHashMap<>();
 
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException exception,
                                                                   HttpHeaders headers,
                                                                   HttpStatusCode status,
                                                                   WebRequest request) {
-        Map<String, Object> body = new LinkedHashMap<>();
+        body.clear();
+        //  Map<String, Object> body = new LinkedHashMap<>();
         body.put("timestamp", new Date());
         body.put("status", HttpStatus.BAD_REQUEST);
 
@@ -43,14 +42,24 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 body, headers, status
         );
     }
+
     @ExceptionHandler(EntityExistsException.class)
     public ResponseEntity<Object> handleEntityExistsException(EntityExistsException ex) {
-        Map<String, Object> body = new LinkedHashMap<>();
-        body.put("timestamp", new Date());
-        body.put("status", HttpStatus.CONFLICT.value()); // HTTP 409 Conflict
-        body.put("message", ex.getMessage());
+        return buildErrorResponse(ex.getMessage(), HttpStatus.CONFLICT);// HTTP 409 Conflict
+    }
 
-        return new ResponseEntity<>(body, HttpStatus.CONFLICT);
+    @ExceptionHandler(NoSuchElementException.class)
+    public ResponseEntity<Object> handleNoSuchElementException(NoSuchElementException ex) {
+        return buildErrorResponse(ex.getMessage(), HttpStatus.NOT_FOUND);// HTTP 404 NOT_FOUND
+    }
+
+    private ResponseEntity<Object> buildErrorResponse(String message, HttpStatus status) {
+        body.clear();
+        body.put("timestamp", new Date());
+        body.put("status", status.value());
+        body.put("message", message);
+
+        return new ResponseEntity<>(body, status);
     }
 
 
