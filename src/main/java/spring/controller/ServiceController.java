@@ -2,6 +2,8 @@ package spring.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,9 +18,9 @@ public class ServiceController {
     private final ServiceOperation serviceOperation;
 
     @PostMapping
-    public void serviceRegister(@RequestBody @Valid RegisterServiceDto serviceDto) {
+    public ResponseEntity<Void> serviceRegister(@RequestBody @Valid RegisterServiceDto serviceDto) {
         serviceOperation.serviceRegister(serviceDto);
-
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
 }
