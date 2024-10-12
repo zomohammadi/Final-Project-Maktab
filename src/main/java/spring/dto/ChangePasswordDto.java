@@ -14,8 +14,11 @@ public record ChangePasswordDto(
         @NotBlank(message = "Password cannot be Blank")
         @Size(min = 8, max = 8, message = "Password must be exactly {max} characters long")
         @Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*\\d).+$", message = "Password must contain both letters and numbers")
-        String password
+        String password,
 
-        //add old_password
+        @NotBlank(message = "Password cannot be Blank")
+        @Size(min = 8, max = 8, message = "Password must be exactly {max} characters long")
+        @Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*\\d).+$", message = "Password must contain both letters and numbers")
+        String oldPassword
 ) {
 }

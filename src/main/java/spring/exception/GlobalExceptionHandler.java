@@ -47,6 +47,10 @@ public class GlobalExceptionHandler /*extends ResponseEntityExceptionHandler*/ {
     public ResponseEntity<Object> handleNoSuchElementException(NoSuchElementException ex) {
         return buildErrorResponse(ex.getMessage(), HttpStatus.NOT_FOUND);// HTTP 404 NOT_FOUND
     }
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<Object> handleIllegalArgumentException(IllegalArgumentException ex) {
+        return buildErrorResponse(ex.getMessage(), HttpStatus.BAD_REQUEST);//
+    }
 
     private ResponseEntity<Object> buildErrorResponse(String message, HttpStatus status) {
         Map<String, Object> body = new LinkedHashMap<>();

@@ -15,7 +15,7 @@ import spring.service.SubServiceOperation;
 import java.util.List;
 
 @RestController
-@RequestMapping("/subService")
+@RequestMapping("/subservices")
 @RequiredArgsConstructor
 public class SubServiceController {
     private final SubServiceOperation subServiceOperation;
