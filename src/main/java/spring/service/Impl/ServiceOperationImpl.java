@@ -7,7 +7,6 @@ import org.springframework.transaction.annotation.Transactional;
 import spring.dto.ChangeServiceDto;
 import spring.dto.RegisterServiceDto;
 import spring.entity.Service;
-import spring.exception.NotFoundException;
 import spring.repository.ServiceGateway;
 import spring.service.ServiceOperation;
 

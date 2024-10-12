@@ -19,7 +19,6 @@ public class GlobalExceptionHandler /*extends ResponseEntityExceptionHandler*/ {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException exception) {
         Map<String, Object> body = new LinkedHashMap<>();
-        //  Map<String, Object> body = new LinkedHashMap<>();
         body.put("timestamp", new Date());
         body.put("status", HttpStatus.UNPROCESSABLE_ENTITY);
 
