@@ -118,33 +118,3 @@ public class SuggestionOperationImpl implements SuggestionOperation {
     }
 
 }
-
-/*
-    @Transactional
-    public void registerSuggestion(RegisterSuggestionDto suggestionDto) {
-        Expert expert = expertGateway.findById(suggestionDto.expertId()).orElse(null);
-        Orders order = orderGateway.findById(suggestionDto.orderId()).orElse(null);
-
-        registerValidation(suggestionDto, expert, order);
-
-        */
-/*Expert expert = expertGateway.findById(suggestionDto.expertId())
-                .orElseThrow(() -> new EntityNotFoundException("expert not Found"));
-        Orders order = orderGateway.findById(suggestionDto.orderId())
-                .orElseThrow(() -> new EntityNotFoundException("order not Found"));
-        double basePrice = order.getSubService().getBasePrice();
-        if (basePrice > suggestionDto.priceSuggestion())
-            throw new PriceLessThanBasePriceException("your suggested price is less than " +
-                                                      "the Base Price of this SubService");*//*
-
-        Suggestion suggestion = Mapper.ConvertDtoToEntity
-                .convertSuggestionDtoToEntity(suggestionDto, expert, order);
-        */
-/*if (suggestionGateway.existsSuggestionByExpertAndOrder(expert, order))
-            throw new FoundException("the suggestion of this order for this expert are exists");*//*
-
-        suggestionGateway.save(suggestion);
-        orderOperation.changeOrderStatus(order, OrderStatus.WaitingForExpertSelection);
-
-
-    }*/

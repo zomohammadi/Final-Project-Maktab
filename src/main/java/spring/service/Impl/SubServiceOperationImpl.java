@@ -76,7 +76,7 @@ public class SubServiceOperationImpl implements SubServiceOperation {
         //applyIfNotNull(subServiceDto.name(), name ->  subService.setName(name))
         applyIfNotNull(subServiceDto.name(), subService::setName);
         applyIfNotNull(subServiceDto.description(), subService::setDescription);
-        applyIfNotNull(subServiceDto.BasePrice(), subService::setBasePrice);
+        applyIfNotNull(subServiceDto.basePrice(), subService::setBasePrice);
         subServiceGateway.save(subService);
 
     }
@@ -96,14 +96,3 @@ public class SubServiceOperationImpl implements SubServiceOperation {
     }
 
 }
- /*   @Override
-    public ResponceSubServiceDto findById(Long subServiceId) {
-       *//* SubService subService = subServiceGateway.findById(subServiceId).orElse(null);
-        ResponceSubServiceDto responceSubServiceDto = null;
-        if (subService != null) {
-            responceSubServiceDto = Mapper.ConvertEntityToDto.convertSubServiceToDto(subService);
-        }
-        return responceSubServiceDto;*//* // impl this convert SubService to ResponceSubServiceDto in controller
-
-    }
-*/

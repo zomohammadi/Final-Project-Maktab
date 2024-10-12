@@ -20,7 +20,7 @@ public record ResponceSubServiceDto(
         @Min(value = 100000, message = "Base Price must be greater Than {value} numbers ")
         @Max(value = 900000000, message = "Base Price must be less Than {value} numbers ")
         //@Positive
-        Double BasePrice,
+        Double basePrice,
 
         @NotBlank(message = "Service Name cannot be Blank")
         @Size(min = 3, max = 30, message = "Service Name must be less than {max} characters" +

@@ -21,7 +21,7 @@ public record RegisterSubServiceDto(
         @Min(value = 100000, message = "Base Price must be greater Than {value} numbers ")
         @Max(value = 900000000, message = "Base Price must be less Than {value} numbers ")
         //@Positive
-        Double BasePrice,
+        Double basePrice,
 
         @NotNull(message = "serviceId cannot be Null")
         @Min(value = 1, message = "serviceId must be greater than or equal to {value}")

@@ -39,5 +39,5 @@ public class SubService extends BaseEntity {
     private String name;
 
     private String description;
-    private Double BasePrice;
+    private Double basePrice;
 }

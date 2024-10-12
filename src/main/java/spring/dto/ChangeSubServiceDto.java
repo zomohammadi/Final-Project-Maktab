@@ -19,7 +19,7 @@ public record ChangeSubServiceDto(
         //@NotNull(message = "Base Price cannot be Null")
         @Min(value = 100000, message = "Base Price must be greater Than {value} numbers ")
         @Max(value = 900000000, message = "Base Price must be less Than {value} numbers ")
-        Double BasePrice,
+        Double basePrice,
 
         @NotNull(message = "subServiceId cannot be Null")
         @Min(value = 1, message = "subServiceId must be greater than or equal to {value}")

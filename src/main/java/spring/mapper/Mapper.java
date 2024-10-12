@@ -33,7 +33,7 @@ public class Mapper {
             return SubService.builder()
                     .name(subServiceDto.name())
                     .description(subServiceDto.description())
-                    .BasePrice(subServiceDto.BasePrice())
+                    .basePrice(subServiceDto.basePrice())
                     .service(service)
                     .build();
         }
@@ -58,8 +58,8 @@ public class Mapper {
                 builder.name(subServiceDto.name());
             if (subServiceDto.description() != null)
                 builder.description(subServiceDto.description());
-            if (subServiceDto.BasePrice() != null)
-                builder.BasePrice(subServiceDto.BasePrice());
+            if (subServiceDto.basePrice() != null)
+                builder.basePrice(subServiceDto.basePrice());
             return builder.build();
         }
 
@@ -117,7 +117,7 @@ public class Mapper {
             return ResponceSubServiceDto.builder()
                     .name(subService.getName())
                     .description(subService.getDescription())
-                    .BasePrice(subService.getBasePrice())
+                    .basePrice(subService.getBasePrice())
                     .serviceName(subService.getService().getName())
                     .build();
         }
