@@ -30,6 +30,6 @@ public interface ExpertGateway extends JpaRepository<Expert, Long> {
     boolean existUserByUserName(String userName);
 
     @Query("select e.picture as Picture from Expert e where e.userName = :userName")
-    /*Optional<*/byte[]/*>*/ getPictureByUserName(@Param("userName") String userName);
+    byte[] getPictureByUserName(@Param("userName") String userName);
 
 }

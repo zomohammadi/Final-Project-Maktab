@@ -16,7 +16,7 @@ import spring.service.CustomerOperation;
 import java.util.List;
 
 @RestController
-@RequestMapping("/customers")
+@RequestMapping("api/customers")
 @RequiredArgsConstructor
 public class CustomerController {
     private final CustomerOperation customerOperation;

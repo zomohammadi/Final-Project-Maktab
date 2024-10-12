@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
+import org.springframework.web.multipart.MultipartFile;
 
 @Builder
 public record RegisterExpertDto(
@@ -38,7 +39,6 @@ public record RegisterExpertDto(
         @Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*\\d).+$", message = "Password must contain both letters and numbers")
         String password,
 
-        @NotBlank(message = "Picture Path cannot be Blank")
-        String picturePath
+        MultipartFile pictureFile
 ) {
 }

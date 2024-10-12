@@ -39,18 +39,27 @@ public class GlobalExceptionHandler /*extends ResponseEntityExceptionHandler*/ {
     public ResponseEntity<Object> handleEntityExistsException(EntityExistsException ex) {
         return buildErrorResponse(ex.getMessage(), HttpStatus.CONFLICT);// HTTP 409 Conflict
     }
+
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<Object> handleEntityNotFoundException(EntityNotFoundException ex) {
         return buildErrorResponse(ex.getMessage(), HttpStatus.NOT_FOUND);// HTTP 404 NOT_FOUND
     }
+
     @ExceptionHandler(NoSuchElementException.class)
     public ResponseEntity<Object> handleNoSuchElementException(NoSuchElementException ex) {
         return buildErrorResponse(ex.getMessage(), HttpStatus.NOT_FOUND);// HTTP 404 NOT_FOUND
     }
+
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<Object> handleIllegalArgumentException(IllegalArgumentException ex) {
-        return buildErrorResponse(ex.getMessage(), HttpStatus.BAD_REQUEST);//
+        return buildErrorResponse(ex.getMessage(), HttpStatus.BAD_REQUEST);//400
     }
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<Object> handleRuntimeException(RuntimeException ex) {
+        return buildErrorResponse("An unexpected error occurred: " + ex.getMessage(),
+                HttpStatus.INTERNAL_SERVER_ERROR); // HTTP 500
+    }
+
 
     private ResponseEntity<Object> buildErrorResponse(String message, HttpStatus status) {
         Map<String, Object> body = new LinkedHashMap<>();

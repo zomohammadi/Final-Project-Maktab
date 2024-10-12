@@ -46,13 +46,13 @@ public class CustomerOperationImpl implements CustomerOperation {
 
     private void checkInputIsExistsInDB(RegisterCustomerDto customerDto) {
 
-        Set<String> customers = CheckInputFromDBOperation.checkUserInfoFromDB("Customer",
+        Set<String> errors = CheckInputFromDBOperation.checkUserInfoFromDB("Customer",
                 customerGateway.existUserByNationalCode(customerDto.nationalCode()),
                 customerGateway.existUserByMobileNumber(customerDto.mobileNumber()),
                 customerGateway.existUserByEmailAddress(customerDto.emailAddress()),
                 customerGateway.existUserByUserName(customerDto.userName()));
-        if (!customers.isEmpty())
-            throw new EntityExistsException(String.join(", ", customers));
+        if (!errors.isEmpty())
+            throw new EntityExistsException(String.join(", ", errors));
 
     }
 
@@ -139,71 +139,3 @@ public class CustomerOperationImpl implements CustomerOperation {
         return responceSubServiceDtos;
     }
 }
-/*
-    @Override
-    public ResponceCustomerDto findById(Long customerId) {
-        Customer customer = customerGateway.findById(customerId).orElse(null);
-        ResponceCustomerDto responceCustomerDto = null;
-        if (customer != null) {
-            responceCustomerDto = Mapper.ConvertEntityToDto.convertCustomerToDto(customer);
-        }
-        return responceCustomerDto;
-    }
- */
-
-    /*private boolean validation(ChangeCustomerDto customerDto) {
-        boolean exists1 = false;
-        boolean exists2 = false;
-        boolean exists3 = false;
-        boolean exists4 = false;
-        if (customerDto.mobileNumber() != null) {
-            exists1 = customerGateway.existUserByMobileNumber(customerDto.mobileNumber());
-        }
-        if (customerDto.nationalCode() != null) {
-            exists2 = customerGateway.existUserByNationalCode(customerDto.nationalCode());
-        }
-        if (customerDto.emailAddress() != null) {
-            exists3 = customerGateway.existUserByEmailAddress(customerDto.emailAddress());
-        }
-        if (customerDto.userName() != null) {
-            exists4 = customerGateway.existUserByUserName(customerDto.userName());
-        }
-        if (exists1 || exists2 || exists3 || exists4) {
-            if (exists1)
-                System.out.println("\u001B[31m" + "Expert with this Mobile Number is already exists" + "\u001B[0m");
-            if (exists2)
-                System.out.println("\u001B[31m" + "Expert with this National Code is already exists" + "\u001B[0m");
-            if (exists3)
-                System.out.println("\u001B[31m" + "Expert with this Email Address is already exists" + "\u001B[0m");
-            if (exists4)
-                System.out.println("\u001B[31m" + "Expert with this UserName is already exists" + "\u001B[0m");
-
-            return true;
-        }
-        return false;
-    }*/
-   /* private void updateOperation(ChangeCustomerDto customerDto, Customer customer) {
-        if (customer != null) {
-            if (customerDto.firstName() != null) {
-                customer.setFirstName(customerDto.firstName());
-            }
-            if (customerDto.lastName() != null) {
-                customer.setLastName(customerDto.lastName());
-            }
-            if (customerDto.mobileNumber() != null) {
-                customer.setMobileNumber(customerDto.mobileNumber());
-            }
-            if (customerDto.nationalCode() != null) {
-                customer.setNationalCode(customerDto.nationalCode());
-            }
-            if (customerDto.emailAddress() != null) {
-                customer.setEmailAddress(customerDto.emailAddress());
-            }
-            if (customerDto.userName() != null) {
-                customer.setUserName(customerDto.userName());
-            }
-            customerGateway.save(customer);
-        } else {
-            System.out.println("Customer not found");
-        }
-    }*/

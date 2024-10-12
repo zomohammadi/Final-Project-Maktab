@@ -3,20 +3,19 @@ package spring.service;
 import spring.dto.ChangeExpertDto;
 import spring.dto.ChangePasswordDto;
 import spring.dto.RegisterExpertDto;
-import spring.dto.ResponceExpertDto;
+import spring.entity.Expert;
+
+import java.io.File;
 
 
 public interface ExpertOperation {
     void register(RegisterExpertDto expertDto);
-
-    void getPicture(String userName);
-    //void getPictureById(Long id);
-
-    void changeExpertStatus(Long expertId, String status);
+   File getPictureFileByUserName(String userName);
+    void confirmedExpert(Long expertId);
 
     void changePassword(ChangePasswordDto passwordDto);
 
     void update(ChangeExpertDto expertDto);
 
-    ResponceExpertDto findById(Long expertId);
+    Expert findById(Long expertId);
 }
