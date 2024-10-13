@@ -10,14 +10,13 @@ import spring.entity.Expert;
 import spring.entity.Orders;
 import spring.entity.SubService;
 import spring.enumaration.OrderStatus;
-import spring.exception.NotFoundException;
+import spring.exception.ValidationException;
 import spring.mapper.Mapper;
 import spring.repository.OrderGateway;
 import spring.service.CustomerOperation;
 import spring.service.OrderOperation;
 import spring.service.SubServiceOperation;
 
-import java.util.HashSet;
 import java.util.Set;
 
 @RequiredArgsConstructor
@@ -35,24 +34,12 @@ public class OrderOperationImpl implements OrderOperation {
 
         SubService subService = subServiceOperation.findById(orderDto.subServiceId());
         Customer customer = customerOperation.findById(orderDto.customerId());
-        validateInput(orderDto, subService, customer);
+        if (subService != null && subService.getBasePrice() > orderDto.priceSuggested())
+            throw new ValidationException(Set.of("your suggested price is less than the Base Price of this SubService"));
         Orders order = Mapper.ConvertDtoToEntity.
                 convertOrderDtoToEntity(orderDto, customer, subService);
         order.setOrderStatus(OrderStatus.WaitingForSuggestionOfExperts);
         orderGateway.save(order);
-    }
-
-    private void validateInput(RegisterOrderDto orderDto, SubService subService, Customer customer) {
-        Set<String> errors = new HashSet<>();
-        if (subService == null)
-            errors.add("subService not Found");
-        if (customer == null)
-            errors.add("Customer not Found");
-        if (subService != null && subService.getBasePrice() > orderDto.priceSuggested())
-            errors.add(" your suggested price is less than the Base Price of this SubService");
-        if (!errors.isEmpty()) {
-            throw new EntityNotFoundException((String.join(", ", errors)));
-        }
     }
 
 
@@ -85,7 +72,7 @@ public class OrderOperationImpl implements OrderOperation {
         if (order.getOrderStatus().equals(OrderStatus.WaitingForExpertToComeToYourPlace))
             changeOrderStatus(order, OrderStatus.Started);
         else
-            throw new NotFoundException("your status is not Waiting For Expert To Come To YourPlace");
+            throw new IllegalStateException ("your status is not Waiting For Expert To Come To YourPlace");
     }
 
     public void changeOrderStatusToDone(Long orderId) {
@@ -95,7 +82,7 @@ public class OrderOperationImpl implements OrderOperation {
         if (order.getOrderStatus().equals(OrderStatus.Started))
             changeOrderStatus(order, OrderStatus.Done);
         else
-            throw new NotFoundException("your status is Started");
+            throw new IllegalStateException ("your status is Started");
     }
 
 }

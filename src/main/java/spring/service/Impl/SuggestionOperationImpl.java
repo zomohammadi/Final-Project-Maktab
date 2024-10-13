@@ -1,7 +1,6 @@
 package spring.service.Impl;
 
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.Validator;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,38 +12,35 @@ import spring.entity.Expert;
 import spring.entity.Orders;
 import spring.entity.Suggestion;
 import spring.enumaration.OrderStatus;
-import spring.exception.NotFoundException;
 import spring.exception.ValidationException;
-import spring.exception.ViolationsException;
 import spring.mapper.Mapper;
-import spring.repository.ExpertGateway;
-import spring.repository.OrderGateway;
 import spring.repository.SuggestionGateway;
+import spring.service.ExpertOperation;
 import spring.service.OrderOperation;
 import spring.service.SuggestionOperation;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class SuggestionOperationImpl implements SuggestionOperation {
     private final SuggestionGateway suggestionGateway;
-    private final ExpertGateway expertGateway;
     private final OrderOperation orderOperation;
-    private final OrderGateway orderGateway;
-    private final Validator validator;
+    private final ExpertOperation expertOperation;
 
     public Suggestion findById(Long suggestionId) {
         return suggestionGateway.findById(suggestionId)
-                .orElseThrow(() -> new NotFoundException("no Suggestion Found "));
+                .orElseThrow(() -> new EntityNotFoundException("no Suggestion Found "));
     }
 
     @Override
     public List<OrdersBriefProjection> listOrders(Long expertId) {
         List<OrdersBriefProjection> ordersBriefProjections = suggestionGateway.listOrders(expertId);
         if (ordersBriefProjections.isEmpty())
-            throw new NotFoundException("no list Found for this expert");
+            throw new EntityNotFoundException("no list Found for this expert");
         return ordersBriefProjections;
     }
 
@@ -52,66 +48,53 @@ public class SuggestionOperationImpl implements SuggestionOperation {
     @Transactional
     public void registerSuggestion(RegisterSuggestionDto suggestionDto) {
 
-        Expert expert = expertGateway.findById(suggestionDto.expertId())
-                .orElse(null);
-        Orders order = orderGateway.findById(suggestionDto.orderId())
-                .orElse(null);
-//if --> order status in (0,1)
+        Expert expert = expertOperation.findById(suggestionDto.expertId());
+        Orders order = orderOperation.findById(suggestionDto.orderId());
+        if (!(order.getOrderStatus().equals(OrderStatus.WaitingForSuggestionOfExperts)
+              || order.getOrderStatus().equals(OrderStatus.WaitingForExpertSelection)))
+            throw new IllegalStateException("""
+                    can not register suggestion
+                    because order state must be WaitingForExpertSelection
+                    or WaitingForExpertSelection""");
         validateInput(suggestionDto, expert, order);
         Suggestion suggestion = Mapper.ConvertDtoToEntity
                 .convertSuggestionDtoToEntity(suggestionDto, expert, order);
 
         suggestionGateway.save(suggestion);
-        if (order != null)
-            if (order.getOrderStatus() != OrderStatus.WaitingForExpertSelection)
-                orderOperation.changeOrderStatus(order, OrderStatus.WaitingForExpertSelection);
+        if (order.getOrderStatus() != OrderStatus.WaitingForExpertSelection)
+            orderOperation.changeOrderStatus(order, OrderStatus.WaitingForExpertSelection);
 
     }
 
     private void validateInput(RegisterSuggestionDto suggestionDto, Expert expert, Orders order) {
-        Set<ConstraintViolation<RegisterSuggestionDto>> violations = validator.validate(suggestionDto);
         Set<String> errors = new HashSet<>();
-        if (expert == null)
-            errors.add("expert not Found");
-        if (order == null)
-            errors.add("order not Found");
-        else {
-            double basePrice = order.getSubService().getBasePrice();
-            if (basePrice > suggestionDto.priceSuggestion())
-                errors.add("your suggested price is less than the Base Price of this SubService");
-            if (suggestionGateway.existsSuggestionByExpertAndOrder(expert, order))
-                errors.add("the suggestion of this order for this expert are exists");
-        }
+        double basePrice = order.getSubService().getBasePrice();
+        if (basePrice > suggestionDto.priceSuggestion())
+            errors.add("your suggested price is less than the Base Price of this SubService");
+        if (suggestionGateway.existsSuggestionByExpertAndOrder(expert, order))
+            errors.add("the suggestion of this order for this expert are exists");
 
-        if (!violations.isEmpty() || !errors.isEmpty()) {
-            for (ConstraintViolation<RegisterSuggestionDto> violation : violations) {
-                errors.add(violation.getMessage());
-            }
-
+        if (!errors.isEmpty())
             throw new ValidationException(errors);
-        }
     }
 
     @Override
     public List<SuggestionBriefProjection> listOrderSuggestions(OrderOfCustomerDto orderOfCustomerDto) {
 
-        Set<ConstraintViolation<OrderOfCustomerDto>> violations = validator.validate(orderOfCustomerDto);
-        if (!violations.isEmpty()) {
-            throw new ViolationsException(violations);
-        }
-
         List<SuggestionBriefProjection> suggestionBriefProjections = suggestionGateway
                 .listOrderSuggestions(orderOfCustomerDto.customerId()
                         , orderOfCustomerDto.orderId());
         if (suggestionBriefProjections.isEmpty())
-            throw new NotFoundException("no List Found for this customer and this order");
+            throw new EntityNotFoundException("no List Found for this customer and this order");
         return suggestionBriefProjections;
     }
 
     @Override
     public void selectSuggestionOfOrder(Long suggestionId) {
+        if (suggestionId == null)
+            throw new IllegalArgumentException("suggestionId can not be Null");
         Suggestion suggestion = suggestionGateway.findById(suggestionId)
-                .orElseThrow(() -> new NotFoundException("suggestion not found"));
+                .orElseThrow(() -> new EntityNotFoundException("suggestion not found"));
         Orders order = suggestion.getOrder();
         orderOperation.addExpertToOrder(order, suggestion.getExpert(),
                 OrderStatus.WaitingForExpertToComeToYourPlace);
