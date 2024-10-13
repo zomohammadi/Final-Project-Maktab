@@ -13,7 +13,7 @@ import spring.service.ServiceOperation;
 import java.util.List;
 
 @RestController
-@RequestMapping("/services")
+@RequestMapping("/v1/services")
 @RequiredArgsConstructor
 public class ServiceController {
     private final ServiceOperation serviceOperation;

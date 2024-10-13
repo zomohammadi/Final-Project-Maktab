@@ -14,7 +14,7 @@ import spring.service.ExpertOperation;
 import java.io.File;
 
 @RestController
-@RequestMapping("api/experts")
+@RequestMapping("/v1/experts")
 @RequiredArgsConstructor
 public class ExpertController {
     private final ExpertOperation expertOperation;

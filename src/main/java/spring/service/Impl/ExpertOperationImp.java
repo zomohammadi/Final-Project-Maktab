@@ -2,22 +2,16 @@ package spring.service.Impl;
 
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.validation.ConstraintViolation;
 import lombok.RequiredArgsConstructor;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import spring.dto.*;
 import spring.entity.Credit;
 import spring.entity.Expert;
-import spring.entity.Expert;
 import spring.enumaration.Role;
 import spring.enumaration.Status;
-import spring.exception.IoCustomException;
-import spring.exception.NotFoundException;
-import spring.exception.ValidationException;
 import spring.mapper.Mapper;
 import spring.repository.ExpertGateway;
 import spring.service.ExpertOperation;
@@ -25,15 +19,11 @@ import spring.service.ExpertOperation;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
-
-import static spring.service.Impl.CheckInputFromDBOperation.checkUserInfoFromDB;
 
 @Service
 @RequiredArgsConstructor
