@@ -6,7 +6,10 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
-import spring.dto.*;
+import spring.dto.ChangeExpertDto;
+import spring.dto.ChangePasswordDto;
+import spring.dto.RegisterExpertDto;
+import spring.dto.ResponceExpertDto;
 import spring.entity.Expert;
 import spring.mapper.Mapper;
 import spring.service.ExpertOperation;
@@ -25,10 +28,12 @@ public class ExpertController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @GetMapping("/picture/{userName}")
-    public ResponseEntity<Resource> getExpertPicture(@PathVariable String userName) {
+    @GetMapping("/picture/{expertId}")
+    public ResponseEntity<Resource> getExpertPicture(@PathVariable Long expertId) {
+        if (expertId == null)
+            throw new IllegalArgumentException("expertId can not be Null");
         // Get the image file from the service
-        File imageFile = expertOperation.getPictureFileByUserName(userName);
+        File imageFile = expertOperation.getPictureFileByUserName(expertId);
 
         // Prepare the file as a resource
         Resource resource = new FileSystemResource(imageFile);
@@ -60,6 +65,7 @@ public class ExpertController {
         expertOperation.update(changeExpertDto);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
     @PutMapping("confirmed")
     public ResponseEntity<Void> confirmedExpert(@RequestBody @Valid Long expertId) {
         expertOperation.confirmedExpert(expertId);

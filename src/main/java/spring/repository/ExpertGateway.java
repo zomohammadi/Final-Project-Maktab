@@ -29,7 +29,7 @@ public interface ExpertGateway extends JpaRepository<Expert, Long> {
     @Query("select CASE WHEN COUNT(u) > 0 THEN true ELSE false end from Users u where u.userName = :userName ")
     boolean existUserByUserName(String userName);
 
-    @Query("select e.picture as Picture from Expert e where e.userName = :userName")
-    byte[] getPictureByUserName(@Param("userName") String userName);
+    @Query("select e.picture as Picture from Expert e where e.id = :id")
+    byte[] getPictureByUserName(@Param("id") Long expertId);
 
 }

@@ -188,19 +188,19 @@ public class ExpertOperationImp implements ExpertOperation {
 
 @Override
 //@Transactional(readOnly = true)
-public File getPictureFileByUserName(String userName) {
+public File getPictureFileByUserName(Long expertId) {
 
-    byte[] pictureBytes = expertGateway.getPictureByUserName(userName);
+    byte[] pictureBytes = expertGateway.getPictureByUserName(expertId);
     if (pictureBytes == null) {
-        throw new EntityNotFoundException("Picture for user " + userName + " not found.");
+        throw new EntityNotFoundException("Picture for expertId  not found.");
     }
 
-    File imageFile = convertBytesToFile(pictureBytes, userName);
+    File imageFile = convertBytesToFile(pictureBytes, expertId);
     return imageFile;
 }
 
-    private File convertBytesToFile(byte[] imageBytes, String userName) {
-        String fileName = userName + ".jpg"; // File name format
+    private File convertBytesToFile(byte[] imageBytes, Long expertId) {
+        String fileName = expertId + ".jpg"; // File name format
         File outputFile = new File(System.getProperty("java.io.tmpdir") + "/" + fileName);
         // Store in temp directory
 

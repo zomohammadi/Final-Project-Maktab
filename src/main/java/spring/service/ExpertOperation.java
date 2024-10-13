@@ -10,7 +10,7 @@ import java.io.File;
 
 public interface ExpertOperation {
     void register(RegisterExpertDto expertDto);
-   File getPictureFileByUserName(String userName);
+   File getPictureFileByUserName(Long expertId);
     void confirmedExpert(Long expertId);
 
     void changePassword(ChangePasswordDto passwordDto);

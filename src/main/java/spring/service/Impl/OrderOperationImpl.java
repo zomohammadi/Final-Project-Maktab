@@ -1,8 +1,6 @@
 package spring.service.Impl;
 
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.Validator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,12 +11,11 @@ import spring.entity.Orders;
 import spring.entity.SubService;
 import spring.enumaration.OrderStatus;
 import spring.exception.NotFoundException;
-import spring.exception.ValidationException;
 import spring.mapper.Mapper;
-import spring.repository.CustomerGateway;
 import spring.repository.OrderGateway;
-import spring.repository.SubServiceGateway;
+import spring.service.CustomerOperation;
 import spring.service.OrderOperation;
+import spring.service.SubServiceOperation;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -28,19 +25,16 @@ import java.util.Set;
 @Transactional(readOnly = true)
 public class OrderOperationImpl implements OrderOperation {
     private final OrderGateway orderGateway;
-    private final SubServiceGateway subServiceGateway;
-    private final CustomerGateway customerGateway;
-    private final Validator validator;
+    private final SubServiceOperation subServiceOperation;
+    private final CustomerOperation customerOperation;
 
     @Override
     @Transactional
     public void orderRegister(RegisterOrderDto orderDto) {
 
 
-        SubService subService = subServiceGateway.findById(orderDto.subServiceId())
-                .orElse(null);
-        Customer customer = customerGateway.findById(orderDto.customerId())
-                .orElse(null);
+        SubService subService = subServiceOperation.findById(orderDto.subServiceId());
+        Customer customer = customerOperation.findById(orderDto.customerId());
         validateInput(orderDto, subService, customer);
         Orders order = Mapper.ConvertDtoToEntity.
                 convertOrderDtoToEntity(orderDto, customer, subService);
@@ -50,24 +44,22 @@ public class OrderOperationImpl implements OrderOperation {
 
     private void validateInput(RegisterOrderDto orderDto, SubService subService, Customer customer) {
         Set<String> errors = new HashSet<>();
-        Set<ConstraintViolation<RegisterOrderDto>> violations = validator.validate(orderDto);
         if (subService == null)
             errors.add("subService not Found");
         if (customer == null)
             errors.add("Customer not Found");
         if (subService != null && subService.getBasePrice() > orderDto.priceSuggested())
             errors.add(" your suggested price is less than the Base Price of this SubService");
-        if (!violations.isEmpty() || !errors.isEmpty()) {
-            for (ConstraintViolation<RegisterOrderDto> violation : violations) {
-                errors.add(violation.getMessage());
-            }
-            throw new ValidationException(errors);
+        if (!errors.isEmpty()) {
+            throw new EntityNotFoundException((String.join(", ", errors)));
         }
     }
 
 
     @Override
     public Orders findById(Long orderId) {
+        if (orderId == null)
+            throw new IllegalArgumentException("orderId can not be Null");
         return orderGateway
                 .findById(orderId)
                 .orElseThrow(() -> new EntityNotFoundException("order not Found"));
@@ -87,18 +79,20 @@ public class OrderOperationImpl implements OrderOperation {
     }
 
     public void changeOrderStatusToStarted(Long orderId) {
-        Orders order = orderGateway.findById(orderId)
-                .orElseThrow(() -> new EntityNotFoundException("order not Found"));
-        if (order.getOrderStatus() == OrderStatus.WaitingForExpertToComeToYourPlace)
+        if (orderId == null)
+            throw new IllegalArgumentException("orderId can not be Null");
+        Orders order = findById(orderId);
+        if (order.getOrderStatus().equals(OrderStatus.WaitingForExpertToComeToYourPlace))
             changeOrderStatus(order, OrderStatus.Started);
         else
             throw new NotFoundException("your status is not Waiting For Expert To Come To YourPlace");
     }
 
     public void changeOrderStatusToDone(Long orderId) {
-        Orders order = orderGateway.findById(orderId)
-                .orElseThrow(() -> new EntityNotFoundException("order not Found"));
-        if (order.getOrderStatus() == OrderStatus.Started)
+        if (orderId == null)
+            throw new IllegalArgumentException("orderId can not be Null");
+        Orders order = findById(orderId);
+        if (order.getOrderStatus().equals(OrderStatus.Started))
             changeOrderStatus(order, OrderStatus.Done);
         else
             throw new NotFoundException("your status is Started");

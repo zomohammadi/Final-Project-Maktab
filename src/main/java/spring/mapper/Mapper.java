@@ -100,8 +100,9 @@ public class Mapper {
         public static Service convertChangeServiceDtoToEntity(ChangeServiceDto changeServiceDto) {
             return Service.builder().id(changeServiceDto.ServiceId()).name(changeServiceDto.name()).build();
         }
+
         public static Suggestion convertSuggestionDtoToEntity(RegisterSuggestionDto suggestionDto
-                ,Expert expert,Orders order){
+                , Expert expert, Orders order) {
             return Suggestion.builder()
                     .expert(expert)
                     .order(order)
@@ -143,6 +144,19 @@ public class Mapper {
                     .mobileNumber(customer.getMobileNumber())
                     .nationalCode(customer.getNationalCode())
                     .userName(customer.getUserName())
+                    .build();
+        }
+
+        public static ResponceOrderDto convertOrderToDto(Orders order) {
+            return ResponceOrderDto.builder()
+                    .subServiceName(order.getSubService().getName())
+                    .customerUserName(order.getCustomer().getUserName())
+                    .expertUserName(order.getExpert().getUserName())
+                    .priceSuggested(order.getPriceSuggested())
+                    .address(order.getAddress())
+                    .orderStatus(order.getOrderStatus())
+                    .timeForServiceDone(order.getTimeForServiceDone())
+                    .serviceDescription(order.getServiceDescription())
                     .build();
         }
     }
