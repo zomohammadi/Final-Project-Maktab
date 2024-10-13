@@ -16,7 +16,6 @@ import spring.entity.Expert;
 import spring.entity.Orders;
 import spring.entity.SubService;
 import spring.enumaration.OrderStatus;
-import spring.exception.NotFoundException;
 import spring.exception.ValidationException;
 import spring.repository.CustomerGateway;
 import spring.repository.OrderGateway;
@@ -262,7 +261,7 @@ public class OrderOperationImplTest {
 
         when(orderGateway.findById(orderId)).thenReturn(Optional.of(order));
 
-        NotFoundException exception = assertThrows(NotFoundException.class, () -> {
+        EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, () -> {
             underTest.changeOrderStatusToStarted(orderId);
         });
 
@@ -309,11 +308,10 @@ public class OrderOperationImplTest {
 
         when(orderGateway.findById(orderId)).thenReturn(Optional.of(order));
 
-        NotFoundException exception = assertThrows(NotFoundException.class, () -> {
+        EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, () -> {
             underTest.changeOrderStatusToDone(orderId);
         });
-
-        assertEquals("your status is Started", exception.getMessage());
+       assertEquals("your status is Started", exception.getMessage());
         verify(orderGateway, times(1)).findById(orderId);
         verify(orderGateway, never()).save(any());
     }
