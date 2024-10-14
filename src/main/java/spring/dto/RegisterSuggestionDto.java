@@ -26,9 +26,9 @@ public record RegisterSuggestionDto(
         @Future(message = "suggestedTimeStartService must be in the future")
         ZonedDateTime suggestedTimeStartService,
 
-        @NotBlank(message = "duration Of Service cannot be Blank")
-        @Size(min = 3, max = 30, message = "duration Of Service  must be less than {max} characters " +
-                                           "and greater Than {min} characters")
-        String durationOfService
+        @NotNull(message = "durationOfService cannot be Null")
+        //@FutureOrPresent(message = "timeForServiceDone must be in the present or future")
+        @Future(message = "durationOfService must be in the future")
+        ZonedDateTime durationOfService
 ) {
 }

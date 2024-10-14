@@ -2,16 +2,18 @@ package spring.dto;
 
 import jakarta.validation.constraints.*;
 
+import java.time.ZonedDateTime;
+
 public record SuggestionBriefDto (
         @NotNull(message = "suggestionId cannot be Null")
         @Min(value = 1, message = "suggestionId must be greater than or equal to {value}")
         @Max(value = Long.MAX_VALUE, message = "suggestionId must be less than or equal to {value}")
         Long suggestionId,
 
-        @NotBlank(message = "duration Of Service cannot be Blank")
-        @Size(min = 3, max = 30, message = "duration Of Service  must be less than {max} characters " +
-                                           "and greater Than {min} characters")
-        String durationOfService,
+        @NotNull(message = "durationOfService cannot be Null")
+        //@FutureOrPresent(message = "timeForServiceDone must be in the present or future")
+        @Future(message = "durationOfService must be in the future")
+        ZonedDateTime durationOfService,
 
         @NotNull(message = "Base Price cannot be Null")
         @Min(value = 100000, message = "Base Price must be greater Than {value} numbers ")

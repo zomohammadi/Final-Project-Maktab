@@ -47,7 +47,9 @@ public class SuggestionOperationImpl implements SuggestionOperation {
     @Override
     @Transactional
     public void registerSuggestion(RegisterSuggestionDto suggestionDto) {
-
+        if (suggestionDto.durationOfService().isEqual(suggestionDto.suggestedTimeStartService())
+            || suggestionDto.durationOfService().isBefore(suggestionDto.suggestedTimeStartService()))
+            throw new IllegalStateException("durationOfService must be after of suggestedTimeStartService");
         Expert expert = expertOperation.findById(suggestionDto.expertId());
         Orders order = orderOperation.findById(suggestionDto.orderId());
         if (!(order.getOrderStatus().equals(OrderStatus.WaitingForSuggestionOfExperts)

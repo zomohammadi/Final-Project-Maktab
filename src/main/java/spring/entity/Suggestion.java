@@ -13,7 +13,6 @@ import java.time.ZonedDateTime;
 @Entity
 
 @SuperBuilder
-
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = {"expert_id", "order_id"}))
 
 @Setter
@@ -29,7 +28,7 @@ public class Suggestion extends BaseEntity {
     private ZonedDateTime suggestedDateAndTime = ZonedDateTime.now();
 
     private ZonedDateTime suggestedTimeStartService;
-    String durationOfService;
+    private ZonedDateTime durationOfService;
 
     @ManyToOne
     Expert expert;

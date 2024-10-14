@@ -2,10 +2,11 @@ package spring.dto.projection;
 
 import java.time.Instant;
 
+@SuppressWarnings("unused")
 public interface SuggestionBriefProjection {
     Long getId();
 
-    String getDurationOfService();
+    Instant getDurationOfService();
 
     Double getPriceSuggested();
 
