@@ -18,7 +18,7 @@ import spring.service.OrderOperation;
 import spring.service.SubServiceOperation;
 
 import java.util.Set;
-
+@SuppressWarnings("unused")
 @RequiredArgsConstructor
 @Service
 @Transactional(readOnly = true)
@@ -66,23 +66,26 @@ public class OrderOperationImpl implements OrderOperation {
     }
 
     public void changeOrderStatusToStarted(Long orderId) {
-        if (orderId == null)
-            throw new IllegalArgumentException("orderId can not be Null");
-        Orders order = findById(orderId);
-        if (order.getOrderStatus().equals(OrderStatus.WaitingForExpertToComeToYourPlace))
-            changeOrderStatus(order, OrderStatus.Started);
-        else
-            throw new IllegalStateException ("your status is not Waiting For Expert To Come To YourPlace");
+        doChange(orderId, OrderStatus.WaitingForExpertToComeToYourPlace, OrderStatus.Started,
+                "your status is not Waiting For Expert To Come To YourPlace");
     }
 
     public void changeOrderStatusToDone(Long orderId) {
+        doChange(orderId, OrderStatus.Started, OrderStatus.Done
+                , "your status is not Started");
+    }
+
+    public void changeOrderStatusToPaid(Long orderId) {
+        doChange(orderId, OrderStatus.Done, OrderStatus.Paid, "your status is not Done");
+    }
+    private void doChange(Long orderId, OrderStatus oldOrderStatus, OrderStatus newOrderStatus, String s) {
         if (orderId == null)
             throw new IllegalArgumentException("orderId can not be Null");
         Orders order = findById(orderId);
-        if (order.getOrderStatus().equals(OrderStatus.Started))
-            changeOrderStatus(order, OrderStatus.Done);
+        if (order.getOrderStatus().equals(oldOrderStatus))
+            changeOrderStatus(order, newOrderStatus);
         else
-            throw new IllegalStateException ("your status is Started");
+            throw new IllegalStateException (s);
     }
 
 }
