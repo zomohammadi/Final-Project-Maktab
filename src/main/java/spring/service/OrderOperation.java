@@ -11,5 +11,6 @@ public interface OrderOperation {
     void changeOrderStatus(Orders order,OrderStatus status);
     void addExpertToOrder(Orders order, Expert expert, OrderStatus status);
     void changeOrderStatusToStarted(Long orderId);
-    void changeOrderStatusToDone(Long orderId);
+    void changeOrderStatusToPaid(Long orderId);
 }
+// Invoice changeOrderStatusToDone(Long orderId);

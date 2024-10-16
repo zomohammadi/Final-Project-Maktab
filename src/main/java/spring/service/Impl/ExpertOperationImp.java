@@ -10,11 +10,13 @@ import org.springframework.web.multipart.MultipartFile;
 import spring.dto.*;
 import spring.entity.Credit;
 import spring.entity.Expert;
+import spring.entity.Suggestion;
 import spring.enumaration.Role;
 import spring.enumaration.Status;
 import spring.mapper.Mapper;
 import spring.repository.ExpertGateway;
 import spring.service.ExpertOperation;
+import spring.service.SuggestionOperation;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -30,6 +32,7 @@ import java.util.function.Consumer;
 @Transactional(readOnly = true)
 public class ExpertOperationImp implements ExpertOperation {
     private final ExpertGateway expertGateway;
+    // private final SuggestionOperation suggestionOperation;
 
     @Override
     @Transactional
@@ -160,7 +163,7 @@ public class ExpertOperationImp implements ExpertOperation {
         Expert expert = expertGateway.findById(passwordDto.userId())
                 .orElseThrow(() -> new EntityNotFoundException("Expert Not Found"));
         if (BCrypt.checkpw(passwordDto.oldPassword(), expert.getPassword())) {
-            expert.setPassword(hashPassword(passwordDto.password()));
+            expert.setPassword(hashPassword(passwordDto.newPassword()));
             expertGateway.save(expert);
         } else
             throw new IllegalArgumentException("Old password does not match");
@@ -176,28 +179,20 @@ public class ExpertOperationImp implements ExpertOperation {
 
     }//ResponceExpertDto
 
+
+
     @Override
-    public void confirmedExpert(Long expertId) {
-        if (expertId == null)
-            throw new IllegalArgumentException("expertId can not be Null");
-        Expert expert = expertGateway.findById(expertId)
-                .orElseThrow(() -> new EntityNotFoundException("Expert Not Found"));
-        if (expert.getStatus().equals(Status.NEW))
-            expert.setStatus(Status.CONFIRMED);
-    }
-
-@Override
 //@Transactional(readOnly = true)
-public File getPictureFileByUserName(Long expertId) {
+    public File getPictureFileByUserName(Long expertId) {
 
-    byte[] pictureBytes = expertGateway.getPictureByUserName(expertId);
-    if (pictureBytes == null) {
-        throw new EntityNotFoundException("Picture for expertId  not found.");
+        byte[] pictureBytes = expertGateway.getPictureByUserName(expertId);
+        if (pictureBytes == null) {
+            throw new EntityNotFoundException("Picture for expertId  not found.");
+        }
+
+        File imageFile = convertBytesToFile(pictureBytes, expertId);
+        return imageFile;
     }
-
-    File imageFile = convertBytesToFile(pictureBytes, expertId);
-    return imageFile;
-}
 
     private File convertBytesToFile(byte[] imageBytes, Long expertId) {
         String fileName = expertId + ".jpg"; // File name format
@@ -212,97 +207,4 @@ public File getPictureFileByUserName(Long expertId) {
 
         return outputFile;
     }
-
 }
-
-/*
- @Override
-    @Transactional(propagation = Propagation.REQUIRED)
-    public void getPicture(String userName) {
-        byte[] pictureOptional = getPictureByUserName(userName);
-        if (pictureOptional == null) {
-            throw new NotFoundException("Expert with this User Name not found!");
-        }
-        convertBytesToFile(pictureOptional, userName);
-    }
- private static void convertBytesToFile(byte[] imageBytes, String userName) {
-        String outputFilePath = "D:\\Java\\java_inteligent_idea_excercise" +
-                                "\\FinalProjectMaktab\\src\\main\\resources\\ExpertPictures\\" + userName + ".jpg";
-        File outputFile = new File(outputFilePath);
-        try (FileOutputStream out = new FileOutputStream(outputFile)) {
-            out.write(imageBytes);
-            //System.out.println("Image saved successfully at " + outputFilePath);
-        } catch (IOException e) {
-            throw new RuntimeException("Error saving image file", e);
-        }
-    }
-   @Transactional(readOnly = true)
-    public byte[] getPictureByUserName(String userName) {
-        return expertGateway.getPictureByUserName(userName);
-    }
-
-    @Override
-    @Transactional(propagation = Propagation.REQUIRED)
-    public void getPicture(String userName) {
-        byte[] pictureOptional = getPictureByUserName(userName);
-        if (pictureOptional == null) {
-            throw new NotFoundException("Expert with this User Name not found!");
-        }
-        convertBytesToFile(pictureOptional, userName);
-    }
-
-    // Method to check if the file size is less than or equal to 300 KB
-    private boolean isFileSizeValid(String filePath) {
-        File file = new File(filePath);
-        return file.length() <= 300 * 1024;
-    }
-
-    // Method to convert the JPG file to a byte array
-    private byte[] convertFileToBytes(String filePath) {
-        File file = new File(filePath);
-        try (FileInputStream fis = new FileInputStream(file)) {
-            byte[] fileContent = new byte[(int) file.length()];
-            fis.read(fileContent);
-            return fileContent;
-        } catch (FileNotFoundException e) {
-            throw new NotFoundException("file not found");
-        } catch (IOException e) {
-            throw new IoCustomException("Error saving image file", e);
-        }
-    }
-
-    public static boolean isImageFileUsingProbeContentType(String inputFilePath) {
-        File file = new File(inputFilePath);
-        Path filePath = file.toPath();
-        String mimeType;
-        try {
-            mimeType = Files.probeContentType(filePath);
-        } catch (IOException e) {
-            throw new IoCustomException("Error saving image file", e);
-        }
-        return mimeType != null && (mimeType.equals("image/jpg") || mimeType.equals("image/jpeg"));
-    }
-
-    // Method to validate the file and convert it to bytes
-    private byte[] processImageFile(String filePath) {
-        if (!isImageFileUsingProbeContentType(filePath)) {
-            throw new IllegalArgumentException("File is not a valid JPG format.");
-        }
-        if (!isFileSizeValid(filePath)) {
-            throw new IllegalArgumentException("File size exceeds 300 KB.");
-        }
-        return convertFileToBytes(filePath);
-    }
-
-    private static void convertBytesToFile(byte[] imageBytes, String userName) {
-        String outputFilePath = "D:\\Java\\java_inteligent_idea_excercise" +
-                                "\\FinalProjectMaktab\\src\\main\\resources\\ExpertPictures\\" + userName + ".jpg";
-        File outputFile = new File(outputFilePath);
-        try (FileOutputStream out = new FileOutputStream(outputFile)) {
-            out.write(imageBytes);
-            System.out.println("Image saved successfully at " + outputFilePath);
-        } catch (IOException e) {
-            throw new RuntimeException("Error saving image file", e);
-        }
-    }
- */

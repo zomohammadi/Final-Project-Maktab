@@ -12,15 +12,17 @@ public record OrdersBriefDto(
         @Max(value = Long.MAX_VALUE, message = "serviceId must be less than or equal to {value}")
         Long orderId,
 
-        @NotNull(message = "serviceId cannot be Null")
-        @Min(value = 1, message = "serviceId must be greater than or equal to {value}")
-        @Max(value = Long.MAX_VALUE, message = "serviceId must be less than or equal to {value}")
-        Long subServiceId,
+        @NotBlank(message = "SubService Name cannot be Blank")
+        @Size(min = 3, max = 30, message = "SubService Name must be less than {max} characters" +
+                                           "and greater Than {min} characters")
+        @Pattern(regexp = "^[a-zA-Z\\s]+$", message = "SubService Name can only contain letters")
+        String subServiceName,
 
         @NotBlank(message = "address cannot be Blank")
         @Size(min = 10, max = 300, message = "address  must be less than {max} characters" +
                                              "and greater Than {min} characters")
         String address,
+
         @NotBlank(message = "UserName cannot be Blank")
         @Size(min = 4, max = 20, message = "UserName must be less than {max} characters" +
                                            "and greater Than {min} characters")

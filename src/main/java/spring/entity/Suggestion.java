@@ -13,7 +13,7 @@ import java.time.ZonedDateTime;
 @Entity
 
 @SuperBuilder
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"expert_id", "order_id"}))
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {Suggestion.Expert_ID, Suggestion.ORDER_ID}))
 
 @Setter
 @Getter
@@ -21,14 +21,15 @@ import java.time.ZonedDateTime;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Suggestion extends BaseEntity {
-
+public static final String Expert_ID ="expert_id";
+public static final String ORDER_ID ="order_id";
     private Double priceSuggested;
 
     @Builder.Default
     private ZonedDateTime suggestedDateAndTime = ZonedDateTime.now();
 
     private ZonedDateTime suggestedTimeStartService;
-    private ZonedDateTime durationOfService;
+    private int durationOfService;
 
     @ManyToOne
     Expert expert;

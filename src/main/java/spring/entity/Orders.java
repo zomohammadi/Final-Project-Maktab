@@ -1,5 +1,6 @@
 package spring.entity;
 
+import jakarta.persistence.OneToOne;
 import spring.enumaration.OrderStatus;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
@@ -33,6 +34,10 @@ public class Orders extends BaseEntity {
     private String address;
     private OrderStatus orderStatus;
     private ZonedDateTime timeForServiceDone;
+    private ZonedDateTime timeServiceCompleted;
     private String serviceDescription;
+
+    @OneToOne
+    private Invoice invoice;
 
 }

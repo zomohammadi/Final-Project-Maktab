@@ -1,17 +1,19 @@
 package spring.dto.projection;
 
-import spring.entity.SubService;
-
 import java.time.Instant;
-import java.time.ZonedDateTime;
-
+@SuppressWarnings("unused")
 public interface OrdersBriefProjection {
-    Long getId();
-    Long getSubService();
+    Long getOrderId();
+
+    String getSubServiceName();
+
     String getAddress();
+
     String getUserName();
+
     Double getPriceSuggested();
+
     String getServiceDescription();
+
     Instant getTimeForServiceDone();
-    //ZonedDateTime getTimeForServiceDone();
 }

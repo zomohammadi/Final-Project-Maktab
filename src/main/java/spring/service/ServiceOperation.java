@@ -5,7 +5,6 @@ import spring.dto.RegisterServiceDto;
 import spring.entity.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface ServiceOperation {
     void serviceRegister(RegisterServiceDto serviceDto);

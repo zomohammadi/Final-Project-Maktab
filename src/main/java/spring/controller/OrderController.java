@@ -30,14 +30,14 @@ public class OrderController {
         return new ResponseEntity<>(responceOrderDto, HttpStatus.OK);
     }
 
-    @PutMapping("/orders/{id}/start")
+    @PutMapping("/start/{id}")
     public ResponseEntity<Void> changeOrderStatusToStarted(@PathVariable("id") Long orderId) {
         orderOperation.changeOrderStatusToStarted(orderId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-    @PutMapping("/orders/{id}/complete")
+}
+  /*  @PutMapping("/orders/{id}/complete")
     public ResponseEntity<Void> changeOrderStatusToDone(@PathVariable("id") Long orderId) {
         orderOperation.changeOrderStatusToDone(orderId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
-}
+    }*/

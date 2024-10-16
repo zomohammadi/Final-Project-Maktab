@@ -23,7 +23,7 @@ public class ExpertController {
     private final ExpertOperation expertOperation;
 
     @PostMapping()
-    public ResponseEntity<Void> registerExpert(@ModelAttribute RegisterExpertDto expertDto) {
+    public ResponseEntity<Void> registerExpert(@ModelAttribute @Valid RegisterExpertDto expertDto) {
         expertOperation.register(expertDto);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
@@ -32,19 +32,16 @@ public class ExpertController {
     public ResponseEntity<Resource> getExpertPicture(@PathVariable Long expertId) {
         if (expertId == null)
             throw new IllegalArgumentException("expertId can not be Null");
-        // Get the image file from the service
         File imageFile = expertOperation.getPictureFileByUserName(expertId);
 
-        // Prepare the file as a resource
         Resource resource = new FileSystemResource(imageFile);
 
         // Prepare the HTTP response headers
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.IMAGE_JPEG); // Set the content type to image/jpeg
+        headers.setContentType(MediaType.IMAGE_JPEG);
         headers.setContentDisposition(ContentDisposition.builder("inline")
                 .filename(imageFile.getName()).build()); // Set content disposition for inline viewing
-
-        return new ResponseEntity<>(resource, headers, HttpStatus.OK); // Return the image file as a resource
+        return new ResponseEntity<>(resource, headers, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
@@ -66,9 +63,5 @@ public class ExpertController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @PutMapping("confirmed")
-    public ResponseEntity<Void> confirmedExpert(@RequestBody @Valid Long expertId) {
-        expertOperation.confirmedExpert(expertId);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
+
 }

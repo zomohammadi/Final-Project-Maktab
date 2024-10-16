@@ -6,7 +6,7 @@ import java.util.Set;
 
 @Getter
 public class ValidationException extends RuntimeException {
-    private Set<String> errors;
+    private final Set<String> errors;
 
     public ValidationException(Set<String> errors) {
         super(errors.isEmpty() ? "Validation failed with unknown errors." : String.join(", ", errors));
@@ -15,15 +15,15 @@ public class ValidationException extends RuntimeException {
 }
 
 //M.f
-/*
-@Getter
-public class ValidationException2 extends RuntimeException {
-
-    private Set<ConstraintViolation<?>> violations;
-    public ValidationException2(Set<?> violations) {
-        this.violations = (Set<ConstraintViolation<?>>) violations;
-    }
-}*/
+//
+//@Getter
+//public class ValidationException2 extends RuntimeException {
+//
+//    private Set<ConstraintViolation<?>> violations;
+//    public ValidationException2(Set<?> violations) {
+//        this.violations = (Set<ConstraintViolation<?>>) violations;
+//    }
+//}*/
 
 
     /*Set<ConstraintViolation<RegisterExpertDto>> violations = validator.validate(expertDto);

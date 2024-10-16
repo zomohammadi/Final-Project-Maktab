@@ -1,10 +1,9 @@
 package spring.mapper;
-
+import org.mapstruct.Mapper;
 import spring.dto.SuggestionBriefDto;
 import spring.dto.projection.SuggestionBriefProjection;
 
-@org.mapstruct.Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring")
 public interface SuggestionMapper extends BaseMapper<SuggestionBriefProjection, SuggestionBriefDto> {
-
 }
 // List<SuggestionBriefDto> convertEntityToDTO(List<SuggestionBriefProjection> suggestionBriefProjection);

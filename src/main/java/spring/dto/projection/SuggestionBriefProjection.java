@@ -4,9 +4,9 @@ import java.time.Instant;
 
 @SuppressWarnings("unused")
 public interface SuggestionBriefProjection {
-    Long getId();
+    Long getSuggestionId();
 
-    Instant getDurationOfService();
+    int getDurationOfService();
 
     Double getPriceSuggested();
 

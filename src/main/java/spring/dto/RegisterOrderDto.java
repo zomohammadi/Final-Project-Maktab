@@ -24,7 +24,7 @@ public record RegisterOrderDto(
         Double priceSuggested,
 
         @NotBlank(message = "address cannot be Blank")
-        @Size(min = 10, max = 300, message = "address  must be less than {max} characters" +
+        @Size(min = 5, max = 300, message = "address  must be less than {max} characters" +
                                            "and greater Than {min} characters")
         String address,
 

@@ -27,8 +27,8 @@ public record RegisterSuggestionDto(
         ZonedDateTime suggestedTimeStartService,
 
         @NotNull(message = "durationOfService cannot be Null")
-        //@FutureOrPresent(message = "timeForServiceDone must be in the present or future")
-        @Future(message = "durationOfService must be in the future")
-        ZonedDateTime durationOfService
+        @Min(value = 1, message = "durationOfService must be greater than or equal to {value}")
+        @Max(value = Integer.MAX_VALUE, message = "durationOfService must be less than or equal to {value}")
+        int durationOfService
 ) {
 }

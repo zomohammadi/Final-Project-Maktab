@@ -11,11 +11,12 @@ import java.io.File;
 public interface ExpertOperation {
     void register(RegisterExpertDto expertDto);
    File getPictureFileByUserName(Long expertId);
-    void confirmedExpert(Long expertId);
+
 
     void changePassword(ChangePasswordDto passwordDto);
 
     void update(ChangeExpertDto expertDto);
 
     Expert findById(Long expertId);
+   // void deActiveExpert(Suggestion suggestion);
 }

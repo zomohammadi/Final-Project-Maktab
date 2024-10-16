@@ -20,7 +20,7 @@ public record ResponceOrderDto(
 
         String customerUserName,
 
-        @NotBlank(message = "expertUserName cannot be Blank")
+        // @NotBlank(message = "expertUserName cannot be Blank")
         @Size(min = 4, max = 20, message = "expertUserName must be less than {max} characters" +
                                            "and greater Than {min} characters")
         String expertUserName,
@@ -43,7 +43,12 @@ public record ResponceOrderDto(
         @Future(message = "timeForServiceDone must be in the future")
         ZonedDateTime timeForServiceDone,
 
-        @Size( max = 300, message = "serviceDescription  must be less Than {max} characters")
+        @Size(max = 300, message = "serviceDescription  must be less Than {max} characters")
         String serviceDescription
+        /*,
+        //  @NotNull(message = "invoiceId cannot be Null")
+        @Min(value = 1, message = "invoiceId must be greater than or equal to {value}")
+        @Max(value = Long.MAX_VALUE, message = "invoiceId must be less than or equal to {value}")
+        Long invoiceNumber*/
 ) {
 }

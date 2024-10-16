@@ -54,4 +54,7 @@ public class Users extends BaseEntity {
 
     @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     Credit credit;
+
+    @Builder.Default
+    private boolean isActive = true;
 }

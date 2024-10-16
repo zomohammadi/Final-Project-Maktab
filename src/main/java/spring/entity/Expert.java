@@ -24,10 +24,12 @@ public class Expert extends Users {
     private byte[] picture;
 
     @ManyToMany
-    private Set<SubService> subServices=new HashSet<>();
+    private Set<SubService> subServices = new HashSet<>();
 
     @Builder.Default
     private Status status = Status.NEW;
 
     private int score;
+
+    private int performanceScore;
 }

@@ -64,7 +64,7 @@ public class CustomerOperationImpl implements CustomerOperation {
                 .orElseThrow(() -> new EntityNotFoundException("Customer Not Found"));
        // if (customer.getPassword().equals(passwordDto.oldPassword())) {
         if (BCrypt.checkpw(passwordDto.oldPassword(), customer.getPassword())) {
-            customer.setPassword(hashPassword(passwordDto.password()));
+            customer.setPassword(hashPassword(passwordDto.newPassword()));
             customerGateway.save(customer);
         } else
             throw new IllegalArgumentException("Old password does not match");

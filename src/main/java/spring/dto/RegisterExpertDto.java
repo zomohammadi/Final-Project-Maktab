@@ -1,9 +1,6 @@
 package spring.dto;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.Builder;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -39,6 +36,7 @@ public record RegisterExpertDto(
         @Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*\\d).+$", message = "Password must contain both letters and numbers")
         String password,
 
+        @NotNull(message = "Picture file cannot be null")
         MultipartFile pictureFile
 ) {
 }

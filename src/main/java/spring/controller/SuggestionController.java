@@ -25,8 +25,8 @@ public class SuggestionController {
     private final SuggestionMapper suggestionMapper;
     private final OrderMapper orderMapper;
 
-    @GetMapping("/listOrders")
-    public ResponseEntity<List<OrdersBriefDto>> listOrders(Long expertId) {
+    @GetMapping("/listOrders/{expertId}")
+    public ResponseEntity<List<OrdersBriefDto>> listOrders(@PathVariable Long expertId) {
         List<OrdersBriefProjection> ordersBriefProjectionList = suggestionOperation
                 .listOrders(expertId);
         List<OrdersBriefDto> ordersBriefDtos = orderMapper.convertEntityToDTO(ordersBriefProjectionList);
@@ -34,18 +34,26 @@ public class SuggestionController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> registerSuggestion(@RequestParam @Valid RegisterSuggestionDto suggestionDto) {
+    public ResponseEntity<Void> registerSuggestion(@RequestBody @Valid RegisterSuggestionDto suggestionDto) {
         suggestionOperation.registerSuggestion(suggestionDto);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @GetMapping("/listOrderSuggestions")
-    public ResponseEntity<List<SuggestionBriefDto>> listOrderSuggestions(OrderOfCustomerDto OrderOfCustomerDto) {
+    public ResponseEntity<List<SuggestionBriefDto>> listOrderSuggestions(@RequestBody @Valid OrderOfCustomerDto OrderOfCustomerDto) {
         List<SuggestionBriefProjection> suggestionBriefProjections = suggestionOperation
                 .listOrderSuggestions(OrderOfCustomerDto);
         List<SuggestionBriefDto> suggestionBriefDtos = suggestionMapper.convertEntityToDTO(suggestionBriefProjections);
 
         return new ResponseEntity<>(suggestionBriefDtos, HttpStatus.OK);
     }
+
+    @PutMapping("/selectSuggestion/{suggestionId}")
+    public ResponseEntity<Void> selectSuggestionOfOrder(@PathVariable("suggestionId") Long suggestionId) {
+        suggestionOperation.selectSuggestionOfOrder(suggestionId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+
 
 }

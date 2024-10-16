@@ -8,10 +8,13 @@ import spring.dto.OrderOfCustomerDto;
 import spring.dto.RegisterSuggestionDto;
 import spring.dto.projection.OrdersBriefProjection;
 import spring.dto.projection.SuggestionBriefProjection;
+import spring.dto.projection.SuggestionInfoProjection;
 import spring.entity.Expert;
 import spring.entity.Orders;
+import spring.entity.SubService;
 import spring.entity.Suggestion;
 import spring.enumaration.OrderStatus;
+import spring.enumaration.Status;
 import spring.exception.ValidationException;
 import spring.mapper.Mapper;
 import spring.repository.SuggestionGateway;
@@ -47,17 +50,28 @@ public class SuggestionOperationImpl implements SuggestionOperation {
     @Override
     @Transactional
     public void registerSuggestion(RegisterSuggestionDto suggestionDto) {
-        if (suggestionDto.durationOfService().isEqual(suggestionDto.suggestedTimeStartService())
-            || suggestionDto.durationOfService().isBefore(suggestionDto.suggestedTimeStartService()))
-            throw new IllegalStateException("durationOfService must be after of suggestedTimeStartService");
-        Expert expert = expertOperation.findById(suggestionDto.expertId());
+          Expert expert = expertOperation.findById(suggestionDto.expertId());
+        if (!expert.getStatus().equals(Status.CONFIRMED))
+            throw new IllegalStateException("you can not register Suggestion. because your" +
+                                            " status is not CONFIRMED");
         Orders order = orderOperation.findById(suggestionDto.orderId());
         if (!(order.getOrderStatus().equals(OrderStatus.WaitingForSuggestionOfExperts)
               || order.getOrderStatus().equals(OrderStatus.WaitingForExpertSelection)))
-            throw new IllegalStateException("""
-                    can not register suggestion
-                    because order state must be WaitingForExpertSelection
-                    or WaitingForExpertSelection""");
+            throw new IllegalStateException("can not register suggestion because order " +
+                                            "state must be WaitingForExpertSelection " +
+                                            " or WaitingForExpertSelection");
+        boolean hasSubService = false;
+        Set<SubService> subServices = expert.getSubServices();
+        for (SubService subService : subServices) {
+            if (subService.equals(order.getSubService())) {
+                hasSubService = true;
+                break;
+            }
+        }
+        if (!hasSubService)
+            throw new IllegalStateException("for this Order,you not permission to register Suggestion" +
+                                            "because the relevant subServices has not " +
+                                            "been added to your subServices yet");
         validateInput(suggestionDto, expert, order);
         Suggestion suggestion = Mapper.ConvertDtoToEntity
                 .convertSuggestionDtoToEntity(suggestionDto, expert, order);
@@ -86,12 +100,14 @@ public class SuggestionOperationImpl implements SuggestionOperation {
         List<SuggestionBriefProjection> suggestionBriefProjections = suggestionGateway
                 .listOrderSuggestions(orderOfCustomerDto.customerId()
                         , orderOfCustomerDto.orderId());
+
         if (suggestionBriefProjections.isEmpty())
             throw new EntityNotFoundException("no List Found for this customer and this order");
         return suggestionBriefProjections;
     }
 
     @Override
+    @Transactional
     public void selectSuggestionOfOrder(Long suggestionId) {
         if (suggestionId == null)
             throw new IllegalArgumentException("suggestionId can not be Null");
@@ -100,6 +116,11 @@ public class SuggestionOperationImpl implements SuggestionOperation {
         Orders order = suggestion.getOrder();
         orderOperation.addExpertToOrder(order, suggestion.getExpert(),
                 OrderStatus.WaitingForExpertToComeToYourPlace);
+    }
+
+    @Override
+    public SuggestionInfoProjection getSuggestionInfo(Expert expert, Orders order) {
+        return suggestionGateway.getSuggestedTimeStartService(expert, order);
     }
 
 }

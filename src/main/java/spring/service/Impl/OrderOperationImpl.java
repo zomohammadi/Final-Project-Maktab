@@ -18,7 +18,8 @@ import spring.service.OrderOperation;
 import spring.service.SubServiceOperation;
 
 import java.util.Set;
-@SuppressWarnings("unused")
+
+
 @RequiredArgsConstructor
 @Service
 @Transactional(readOnly = true)
@@ -26,6 +27,7 @@ public class OrderOperationImpl implements OrderOperation {
     private final OrderGateway orderGateway;
     private final SubServiceOperation subServiceOperation;
     private final CustomerOperation customerOperation;
+
 
     @Override
     @Transactional
@@ -54,7 +56,7 @@ public class OrderOperationImpl implements OrderOperation {
     }
 
     @Override
-    @Transactional
+    //@Transactional
     public void changeOrderStatus(Orders order, OrderStatus status) {
         order.setOrderStatus(status);
         orderGateway.save(order);
@@ -65,19 +67,20 @@ public class OrderOperationImpl implements OrderOperation {
         changeOrderStatus(order, status);
     }
 
+    @Transactional
     public void changeOrderStatusToStarted(Long orderId) {
         doChange(orderId, OrderStatus.WaitingForExpertToComeToYourPlace, OrderStatus.Started,
                 "your status is not Waiting For Expert To Come To YourPlace");
     }
 
-    public void changeOrderStatusToDone(Long orderId) {
-        doChange(orderId, OrderStatus.Started, OrderStatus.Done
-                , "your status is not Started");
+
+
+    // @Override//------------t-o-d-o
+    @Transactional
+    public void changeOrderStatusToPaid(Long orderId) {
+        doChange(orderId, OrderStatus.Done, OrderStatus.Paid, "Order is not in 'DONE' state");
     }
 
-    public void changeOrderStatusToPaid(Long orderId) {
-        doChange(orderId, OrderStatus.Done, OrderStatus.Paid, "your status is not Done");
-    }
     private void doChange(Long orderId, OrderStatus oldOrderStatus, OrderStatus newOrderStatus, String s) {
         if (orderId == null)
             throw new IllegalArgumentException("orderId can not be Null");
@@ -85,8 +88,9 @@ public class OrderOperationImpl implements OrderOperation {
         if (order.getOrderStatus().equals(oldOrderStatus))
             changeOrderStatus(order, newOrderStatus);
         else
-            throw new IllegalStateException (s);
+            throw new IllegalStateException(s);
     }
+
 
 }
 

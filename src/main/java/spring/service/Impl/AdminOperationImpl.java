@@ -20,13 +20,13 @@ import java.util.Set;
 @Transactional(readOnly = true)
 public class AdminOperationImpl implements AdminOperation {
     private final SubServiceGateway subServiceRepository;
-    private final ExpertGateway expertRepository;
+    private final ExpertGateway expertGateway;
 
     @Transactional
     @Override
     public void addSubServiceToExpert(Long expertId, Long subServiceId) {
 
-        Expert expert = expertRepository.findById(expertId)
+        Expert expert = expertGateway.findById(expertId)
                 .orElseThrow(() -> new EntityNotFoundException("expert not found"));
         SubService subService = subServiceRepository.findById(subServiceId)
                 .orElseThrow(() -> new EntityNotFoundException("subService not found"));
@@ -43,7 +43,7 @@ public class AdminOperationImpl implements AdminOperation {
         if (subServices == null) subServices = new HashSet<>();
         subServices.add(subService);
         //expert.setSubServices(subServices);//no need
-        expertRepository.save(expert);
+        expertGateway.save(expert);
     }
 
     @Transactional
@@ -51,7 +51,7 @@ public class AdminOperationImpl implements AdminOperation {
     public void deleteSubServiceFromExpert(Long expertId, Long subServiceId) {
         if (expertId == null || subServiceId == null)
             throw new IllegalArgumentException("input can not be null");
-        Expert expert = expertRepository.findById(expertId)
+        Expert expert = expertGateway.findById(expertId)
                 .orElseThrow(() -> new EntityNotFoundException("expert not found"));
         SubService subService = subServiceRepository.findById(subServiceId)
                 .orElseThrow(() -> new EntityNotFoundException("subService not found"));
@@ -61,12 +61,25 @@ public class AdminOperationImpl implements AdminOperation {
 
     private void deleteOperation(Expert expert, SubService subService) {
         Set<SubService> subServices = expert.getSubServices();
-        if (subServices == null)
-            throw new IllegalStateException("no SubService found for delete");
+        if (subServices.isEmpty())
+            throw new IllegalStateException("no SubService for this expert found");
         subServices.remove(subService);
         //    expert.setSubServices(subServices);//no need
-        expertRepository.save(expert);
+        expertGateway.save(expert);
     }
 
+    @Override
+    @Transactional
+    public void confirmedExpert(Long expertId) {
+        if (expertId == null)
+            throw new IllegalArgumentException("expertId can not be Null");
+        Expert expert = expertGateway.findById(expertId)
+                .orElseThrow(() -> new EntityNotFoundException("Expert Not Found"));
+        if (expert.getStatus().equals(Status.NEW)) {
+            expert.setStatus(Status.CONFIRMED);
+            expertGateway.save(expert);
+        }
+
+    }
 
 }
