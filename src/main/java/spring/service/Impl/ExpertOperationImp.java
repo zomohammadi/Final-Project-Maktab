@@ -10,13 +10,10 @@ import org.springframework.web.multipart.MultipartFile;
 import spring.dto.*;
 import spring.entity.Credit;
 import spring.entity.Expert;
-import spring.entity.Suggestion;
 import spring.enumaration.Role;
-import spring.enumaration.Status;
 import spring.mapper.Mapper;
 import spring.repository.ExpertGateway;
 import spring.service.ExpertOperation;
-import spring.service.SuggestionOperation;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -180,7 +177,6 @@ public class ExpertOperationImp implements ExpertOperation {
     }//ResponceExpertDto
 
 
-
     @Override
 //@Transactional(readOnly = true)
     public File getPictureFileByUserName(Long expertId) {
@@ -206,5 +202,16 @@ public class ExpertOperationImp implements ExpertOperation {
         }
 
         return outputFile;
+    }
+
+    @Override
+    public double findScoreById(Long expertId) {
+        if (expertId == null)
+            throw new IllegalArgumentException("expertId can not be Null");
+        Double score = expertGateway.findScoreById(expertId);
+        if (score == null) {
+            throw new EntityNotFoundException("Cannot find expert with this ID: " + expertId);
+        }
+        return score;
     }
 }

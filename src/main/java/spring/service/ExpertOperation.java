@@ -18,5 +18,7 @@ public interface ExpertOperation {
     void update(ChangeExpertDto expertDto);
 
     Expert findById(Long expertId);
-   // void deActiveExpert(Suggestion suggestion);
+
+    double findScoreById(Long expertId);
+    // void deActiveExpert(Suggestion suggestion);
 }

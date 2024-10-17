@@ -32,4 +32,7 @@ public interface ExpertGateway extends JpaRepository<Expert, Long> {
     @Query("select e.picture as Picture from Expert e where e.id = :id")
     byte[] getPictureByUserName(@Param("id") Long expertId);
 
+    @Query("select e.score from Expert e where e.id = :expertId")
+    Double findScoreById(Long expertId);
+
 }

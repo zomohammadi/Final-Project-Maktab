@@ -63,5 +63,10 @@ public class ExpertController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    @GetMapping("/findScore/{id}")
+    public ResponseEntity<Double>  findScoreById(@PathVariable("id") Long expertId){
+        double score = expertOperation.findScoreById(expertId);
+        return new ResponseEntity<>(score, HttpStatus.OK);
+    }
 
 }
