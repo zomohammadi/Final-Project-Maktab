@@ -17,6 +17,7 @@ import spring.service.CustomerOperation;
 import spring.service.OrderOperation;
 import spring.service.SubServiceOperation;
 
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Set;
 
@@ -88,12 +89,24 @@ public class OrderOperationImpl implements OrderOperation {
 
 
     }
+
     public void changeOrderStatusToDone(Orders order) {
         if (!order.getOrderStatus().equals(OrderStatus.Started))
             throw new IllegalStateException("your status is not Started");
-        order.setTimeServiceCompleted(ZonedDateTime.now());
+
+        order.setTimeServiceCompleted(/*ZonedDateTime.now()*/
+                ZonedDateTime.of(2024, 10, 17, 23,
+                        30, 0, 0, ZoneId.of("UTC"))
+
+                /*ZonedDateTime.of(2024, 10, 19, 6,
+                        0, 0, 0, ZoneId.of("UTC"))*/);
+
         changeOrderStatus(order, OrderStatus.Done);
     }
 
+    @Override
+    public int getCountOfExpertOperationPerSubService(Expert expert, SubService subService) {
+        return orderGateway.countByExpertAndSubService(expert, subService);
+    }
 }
 

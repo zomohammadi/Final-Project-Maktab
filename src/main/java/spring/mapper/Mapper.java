@@ -111,6 +111,12 @@ public class Mapper {
                     .suggestedTimeStartService(suggestionDto.suggestedTimeStartService())
                     .build();
         }
+        public static Feedback convertFeedbackInfoDtoToEntity(String commnet,Orders order){
+            return Feedback.builder()
+                    .comment(commnet)
+                    .order(order)
+                    .build();
+        }
     }
 
     public static class ConvertEntityToDto {

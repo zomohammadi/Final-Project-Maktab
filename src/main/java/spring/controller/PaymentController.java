@@ -17,7 +17,7 @@ public class PaymentController {
     @PostMapping("/prePayment/{orderId}")
     public ResponseEntity<Invoice> prePayment(@PathVariable Long orderId) {
         Invoice invoice = paymentOperation.prePaymentOperation(orderId);
-        return new ResponseEntity<>(invoice, HttpStatus.OK);
+        return new ResponseEntity<>(invoice, HttpStatus.CREATED);
     }
 
     @PutMapping("/payment/{id}")

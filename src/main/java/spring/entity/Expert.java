@@ -29,7 +29,7 @@ public class Expert extends Users {
     @Builder.Default
     private Status status = Status.NEW;
 
-    private int score;
+    private double score;
 
     private int performanceScore;
 }

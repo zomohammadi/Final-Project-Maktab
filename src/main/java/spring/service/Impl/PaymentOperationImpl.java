@@ -62,8 +62,9 @@ public class PaymentOperationImpl implements PaymentOperation {
         if (actualCompletionTime.isAfter(expertOfferTime)) {
             int performanceScore = calculatePerformanceScore(expertOfferTime, actualCompletionTime);
             expert.setPerformanceScore(performanceScore);
-            expertGateway.save(expert);
-        }
+
+        } else expert.setPerformanceScore(0);
+        expertGateway.save(expert);
     }
 
     private ZonedDateTime calculateServiceEndTime(int durationOfService,

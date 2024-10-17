@@ -3,6 +3,7 @@ package spring.service;
 import spring.dto.RegisterOrderDto;
 import spring.entity.Expert;
 import spring.entity.Orders;
+import spring.entity.SubService;
 import spring.enumaration.OrderStatus;
 
 public interface OrderOperation {
@@ -13,5 +14,7 @@ public interface OrderOperation {
     void changeOrderStatusToStarted(Long orderId);
     void changeOrderStatusToPaid(Orders order);
     void changeOrderStatusToDone(Orders order);
+
+    int getCountOfExpertOperationPerSubService(Expert expert, SubService subService);
 }
 // Invoice changeOrderStatusToDone(Long orderId);

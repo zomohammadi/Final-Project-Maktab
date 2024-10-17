@@ -35,7 +35,7 @@ public record ResponceExpertDto(
         String userName,
 
         @NotNull(message = "score cannot be Null")
-        int score,
+        double score,
 
         Status status
 
