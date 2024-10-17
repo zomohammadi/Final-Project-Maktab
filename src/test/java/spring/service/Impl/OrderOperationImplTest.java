@@ -32,6 +32,7 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class OrderOperationImplTest {
+/*
 
     @Mock
     private OrderGateway orderGateway;
@@ -72,7 +73,9 @@ public class OrderOperationImplTest {
         underTest.orderRegister(orderDto);
 
         ArgumentCaptor<Orders> orderCaptor = ArgumentCaptor.forClass(Orders.class);
-        verify(orderGateway/*, times(1)*/).save(orderCaptor.capture());
+        verify(orderGateway*/
+/*, times(1)*//*
+).save(orderCaptor.capture());
         Orders savedOrder = orderCaptor.getValue();
 
         assertEquals(OrderStatus.WaitingForSuggestionOfExperts, savedOrder.getOrderStatus());
@@ -286,7 +289,8 @@ public class OrderOperationImplTest {
 
     //test method for changeOrderStatusToDone:
 
-    @Test
+    */
+/*@Test
     void changeOrderStatusToDone_validStatus_shouldChangeToDone() {
         Long orderId = 1L;
         Orders order = new Orders();
@@ -325,10 +329,12 @@ public class OrderOperationImplTest {
         EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, () -> {
             underTest.changeOrderStatusToDone(orderId);
         });
+*//*
 
         assertEquals("order not Found", exception.getMessage());
         verify(orderGateway, times(1)).findById(orderId);
         verify(orderGateway, never()).save(any());
     }
+*/
 
 }

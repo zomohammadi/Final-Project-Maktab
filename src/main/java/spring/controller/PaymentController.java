@@ -19,4 +19,11 @@ public class PaymentController {
         Invoice invoice = paymentOperation.prePaymentOperation(orderId);
         return new ResponseEntity<>(invoice, HttpStatus.OK);
     }
+
+    @PutMapping("/payment/{id}")
+    public ResponseEntity<Void> payment(@PathVariable("id") Long orderId) {
+        paymentOperation.payment(orderId);
+        return ResponseEntity.noContent().build();
+    }
+
 }

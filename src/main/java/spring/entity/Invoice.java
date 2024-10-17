@@ -34,7 +34,8 @@ public class Invoice extends BaseEntity {
     private String expertLastName;
     private String expertUserName;
 
-    private InvoiceStatus invoiceStatus;
+    @Builder.Default
+    private InvoiceStatus invoiceStatus = InvoiceStatus.UnPaid;
     private PaymentStatus paymentStatus;
 
 

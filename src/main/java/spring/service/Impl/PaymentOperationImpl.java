@@ -1,59 +1,49 @@
 package spring.service.Impl;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import spring.dto.projection.SuggestionInfoProjection;
+import spring.entity.Customer;
 import spring.entity.Expert;
 import spring.entity.Invoice;
 import spring.entity.Orders;
-import spring.enumaration.OrderStatus;
+import spring.enumaration.InvoiceStatus;
+import spring.enumaration.PaymentStatus;
 import spring.repository.ExpertGateway;
 import spring.repository.OrderGateway;
-import spring.service.InvoiceOperation;
-import spring.service.PaymentOperation;
-import spring.service.SuggestionOperation;
+import spring.service.*;
 
 import java.time.Duration;
 import java.time.ZonedDateTime;
 
+@SuppressWarnings("unused")
 @RequiredArgsConstructor
 @Service
 @Transactional(readOnly = true)
 public class PaymentOperationImpl implements PaymentOperation {
     private final OrderGateway orderGateway;
-
+    private final OrderOperation orderOperation;
     private final SuggestionOperation suggestionOperation;
     private final ExpertGateway expertGateway;
     private final InvoiceOperation invoiceOperation;
+    private final CreditOperation creditOperation;
 
     @Override
     @Transactional
     public Invoice prePaymentOperation(Long orderId) {
         if (orderId == null)
             throw new IllegalArgumentException("orderId can not be Null");
-        Orders order = orderGateway.findById(orderId)
-                .orElseThrow(() -> new EntityNotFoundException("order not Found"));
-        if (!order.getOrderStatus().equals(OrderStatus.Started))
-            throw new IllegalStateException("your status is not Started");
-        order.setOrderStatus(OrderStatus.Done);
-        order.setTimeServiceCompleted(ZonedDateTime.now());
+
+        Orders order = orderOperation.findById(orderId);
+        orderOperation.changeOrderStatusToDone(order);
+
         Expert expert = order.getExpert();
         SuggestionInfoProjection projection = suggestionOperation.getSuggestionInfo(expert, order);
-        System.out.println("Projection: " + projection);
 
-        if (projection != null) {
-            System.out.println("Suggested Time Start Service: " + projection.getSuggestedTimeStartService());
-            System.out.println("Price Suggested: " + projection.getPriceSuggested());
-            System.out.println("Duration of Service: " + projection.getDurationOfService());
-        }
-        ZonedDateTime timeServiceCompleted = order.getTimeServiceCompleted();
-        ZonedDateTime suggestedTimeStartService = projection.getSuggestedTimeStartService();
-        Double priceSuggested = projection.getPriceSuggested();
-        int durationOfService = projection.getDurationOfService();
-        setPerformanceScore(timeServiceCompleted, expert, durationOfService, suggestedTimeStartService /*projection*/);
-        Invoice invoice = invoiceOperation.createInvoice(order, priceSuggested);
+        setPerformanceScore(order.getTimeServiceCompleted(), expert, projection.getDurationOfService()
+                , projection.getSuggestedTimeStartService());
+        Invoice invoice = invoiceOperation.createInvoice(order, projection.getPriceSuggested());
         order.setInvoice(invoice);
         orderGateway.save(order);
         return invoice;
@@ -61,11 +51,12 @@ public class PaymentOperationImpl implements PaymentOperation {
 
     }
 
-    private void setPerformanceScore(ZonedDateTime actualCompletionTime, Expert expert,
-                                     int durationOfService,
-                                     ZonedDateTime suggestedTimeStartService
-            ) {
-        ZonedDateTime expertOfferTime = calculateServiceEndTime(/*projection*/durationOfService,
+
+    public void setPerformanceScore(ZonedDateTime actualCompletionTime, Expert expert,
+                                    int durationOfService,
+                                    ZonedDateTime suggestedTimeStartService
+    ) {
+        ZonedDateTime expertOfferTime = calculateServiceEndTime(durationOfService,
                 suggestedTimeStartService);
         // Check if there's a delay
         if (actualCompletionTime.isAfter(expertOfferTime)) {
@@ -80,10 +71,22 @@ public class PaymentOperationImpl implements PaymentOperation {
         return suggestedTimeStartService.plusHours(durationOfService);
     }
 
-    private int calculatePerformanceScore(ZonedDateTime expertOfferTime, ZonedDateTime actualCompletionTime) {
+    private int calculatePerformanceScore(ZonedDateTime expertOfferTime
+            , ZonedDateTime actualCompletionTime) {
         Duration duration = Duration.between(expertOfferTime, actualCompletionTime);
         long hoursDifference = duration.toHours();
         return (int) hoursDifference;
     }
 
+    @Override
+    @Transactional
+    public void payment(Long orderId) {
+        Orders order = orderOperation.findById(orderId);
+        Invoice invoice = order.getInvoice();
+        Customer customer = order.getCustomer();
+        creditOperation.withdrawalFromCredit(customer.getId(), invoice);
+        invoice.setPaymentStatus(PaymentStatus.Credit);
+        invoice.setInvoiceStatus(InvoiceStatus.Paid);
+        orderOperation.changeOrderStatusToPaid(order);
+    }
 }

@@ -17,6 +17,7 @@ import spring.service.CustomerOperation;
 import spring.service.OrderOperation;
 import spring.service.SubServiceOperation;
 
+import java.time.ZonedDateTime;
 import java.util.Set;
 
 
@@ -69,28 +70,31 @@ public class OrderOperationImpl implements OrderOperation {
 
     @Transactional
     public void changeOrderStatusToStarted(Long orderId) {
-        doChange(orderId, OrderStatus.WaitingForExpertToComeToYourPlace, OrderStatus.Started,
-                "your status is not Waiting For Expert To Come To YourPlace");
-    }
-
-
-
-    // @Override//------------t-o-d-o
-    @Transactional
-    public void changeOrderStatusToPaid(Long orderId) {
-        doChange(orderId, OrderStatus.Done, OrderStatus.Paid, "Order is not in 'DONE' state");
-    }
-
-    private void doChange(Long orderId, OrderStatus oldOrderStatus, OrderStatus newOrderStatus, String s) {
         if (orderId == null)
             throw new IllegalArgumentException("orderId can not be Null");
         Orders order = findById(orderId);
-        if (order.getOrderStatus().equals(oldOrderStatus))
-            changeOrderStatus(order, newOrderStatus);
-        else
-            throw new IllegalStateException(s);
+        if (!order.getOrderStatus().equals(OrderStatus.WaitingForExpertToComeToYourPlace))
+            throw new IllegalStateException("your status is not Waiting For Expert To Come To YourPlace");
+        changeOrderStatus(order, OrderStatus.Started);
     }
 
+
+    // @Override//------------t-o-d-o
+    // @Transactional
+    public void changeOrderStatusToPaid(Orders order) {
+        if (!order.getOrderStatus().equals(OrderStatus.Done))
+            throw new IllegalStateException("Order is not in 'DONE' state");
+        changeOrderStatus(order, OrderStatus.Paid);
+
+
+    }
+    public void changeOrderStatusToDone(Orders order) {
+        if (!order.getOrderStatus().equals(OrderStatus.Started))
+            throw new IllegalStateException("your status is not Started");
+        order.setOrderStatus(OrderStatus.Done);
+        order.setTimeServiceCompleted(ZonedDateTime.now());
+
+    }
 
 }
 
