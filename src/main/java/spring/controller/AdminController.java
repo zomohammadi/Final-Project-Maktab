@@ -4,7 +4,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import spring.dto.UserSearchCriteriaDto;
+import spring.entity.Users;
 import spring.service.AdminOperation;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/v1/admins")
@@ -31,5 +35,11 @@ public class AdminController {
     public ResponseEntity<Void> confirmedExpert(@PathVariable("id") Long expertId) {
         adminOperation.confirmedExpert(expertId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @PostMapping("/search")
+    public ResponseEntity<List<Users>> searchUsers(@RequestBody UserSearchCriteriaDto searchCriteria) {
+        List<Users> users = adminOperation.searchUsers(searchCriteria);
+        return new ResponseEntity<>(users, HttpStatus.OK);
     }
 }
