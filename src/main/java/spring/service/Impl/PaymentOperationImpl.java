@@ -22,7 +22,6 @@ import java.time.ZonedDateTime;
 @Service
 @Transactional(readOnly = true)
 public class PaymentOperationImpl implements PaymentOperation {
-    private final OrderGateway orderGateway;
     private final OrderOperation orderOperation;
     private final SuggestionOperation suggestionOperation;
     private final ExpertGateway expertGateway;
@@ -45,7 +44,6 @@ public class PaymentOperationImpl implements PaymentOperation {
                 , projection.getSuggestedTimeStartService());
         Invoice invoice = invoiceOperation.createInvoice(order, projection.getPriceSuggested());
         order.setInvoice(invoice);
-        orderGateway.save(order);
         return invoice;
 
 
