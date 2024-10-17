@@ -91,9 +91,8 @@ public class OrderOperationImpl implements OrderOperation {
     public void changeOrderStatusToDone(Orders order) {
         if (!order.getOrderStatus().equals(OrderStatus.Started))
             throw new IllegalStateException("your status is not Started");
-        order.setOrderStatus(OrderStatus.Done);
         order.setTimeServiceCompleted(ZonedDateTime.now());
-
+        changeOrderStatus(order, OrderStatus.Done);
     }
 
 }
