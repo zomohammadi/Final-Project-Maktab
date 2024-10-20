@@ -95,7 +95,7 @@ public class OrderOperationImpl implements OrderOperation {
             throw new IllegalStateException("your status is not Started");
 
         order.setTimeServiceCompleted(/*ZonedDateTime.now()*/
-                ZonedDateTime.of(2024, 10, 17, 23,
+                ZonedDateTime.of(2024, 10, 18, 18,
                         30, 0, 0, ZoneId.of("UTC"))
 
                 /*ZonedDateTime.of(2024, 10, 19, 6,

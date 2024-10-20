@@ -1,11 +1,12 @@
 package spring.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import spring.dto.UserSearchCriteriaDto;
-import spring.entity.Users;
+import spring.dto.UserSearchResultDto;
 import spring.service.AdminOperation;
 
 import java.util.List;
@@ -37,9 +38,9 @@ public class AdminController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @PostMapping("/search")
-    public ResponseEntity<List<Users>> searchUsers(@RequestBody UserSearchCriteriaDto searchCriteria) {
-        List<Users> users = adminOperation.searchUsers(searchCriteria);
-        return new ResponseEntity<>(users, HttpStatus.OK);
+    @GetMapping("/search")
+    public ResponseEntity<List<UserSearchResultDto>> searchUsers(@RequestBody @Valid UserSearchCriteriaDto userSearchCriteriaDto) {
+        List<UserSearchResultDto> results = adminOperation.searchUsers(userSearchCriteriaDto);
+        return ResponseEntity.ok(results);
     }
 }

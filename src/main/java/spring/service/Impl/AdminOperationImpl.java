@@ -5,12 +5,16 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.criteria.*;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import spring.dto.UserSearchCriteriaDto;
+import spring.dto.UserSearchResultDto;
+import spring.entity.Customer;
 import spring.entity.Expert;
 import spring.entity.SubService;
 import spring.entity.Users;
+import spring.enumaration.Role;
 import spring.enumaration.Status;
 import spring.repository.ExpertGateway;
 import spring.repository.SubServiceGateway;
@@ -22,13 +26,13 @@ import java.util.List;
 import java.util.Set;
 
 
-
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class AdminOperationImpl implements AdminOperation {
     private final SubServiceGateway subServiceRepository;
     private final ExpertGateway expertGateway;
+    private final EntityManager entityManager;
 
     @Transactional
     @Override
@@ -89,47 +93,83 @@ public class AdminOperationImpl implements AdminOperation {
         }
 
     }
-    private final EntityManager entityManager;
 
     @Override
-    public List<Users> searchUsers(UserSearchCriteriaDto searchCriteria) {
+    public List<UserSearchResultDto> searchUsers(UserSearchCriteriaDto search) {
+
+
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Users> query = cb.createQuery(Users.class);
-        Root<Users> userRoot = query.from(Users.class);
+        CriteriaQuery<UserSearchResultDto> query = cb.createQuery(UserSearchResultDto.class);
+        Root<Users> root = query.from(Users.class);
 
         List<Predicate> predicates = new ArrayList<>();
 
-        // Add filtering conditions based on DTO fields
-        if (searchCriteria.role() != null) {
-            predicates.add(cb.equal(userRoot.get("role"), searchCriteria.role()));
+        if (search.role() != null) {
+            if (search.role().equals(Role.Expert)) {
+                Root<Expert> expertRoot = cb.treat(root, Expert.class);
+                predicates.add(cb.equal(cb.literal(Expert.class), root.type()));
+
+                if (Boolean.TRUE.equals(search.showHighestExperts()) && Boolean.TRUE.equals(search.showLowestExperts())) {
+                    throw new IllegalArgumentException("You can only select either the highest or the lowest scoring experts, not both.");
+                }
+
+                if (Boolean.TRUE.equals(search.showHighestExperts())) {
+
+                    CriteriaQuery<Double> maxScoreQuery = cb.createQuery(Double.class);
+                    Root<Expert> maxExpertRoot = maxScoreQuery.from(Expert.class);
+                    maxScoreQuery.select(cb.max(maxExpertRoot.get("score")));
+                    Double highestScore = entityManager.createQuery(maxScoreQuery).getSingleResult();
+
+                    predicates.add(cb.equal(expertRoot.get("score"), highestScore));
+                }
+
+                if (Boolean.TRUE.equals(search.showLowestExperts())) {
+
+                    CriteriaQuery<Double> minScoreQuery = cb.createQuery(Double.class);
+                    Root<Expert> minExpertRoot = minScoreQuery.from(Expert.class);
+                    minScoreQuery.select(cb.min(minExpertRoot.get("score")));
+                    Double lowestScore = entityManager.createQuery(minScoreQuery).getSingleResult();
+
+                    predicates.add(cb.equal(expertRoot.get("score"), lowestScore));
+                }
+
+                if (StringUtils.isNotBlank(search.subServiceName())) {
+                    Join<Expert, SubService> subServiceJoin = expertRoot.join("subServices", JoinType.LEFT);
+                    predicates.add(cb.like(cb.lower(subServiceJoin.get("name")), "%" + search.subServiceName().toLowerCase() + "%"));
+                }
+
+            } else if (search.role().equals(Role.Customer)) {
+
+                if (search.showLowestExperts() != null || search.showHighestExperts() != null || StringUtils.isNotBlank(search.subServiceName())) {
+                    throw new IllegalArgumentException("Customers cannot be searched by score or subServiceName fields.");
+                }
+                predicates.add(cb.equal(cb.literal(Customer.class), root.type()));
+            }
         }
-        if (searchCriteria.firstName() != null) {
-            predicates.add(cb.like(cb.lower(userRoot.get("firstName")), "%" + searchCriteria.firstName().toLowerCase() + "%"));
+        if (StringUtils.isNotBlank(search.firstName())) {
+            predicates.add(cb.like(cb.lower(root.get("firstName")), "%" + search.firstName().toLowerCase() + "%"));
         }
-        if (searchCriteria.lastName() != null) {
-            predicates.add(cb.like(cb.lower(userRoot.get("lastName")), "%" + searchCriteria.lastName().toLowerCase() + "%"));
+        if (StringUtils.isNotBlank(search.lastName())) {
+            predicates.add(cb.like(cb.lower(root.get("lastName")), "%" + search.lastName().toLowerCase() + "%"));
         }
-        if (searchCriteria.emailAddress() != null) {
-            predicates.add(cb.like(cb.lower(userRoot.get("emailAddress")), "%" + searchCriteria.emailAddress().toLowerCase() + "%"));
+        if (StringUtils.isNotBlank(search.emailAddress())) {
+            predicates.add(cb.like(cb.lower(root.get("emailAddress")), "%" + search.emailAddress().toLowerCase() + "%"));
         }
 
-        // Special case for Experts (use a join to filter on subService and score)
-        if (searchCriteria.subService() != null || searchCriteria.minScore() != null || searchCriteria.maxScore() != null) {
-            Join<Users, Expert> expertJoin = userRoot.join("expert", JoinType.INNER);
+        query.select(cb.construct(
+                UserSearchResultDto.class,
+                root.get("id"),
+                root.get("firstName"),
+                root.get("lastName"),
+                root.get("emailAddress"),
+                root.get("role"),
+                root.get("userName"),
+                cb.selectCase()
+                        .when(cb.equal(cb.literal(Role.Expert), root.get("role")), root.get("score"))
+                        .otherwise(cb.nullLiteral(Double.class))
+        ));
 
-            if (searchCriteria.subService() != null) {
-                predicates.add(cb.isMember(searchCriteria.subService(), expertJoin.get("subServices")));
-            }
-            if (searchCriteria.minScore() != null) {
-                predicates.add(cb.greaterThanOrEqualTo(expertJoin.get("score"), searchCriteria.minScore()));
-            }
-            if (searchCriteria.maxScore() != null) {
-                predicates.add(cb.lessThanOrEqualTo(expertJoin.get("score"), searchCriteria.maxScore()));
-            }
-        }
-
-        // Apply the predicates to the query
-        query.where(predicates.toArray(new Predicate[0]));
+        query.where(cb.and(predicates.toArray(new Predicate[0])));
 
         return entityManager.createQuery(query).getResultList();
     }

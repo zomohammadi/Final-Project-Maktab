@@ -4,13 +4,13 @@ import lombok.Builder;
 import spring.enumaration.Role;
 
 @Builder
-public record UserSearchCriteriaDto(
+public record UserSearchResultDto(
+        Long id,
         String firstName,
         String lastName,
         String emailAddress,
         Role role,
-        Boolean showHighestExperts,
-        Boolean showLowestExperts,
-        String subServiceName
+        String userName,
+        Double score
 ) {
 }

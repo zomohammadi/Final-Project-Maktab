@@ -1,7 +1,7 @@
 package spring.service;
 
 import spring.dto.UserSearchCriteriaDto;
-import spring.entity.Users;
+import spring.dto.UserSearchResultDto;
 
 import java.util.List;
 
@@ -10,5 +10,5 @@ public interface AdminOperation {
     void deleteSubServiceFromExpert(Long expertId, Long subServiceId);
     void confirmedExpert(Long expertId);
 
-    List<Users> searchUsers(UserSearchCriteriaDto searchCriteria);
+    List<UserSearchResultDto> searchUsers(UserSearchCriteriaDto searchCriteria);
 }
